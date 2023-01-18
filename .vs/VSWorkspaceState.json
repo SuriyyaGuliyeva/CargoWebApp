@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Library.Core",
+    "\\Library.Core\\Domain",
+    "\\Library.Core\\Domain\\Entities"
+  ],
+  "SelectedNode": "\\Library.Core\\Domain\\Entities\\Report.cs",
+  "PreviewInSolutionExplorer": false
+}
