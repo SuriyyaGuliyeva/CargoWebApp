@@ -3,13 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Library.Core.Domain.Entities
 {
-    public class News
+    public class Admin
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Photo { get; set; }
-        public DateTime CreationDateTime { get; set; }
+        public virtual User UserId { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime CreationDateTime { get; set; }
     }
 }

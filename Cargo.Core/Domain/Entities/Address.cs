@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace Library.Core.Domain.Entities
+namespace Cargo.Core.Domain.Entities
 {
     public class Address
     {
@@ -18,5 +19,6 @@ namespace Library.Core.Domain.Entities
         public string PostalCode { get; set; }
         public string TcIdentity { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime CreationDateTime { get; set; }
     }
 }

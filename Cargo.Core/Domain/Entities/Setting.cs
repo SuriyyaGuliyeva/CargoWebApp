@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library.Core.Domain.Entities
+namespace Cargo.Core.Domain.Entities
 {
     public class Setting
     {
@@ -13,5 +13,6 @@ namespace Library.Core.Domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string JsonValue { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

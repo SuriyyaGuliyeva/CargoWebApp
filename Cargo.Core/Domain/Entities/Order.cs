@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library.Core.Domain.Entities
+namespace Cargo.Core.Domain.Entities
 {
     public class Order
     {
@@ -22,6 +22,7 @@ namespace Library.Core.Domain.Entities
         public short TotalCount { get; set; }
         public short TotalAmount { get; set; }
         public string Status { get; set; }
+        public DateTime CreationDateTime { get; set; }
 
         [ForeignKey("User")]
         public int UserId { get; set; }

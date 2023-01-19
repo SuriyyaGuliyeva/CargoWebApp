@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library.Core.Domain.Entities
+namespace Cargo.Core.Domain.Entities
 {
     public class Customer
     {
@@ -18,9 +18,10 @@ namespace Library.Core.Domain.Entities
         public short TransportBalance { get; set; }
         public short OrderBalance { get; set; }
         public short MonthlyLimit { get; set; }
-        public short TotalDebt { get; set; }
-        public string AddressCode { get; set; }    
-        public string Photo { get; set; }   
+        public short TotalDebt { get; set; }          
+        public string Photo { get; set; }           
+        public bool IsDeleted { get; set; }
+        public DateTime CreationDateTime { get; set; }
         public virtual User UserId { get; set; }
     }
 }
