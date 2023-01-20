@@ -7,7 +7,6 @@ namespace Cargo.Core.Domain.Entities
     {
         [Key]
         public int Id { get; set; }
-        //public int CountryId { get; set; }
         public virtual Country CountryId { get; set; }
         public string FullName { get; set; }
         public string District { get; set; }
