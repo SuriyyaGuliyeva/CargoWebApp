@@ -1,12 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cargo.Core.Domain.Entities
 {
     public class Order
     {
-        [Key]
         public int Id { get; set; }
         public int Count { get; set; }
         public string Link { get; set; }
@@ -19,12 +16,8 @@ namespace Cargo.Core.Domain.Entities
         public short TotalAmount { get; set; }
         public string Status { get; set; }
         public DateTime CreationDateTime { get; set; }
-
-        [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
-
-        [ForeignKey("OrderStatusLog")]
         public int OrderStatusLogId { get; set; }
         public OrderStatusLog OrderStatusLog { get; set; }
 

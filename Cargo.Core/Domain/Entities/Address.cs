@@ -1,13 +1,12 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Cargo.Core.Domain.Entities
 {
     public class Address
     {
-        [Key]
         public int Id { get; set; }
-        public virtual Country CountryId { get; set; }
+        public int CountryId { get; set; }
+        public Country Country { get; set; }
         public string FullName { get; set; }
         public string District { get; set; }
         public string Province { get; set; }

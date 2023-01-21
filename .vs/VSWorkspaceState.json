@@ -1,7 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Cargo.Core",
+    "\\Cargo.Core\\DataAccessLayer",
+    "\\Cargo.Core\\DataAccessLayer\\Implementation",
+    "\\Cargo.Core\\Domain",
+    "\\Cargo.Core\\Domain\\Entities"
   ],
-  "SelectedNode": "\\CargoWebApplication.sln",
+  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Implementation\\CountryRepository.cs",
   "PreviewInSolutionExplorer": false
 }

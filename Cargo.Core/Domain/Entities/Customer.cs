@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Cargo.Core.Domain.Entities
 {
     public class Customer
     {
-        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
@@ -17,6 +15,7 @@ namespace Cargo.Core.Domain.Entities
         public string Photo { get; set; }           
         public bool IsDeleted { get; set; }
         public DateTime CreationDateTime { get; set; }
-        public virtual User UserId { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }
