@@ -1,21 +1,24 @@
-﻿using Cargo.Core.Config;
-using Cargo.Core.DataAccessLayer.Abstract;
+﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace Cargo.Core.DataAccessLayer.Implementation
+namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
     public class CountryRepository : ICountryRepository
     {
-        private readonly string _connectionString = AppConfig.GetConnectionString();
+        private readonly string _connectionString;
+
+        public CountryRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         public void Add(Country country)
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into countries (name, creationDateTime) values(@name, @creationDateTime)";
+                string query = "insert into countries (name, creationDateTime, isDeleted) values(@name, @creationDateTime, 0)";
 
                 con.Open();
 
@@ -32,7 +35,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "delete from countries where id = @id";
+                string query = "update countries set isDeleted = 1 where id = @id";
 
                 con.Open();
 
@@ -52,7 +55,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string query = "select * from countries where id = @id";
+                string query = "select * from countries where id = @id and isDeleted = 0";
 
                 connection.Open();
 
@@ -67,9 +70,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation
                 {
                     country = new Country();
 
-                    country.Id = (int)reader["Id"];
-                    country.Name = (string)reader["Name"];
-                    country.CreationDateTime = (DateTime)reader["CreationDateTime"];                 
+                    country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    country.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
+                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));                              
                 }
 
                 return country;
@@ -80,14 +84,27 @@ namespace Cargo.Core.DataAccessLayer.Implementation
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "select * from countries";
+                string query = "select * from countries where isDeleted = 0";
 
                 con.Open();
 
                 var cmd = new SqlCommand(query, con);
+
                 var reader = cmd.ExecuteReader();
 
-                var countries = Mapper.DataReaderMapToList<Country>(reader);
+                List<Country> countries = new List<Country>();
+
+                while (reader.Read())
+                {
+                    Country country = new Country();
+
+                    country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    country.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
+                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+
+                    countries.Add(country);
+                }
 
                 return countries;
             }
@@ -97,7 +114,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update countries set name = @name, creationDateTime = @creationDateTime where id = @id";
+                string query = "update countries set name = @name, creationDateTime = @creationDateTime where id = @id and isDeleted = 0";
 
                 con.Open();
 
@@ -107,7 +124,12 @@ namespace Cargo.Core.DataAccessLayer.Implementation
                 cmd.Parameters.AddWithValue("name", country.Name);
                 cmd.Parameters.AddWithValue("creationDateTime", country.CreationDateTime);
 
-                cmd.ExecuteNonQuery();
+                int result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    // do something
+                }
             }
         }
     }

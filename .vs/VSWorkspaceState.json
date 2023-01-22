@@ -4,9 +4,8 @@
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
-    "\\Cargo.Core\\Domain",
-    "\\Cargo.Core\\Domain\\Entities"
+    "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer"
   ],
-  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Implementation\\CountryRepository.cs",
+  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer\\CountryRepository.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -12,6 +12,5 @@ namespace Cargo.Core.Domain.Entities
         public string WorkHours { get; set; }
         public bool IsDeleted { get; set; }       
         public DateTime CreationDateTime { get; set; }
-        public ICollection<Report> Reports { get; set; }
     }
 }

@@ -8,6 +8,8 @@ namespace Cargo.Core.Domain.Entities
         public int Id { get; set; }
         public string NextStatus { get; set; }
         public DateTime ChangeDateTime { get; set; }
-        public ICollection<Report> Reports { get; set; }
+        public int ReportId { get; set; }
+        public Report Report { get; set; }
+        //public ICollection<Report> Reports { get; set; }
     }
 }

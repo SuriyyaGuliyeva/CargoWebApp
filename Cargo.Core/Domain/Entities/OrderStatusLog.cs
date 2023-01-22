@@ -8,6 +8,8 @@ namespace Cargo.Core.Domain.Entities
         public int Id { get; set; }
         public string NextStatus { get; set; }
         public DateTime ChangeDateTime { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
+        //public ICollection<Order> Orders { get; set; }
     }
 }

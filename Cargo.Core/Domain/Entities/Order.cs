@@ -18,8 +18,5 @@ namespace Cargo.Core.Domain.Entities
         public DateTime CreationDateTime { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
-        public int OrderStatusLogId { get; set; }
-        public OrderStatusLog OrderStatusLog { get; set; }
-
     }
 }

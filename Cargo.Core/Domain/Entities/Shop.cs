@@ -11,8 +11,9 @@ namespace Cargo.Core.Domain.Entities
         public string Photo { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreationDateTime { get; set; }
-        public ICollection<Category> Categories { get; set; }
-        public ICollection<Country> Countries { get; set; }
-        public ICollection<Report> Reports { get; set; }
+        public int CountryId { get; set; }
+        public Country Country { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }
