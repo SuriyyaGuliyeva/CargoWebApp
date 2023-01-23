@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
-    public class ShopRepository : IShopRepository
+    public class sQLShopRepository : IShopRepository
     {
         private readonly string _connectionString;
 
-        public ShopRepository(string connectionString)
+        public sQLShopRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -30,10 +30,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 cmd.Parameters.AddWithValue("Name", shop.Name);
                 cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
-                cmd.Parameters.AddWithValue("Link", shop.CreationDateTime);
-                cmd.Parameters.AddWithValue("Photo", shop.CreationDateTime);
-                cmd.Parameters.AddWithValue("CategoryId", shop.CreationDateTime);
-                cmd.Parameters.AddWithValue("CountryId", shop.CreationDateTime);
+                cmd.Parameters.AddWithValue("Link", shop.Link);
+                cmd.Parameters.AddWithValue("Photo", shop.Photo);
+                cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
+                cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
 
                 cmd.ExecuteNonQuery();
             }
@@ -74,7 +74,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 Shop shop = null;
 
-                while (reader.Read())
+                if (reader.Read())
                 {
                     shop = new();
 
@@ -85,11 +85,19 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
                     shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
                     shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
+                    shop.Country = new Country()
+                    {
+                        Id = shop.CountryId
+                    };
                     shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
+                    shop.Category = new Category()
+                    {
+                        Id = shop.CategoryId
+                    };
 
                     //GetFieldType
-                    shop.Country.Name = reader.GetFieldType(reader.GetOrdinal("Country")).Name;
-                    shop.Category.Name = reader.GetFieldType(reader.GetOrdinal("Category")).Name;
+                    //shop.Country.Name = reader.GetFieldType(reader.GetOrdinal("Country")).Name;
+                    //shop.Category.Name = reader.GetFieldType(reader.GetOrdinal("Category")).Name;
                 }
 
                 return shop;
@@ -120,10 +128,16 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
                     shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
                     shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
+                    shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));                 
+                    shop.Country = new Country()
+                    {
+                        Id = shop.CountryId
+                    };
                     shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
-                    //shop.Country.Name = reader.GetFieldType(reader.GetOrdinal("Country")).Name;
-                    //shop.Category.Name = reader.GetFieldType(reader.GetOrdinal("Category")).Name;
+                    shop.Category = new Category()
+                    {
+                        Id = shop.CategoryId
+                    };
 
                     shops.Add(shop);
                 }

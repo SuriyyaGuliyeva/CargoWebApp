@@ -6,6 +6,6 @@
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer"
   ],
-  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer\\CountryRepository.cs",
+  "SelectedNode": "\\CargoWebApplication.sln",
   "PreviewInSolutionExplorer": false
 }

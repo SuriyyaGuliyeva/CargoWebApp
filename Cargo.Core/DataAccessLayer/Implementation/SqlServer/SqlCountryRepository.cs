@@ -5,11 +5,11 @@ using System.Data.SqlClient;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
-    public class CountryRepository : ICountryRepository
+    public class SqlCountryRepository : ICountryRepository
     {
         private readonly string _connectionString;
 
-        public CountryRepository(string connectionString)
+        public SqlCountryRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
@@ -66,7 +66,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 Country country = null;
 
-                while (reader.Read())
+                if (reader.Read())
                 {
                     country = new Country();
 
