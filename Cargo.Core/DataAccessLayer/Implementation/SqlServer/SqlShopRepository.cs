@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
-    public class sQLShopRepository : IShopRepository
+    public class SqlShopRepository : IShopRepository
     {
         private readonly string _connectionString;
 
-        public sQLShopRepository(string connectionString)
+        public SqlShopRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
