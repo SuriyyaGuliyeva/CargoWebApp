@@ -2,19 +2,15 @@ using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.DataAccessLayer.Implementation.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AdminPanelCargoWebApp
 {
     public class Startup
     {
+        private const string _dbNameVal = "SqlServer";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,8 +23,17 @@ namespace AdminPanelCargoWebApp
         {
             services.AddControllersWithViews();
 
-            // dependency injection
-            services.AddTransient<IUnitOfWork, SqlUnitOfWork>();
+            var configuration = new ConfigurationBuilder()
+                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                                .Build();
+
+            string dbNameValue = configuration.GetSection("DbVendorNames").GetSection("DbName").Value;
+
+            if (dbNameValue.Equals(_dbNameVal))
+            {
+                services.AddTransient<IUnitOfWork, SqlUnitOfWork>();
+            }
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

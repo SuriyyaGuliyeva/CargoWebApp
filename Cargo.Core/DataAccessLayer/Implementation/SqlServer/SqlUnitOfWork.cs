@@ -11,13 +11,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             _connectionString = connectionString;
         }
 
-        public ICountryRepository CountryRepository
-        {
-            get => new SqlCountryRepository(_connectionString);
-        }
-        public IShopRepository ShopRepository
-        {
-            get => new SqlShopRepository(_connectionString);
-        }
+        public ICountryRepository CountryRepository => new SqlCountryRepository(_connectionString);
+        
+        public IShopRepository ShopRepository => new SqlShopRepository(_connectionString);
     }
 }
