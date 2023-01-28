@@ -9,7 +9,7 @@ namespace Cargo.Core.Domain.Entities
         public string Name { get; set; }
         public string Link { get; set; }
         public string Photo { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public DateTime CreationDateTime { get; set; }
         public int CountryId { get; set; }
         public Country Country { get; set; }

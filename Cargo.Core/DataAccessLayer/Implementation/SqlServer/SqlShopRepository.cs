@@ -22,7 +22,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into shops (Name, CreationDateTime, Link, Photo, CategoryId, CountryId, isDeleted) values (@Name, @CreationDateTime, @Link, @Photo, @CategoryId, @CountryId, 0)";
+                string query = "insert into shops (Name, CreationDateTime, Link, Photo, CategoryId, CountryId) values (@Name, @CreationDateTime, @Link, @Photo, @CategoryId, @CountryId)";
 
                 con.Open();
 
@@ -32,6 +32,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
                 cmd.Parameters.AddWithValue("Link", shop.Link);
                 cmd.Parameters.AddWithValue("Photo", shop.Photo);
+                cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
                 cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
                 cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
 

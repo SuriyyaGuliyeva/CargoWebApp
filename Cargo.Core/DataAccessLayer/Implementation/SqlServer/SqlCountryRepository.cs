@@ -18,7 +18,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into countries (name, creationDateTime, isDeleted) values(@name, @creationDateTime, 0)";
+                string query = "insert into countries (name, creationDateTime) values(@name, @creationDateTime)";
 
                 con.Open();
 
@@ -26,6 +26,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 cmd.Parameters.AddWithValue("name", country.Name);
                 cmd.Parameters.AddWithValue("creationDateTime", country.CreationDateTime);
+                cmd.Parameters.AddWithValue("isDeleted", country.IsDeleted);
 
                 cmd.ExecuteNonQuery();
             }
