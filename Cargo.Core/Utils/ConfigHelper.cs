@@ -16,7 +16,7 @@ namespace Cargo.Core.Utils
 
             string dbNameValue = configuration.GetSection("DbVendorNames").GetSection("DbName").Value;
 
-            if (dbNameValue.Equals(DbName.SqlServer))
+            if (dbNameValue == DbName.SqlServer.ToString())
             {
                 services.AddTransient<IUnitOfWork, SqlUnitOfWork>();
             }           
