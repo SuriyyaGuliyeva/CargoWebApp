@@ -1,4 +1,5 @@
 using Cargo.Core.DataAccessLayer.Abstract;
+using Cargo.Core.DataAccessLayer.Implementation;
 using Cargo.Core.DataAccessLayer.Implementation.SqlServer;
 using Cargo.Core.Domain.Enums;
 using Cargo.Core.Utils;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace AdminPanelCargoWebApp
 {
@@ -24,7 +26,20 @@ namespace AdminPanelCargoWebApp
         {
             services.AddControllersWithViews();
 
-            services.DatabaseConfig();                   
+            var configuration = new ConfigurationBuilder()
+                               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                               .Build();
+
+            string dbNameValue = configuration.GetSection("DbVendorNames").GetSection("DbName").Value;
+
+            var db = new DatabaseFactory();            
+
+            //services.AddTransient<IUnitOfWork>(() => return db.DbFactory(Enum.Parse<DbName>(dbNameValue)));
+
+            services.AddTransient<IUnitOfWork>(serviceProvider =>
+            {
+                return db.DbFactory(Enum.Parse<DbName>(dbNameValue));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
