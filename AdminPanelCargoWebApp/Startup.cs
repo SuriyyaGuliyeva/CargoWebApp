@@ -1,8 +1,6 @@
 using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.DataAccessLayer.Implementation;
-using Cargo.Core.DataAccessLayer.Implementation.SqlServer;
 using Cargo.Core.Domain.Enums;
-using Cargo.Core.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
