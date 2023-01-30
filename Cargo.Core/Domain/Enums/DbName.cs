@@ -2,7 +2,7 @@
 {
     public enum DbName
     {
-        SqlServer,
+        SqlServer = 1,
         Oracle
     }
 }

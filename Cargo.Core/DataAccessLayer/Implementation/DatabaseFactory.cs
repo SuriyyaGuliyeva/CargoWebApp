@@ -7,11 +7,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation
 {
     public class DatabaseFactory : IDatabaseFactory
     {
-        public IUnitOfWork DbFactory(DbName name)
+        public IUnitOfWork DbFactory(DbName dbName)
         {
             IUnitOfWork unitOfWork = null;
 
-            switch (name)
+            switch (dbName)
             {
                 case DbName.SqlServer:
                     unitOfWork = new SqlUnitOfWork();
