@@ -6,9 +6,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
     {
         private readonly string _connectionString;
 
-        public SqlUnitOfWork()
-        {
-        }
+        //public SqlUnitOfWork()
+        //{
+        //}
 
         public SqlUnitOfWork(string connectionString)
         {

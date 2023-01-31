@@ -1,8 +1,8 @@
 ﻿namespace Cargo.Core.Domain.Enums
 {
-    public enum DbName
+    public enum VendorTypes
     {
-        SqlServer = 1,
+        SqlServer,
         Oracle
     }
 }

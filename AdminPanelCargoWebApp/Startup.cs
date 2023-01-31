@@ -1,5 +1,5 @@
+using Cargo.Core;
 using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.DataAccessLayer.Implementation;
 using Cargo.Core.Domain.Enums;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,15 +28,11 @@ namespace AdminPanelCargoWebApp
                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                                .Build();
 
-            string dbNameValue = configuration.GetSection("DbVendorNames").GetSection("DbName").Value;
-
-            var db = new DatabaseFactory();            
-
-            //services.AddTransient<IUnitOfWork>(() => return db.DbFactory(Enum.Parse<DbName>(dbNameValue)));
+            string dbNameValue = configuration.GetSection("VendorTypes").GetSection("VendorType").Value;
 
             services.AddTransient<IUnitOfWork>(serviceProvider =>
             {
-                return db.DbFactory(Enum.Parse<DbName>(dbNameValue));
+                return Creator.Create(Enum.Parse<VendorTypes>(dbNameValue));
             });
         }
 
