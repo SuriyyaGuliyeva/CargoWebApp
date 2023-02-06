@@ -1,5 +1,6 @@
 using Cargo.Core;
 using Cargo.Core.DataAccessLayer.Abstract;
+using Cargo.Core.DataAccessLayer.Implementation.SqlServer;
 using Cargo.Core.Domain.Enums;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,12 @@ namespace AdminPanelCargoWebApp
             {
                 return Creator.Create(Enum.Parse<VendorTypes>(dbNameValue));
             });
+
+            //services.AddTransient<ICountryRepository, SqlCountryRepository>();
+
+            string connectionString = configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
+
+            services.AddTransient<ICountryRepository>(serviceProvider => new SqlCountryRepository(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

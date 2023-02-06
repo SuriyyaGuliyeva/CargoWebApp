@@ -7,6 +7,6 @@
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer"
   ],
-  "SelectedNode": "\\AdminPanelCargoWebApp\\Startup.cs",
+  "SelectedNode": "\\CargoWebApplication.sln",
   "PreviewInSolutionExplorer": false
 }
