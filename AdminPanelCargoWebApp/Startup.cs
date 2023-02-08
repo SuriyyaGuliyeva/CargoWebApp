@@ -31,16 +31,16 @@ namespace AdminPanelCargoWebApp
 
             string dbNameValue = configuration.GetSection("VendorTypes").GetSection("VendorType").Value;
 
-            services.AddTransient<IUnitOfWork>(serviceProvider =>
-            {
-                return Creator.Create(Enum.Parse<VendorTypes>(dbNameValue));
-            });
-
-            //services.AddTransient<ICountryRepository, SqlCountryRepository>();
-
             string connectionString = configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
 
             services.AddTransient<ICountryRepository>(serviceProvider => new SqlCountryRepository(connectionString));
+
+            services.AddTransient<IUnitOfWork>(serviceProvider =>
+            {
+                return DbFactory.Create(Enum.Parse<VendorTypes>(dbNameValue), connectionString);
+            });
+
+            //services.AddTransient<ICountryRepository, SqlCountryRepository>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

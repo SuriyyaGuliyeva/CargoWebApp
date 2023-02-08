@@ -1,4 +1,6 @@
-﻿@model List<CountryModel>
+﻿@using AdminPanelCargoWebApp.ViewModels.Country
+
+@model CountryViewModel
 
 @{
     int count = 1;
@@ -17,7 +19,7 @@
         </thead>
 
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Countries)
             {
                 <tr>
                     <td>@(count++)</td>

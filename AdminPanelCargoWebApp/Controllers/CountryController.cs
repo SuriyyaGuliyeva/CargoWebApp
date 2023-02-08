@@ -1,4 +1,5 @@
 ﻿using AdminPanelCargoWebApp.Models;
+using AdminPanelCargoWebApp.ViewModels.Country;
 using Cargo.Core.DataAccessLayer.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace AdminPanelCargoWebApp.Controllers
         {
             var countries = _countryRepository.GetAll();
 
-            var models = new List<CountryModel>();      
+            var models = new CountryViewModel();
 
             foreach (var country in countries)
             {
@@ -28,7 +29,14 @@ namespace AdminPanelCargoWebApp.Controllers
                     CreationDateTime = country.CreationDateTime
                 };
 
-                models.Add(model);
+                if (models.Countries is null)
+                {
+                    models.Countries = new List<CountryModel>() { model };
+                }
+                else
+                {
+                    models.Countries.Add(model);
+                }
             }
 
             return View(models);
