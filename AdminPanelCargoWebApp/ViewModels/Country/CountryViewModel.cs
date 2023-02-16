@@ -5,6 +5,6 @@ namespace AdminPanelCargoWebApp.ViewModels.Country
 {
     public class CountryViewModel
     {
-        public List<CountryModel> Countries { get; set; }
+        public IList<CountryModel> Countries { get; set; }
     }
 }

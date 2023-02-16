@@ -1,45 +1,128 @@
 ﻿using AdminPanelCargoWebApp.Models;
 using AdminPanelCargoWebApp.ViewModels.Country;
 using Cargo.Core.DataAccessLayer.Abstract;
+using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace AdminPanelCargoWebApp.Controllers
 {
     public class CountryController : Controller
     {
-        private readonly ICountryRepository _countryRepository;
+        private const string _dateTimeFormat = "dd.MM.yy HH:mm:ss";
 
-        public CountryController(ICountryRepository countryRepository)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CountryController(IUnitOfWork unitOfWork)
         {
-            _countryRepository = countryRepository;
+            _unitOfWork = unitOfWork;
         }
 
+        [TempData]
+        public string Message { get; set; }
+
         public IActionResult Index()
-        {
-            var countries = _countryRepository.GetAll();
+        {            
+            var countries = _unitOfWork.CountryRepository.GetAll();
 
             var models = new CountryViewModel();
 
-            foreach (var country in countries)
+            if (countries.Count != 0)
             {
-                var model = new CountryModel
+                foreach (var country in countries)
                 {
-                    Name = country.Name,
-                    CreationDateTime = country.CreationDateTime
-                };
+                    var model = new CountryModel
+                    {
+                        Id = country.Id,
+                        Name = country.Name,
+                        CreationDateTime = country.CreationDateTime.ToString(_dateTimeFormat)
+                    };
 
-                if (models.Countries is null)
-                {
-                    models.Countries = new List<CountryModel>() { model };
+                    if (models.Countries is null)
+                    {
+                        models.Countries = new List<CountryModel>() { model };                       
+                    }
+                    else
+                    {
+                        models.Countries.Add(model);
+                    }
                 }
-                else
-                {
-                    models.Countries.Add(model);
-                }
-            }
+            }                  
+
+            ViewBag.Message = Message;
 
             return View(models);
+        }
+
+        [HttpGet]
+        public IActionResult Update(int countryId)
+        {
+            var country = _unitOfWork.CountryRepository.Get(countryId);
+
+            var model = new CountryModel
+            {
+                Id = country.Id,
+                Name = country.Name,
+                CreationDateTime = country.CreationDateTime.ToString(_dateTimeFormat)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Update(CountryModel model)
+        {
+            var country = new Country
+            {
+                Id = model.Id,
+                Name = model.Name,
+                CreationDateTime = DateTime.ParseExact(model.CreationDateTime, _dateTimeFormat, CultureInfo.InvariantCulture)
+            };
+
+            _unitOfWork.CountryRepository.Update(country);
+
+            Message = "Successfully Updated!";
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int countryId)
+        {
+            var country = _unitOfWork.CountryRepository.Get(countryId);
+
+            if (country != null)
+            {
+                _unitOfWork.CountryRepository.Delete(countryId);
+
+                Message = "Successfully Deleted!";
+            }            
+
+            return RedirectToAction("Index");
+        }    
+
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Add(CountryModel model)
+        {
+            var country = new Country
+            {
+                Name = model.Name,
+                CreationDateTime = DateTime.Now
+            };
+
+            _unitOfWork.CountryRepository.Add(country);
+
+            Message = "Successfully Added!";
+
+            return RedirectToAction("Index");
         }
     }
 }

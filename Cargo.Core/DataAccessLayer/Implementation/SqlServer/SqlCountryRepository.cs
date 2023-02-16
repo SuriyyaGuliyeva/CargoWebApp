@@ -18,7 +18,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into countries (name, creationDateTime) values(@name, @creationDateTime)";
+                string query = "insert into countries (name, creationDateTime, isDeleted) values(@name, @creationDateTime, @isDeleted)";
 
                 con.Open();
 
@@ -85,7 +85,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "select * from countries where isDeleted = 0";
+                string query = "select * from countries where isDeleted = 0 order by name";
 
                 con.Open();
 
@@ -93,7 +93,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var reader = cmd.ExecuteReader();
 
-                List<Country> countries = new List<Country>();
+                IList<Country> countries = new List<Country>();
 
                 while (reader.Read())
                 {
@@ -115,7 +115,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update countries set name = @name, creationDateTime = @creationDateTime where id = @id and isDeleted = 0";
+                string query = "update countries set name = @name, creationDateTime = @creationDateTime where id = @id";
 
                 con.Open();
 
@@ -124,6 +124,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("id", country.Id);
                 cmd.Parameters.AddWithValue("name", country.Name);
                 cmd.Parameters.AddWithValue("creationDateTime", country.CreationDateTime);
+                cmd.Parameters.AddWithValue("isDeleted", country.IsDeleted);
 
                 int result = cmd.ExecuteNonQuery();
 

@@ -7,34 +7,91 @@
 }
 
 <div class="dataContainer mb-3 mt-3">
-    <h1 style="text-align:center;">List of Countries</h1>
+    <h2 class="text-center text-primary"><i>List of Countries</i></h2>
 
-    <table id="example" class="table table-striped table-bordered text-center w-100">
+    <a asp-action="Add" class="btn btn-primary mb-3">Add Country</a>
+
+    <table id="example" class="table table-striped table-bordered table-hover text-center w-100">
         <thead>
             <tr>
-                <th>No</th>
-                <th>Name</th>
-                <th>Created Date/Time</th>      
+                <th>Country No</th>
+                <th>Country Name</th>
+                <th>Created Date/Time</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
         <tbody>
-            @foreach (var item in Model.Countries)
+            @if (Model.Countries != null)
             {
-                <tr>
-                    <td>@(count++)</td>
-                    <td>@item.Name</td>
-                    <td>@item.CreationDateTime</td>
-                    <td>
-                        <a asp-action="" class="btn btn-warning">Edit</a>
-                    </td>
-                     <td>
-                         <a asp-action="" class="btn btn-danger">Delete</a>
-                    </td>
+                foreach (var country in Model.Countries)
+                {
+                    <tr>
+                        <td>@(count++)</td>
+                        <td>@country.Name</td>
+                        <td>@country.CreationDateTime</td>
+                        <td>
+                            <a asp-action="Update" asp-route-countryId="@country.Id" class="btn btn-warning">Update</a>
+                            <a href="#" data-id="@country.Id" data-target="#DeleteRecord" data-toggle="modal"
+                               class="btn btn-danger delete">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="position-relative">
+                    <td class="font-weight-bold text-danger text-left position-absolute w-100">List is Empty!</td>
                 </tr>
             }
         </tbody>
-    </table> 
+    </table>
 
-    <a asp-action="" class="btn btn-primary">Add</a>
+    @if (ViewBag.Message != null)
+    {
+        <p class="font-weight-bold text-danger" style="margin-top: 60px;">@ViewBag.Message</p>
+    }
+
+    <!-- Modal for Delete Confirmation -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="DeleteRecord">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Country Delete Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="text-danger font-weight-bold">Do you want to delete this record?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <form method="get" asp-controller="Country" asp-action="Delete">
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+     $(document).ready(function () {
+        $('table .delete').on('click', function () {
+            var id = $(this).data("id");
+
+            $.ajax({
+                type: 'GET',
+                url: 'Country/Delete/',
+                data: { "countryId": id }
+            })
+        });
+    });
+</script>
