@@ -26,33 +26,25 @@ namespace Cargo.AdminPanel.Controllers
         {
             var countries = _unitOfWork.CountryRepository.GetAll();
 
-            var models = new CountryViewModel();
+            var viewModel = new CountryViewModel();
 
-            if (countries.Count != 0)
+            viewModel.Countries = new List<CountryModel>();
+
+            foreach (var country in countries)
             {
-                foreach (var country in countries)
+                var model = new CountryModel
                 {
-                    var model = new CountryModel
-                    {
-                        Id = country.Id,
-                        Name = country.Name,
-                        CreationDateTime = country.CreationDateTime.ToString(_dateTimeFormat)
-                    };
+                    Id = country.Id,
+                    Name = country.Name,
+                    CreationDateTime = country.CreationDateTime.ToString(_dateTimeFormat)
+                };
 
-                    if (models.Countries is null)
-                    {
-                        models.Countries = new List<CountryModel>() { model };
-                    }
-                    else
-                    {
-                        models.Countries.Add(model);
-                    }
-                }
+                viewModel.Countries.Add(model);
             }
 
             ViewBag.Message = Message;
 
-            return View(models);
+            return View(viewModel);
         }
 
         [HttpGet]
