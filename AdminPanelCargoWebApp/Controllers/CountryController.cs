@@ -95,10 +95,10 @@ namespace AdminPanelCargoWebApp.Controllers
 
             if (country != null)
             {
-                _unitOfWork.CountryRepository.Delete(countryId);
+                _unitOfWork.CountryRepository.Delete(countryId);                
+            }
 
-                Message = "Successfully Deleted!";
-            }            
+            Message = "Successfully Deleted!";
 
             return RedirectToAction("Index");
         }    

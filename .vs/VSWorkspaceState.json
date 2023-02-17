@@ -3,11 +3,13 @@
     "",
     "\\AdminPanelCargoWebApp",
     "\\AdminPanelCargoWebApp\\Controllers",
+    "\\AdminPanelCargoWebApp\\Views",
+    "\\AdminPanelCargoWebApp\\Views\\Country",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer"
   ],
-  "SelectedNode": "\\AdminPanelCargoWebApp\\Controllers\\CountryController.cs",
+  "SelectedNode": "\\AdminPanelCargoWebApp\\Views\\Country\\Index.cshtml",
   "PreviewInSolutionExplorer": false
 }
