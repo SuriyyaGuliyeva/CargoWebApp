@@ -23,7 +23,7 @@
         </thead>
 
         <tbody>
-            @if (Model.Countries != null)
+            @if (Model.Countries.Count > 0)
             {
                 foreach (var country in Model.Countries)
                 {
