@@ -2,14 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\AdminPanelCargoWebApp",
-    "\\AdminPanelCargoWebApp\\Controllers",
-    "\\AdminPanelCargoWebApp\\Views",
-    "\\AdminPanelCargoWebApp\\Views\\Country",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer"
   ],
-  "SelectedNode": "\\AdminPanelCargoWebApp\\Views\\Country\\Index.cshtml",
+  "SelectedNode": "\\CargoWebApplication.sln",
   "PreviewInSolutionExplorer": false
 }

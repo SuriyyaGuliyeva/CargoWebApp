@@ -14,6 +14,7 @@ namespace Cargo.AdminPanel.Controllers
         private const string _dateTimeFormat = "dd.MM.yy HH:mm:ss";
 
         private readonly IUnitOfWork _unitOfWork;
+
         public CountryController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -26,7 +27,7 @@ namespace Cargo.AdminPanel.Controllers
         {
             var countries = _unitOfWork.CountryRepository.GetAll();
 
-            var models = new CountryViewModel();
+            var models = new CountryViewModel();            
 
             if (countries.Count != 0)
             {
@@ -52,7 +53,7 @@ namespace Cargo.AdminPanel.Controllers
 
             ViewBag.Message = Message;
 
-            return View(models);
+            return View(models);            
         }
 
         [HttpGet]
