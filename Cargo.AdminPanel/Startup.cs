@@ -1,6 +1,4 @@
 using Cargo.Core;
-using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.DataAccessLayer.Implementation.SqlServer;
 using Cargo.Core.Domain.Enums;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace AdminPanelCargoWebApp
+namespace Cargo.AdminPanel
 {
     public class Startup
     {
@@ -31,12 +29,12 @@ namespace AdminPanelCargoWebApp
 
             string dbNameValue = configuration.GetSection("VendorTypes").GetSection("VendorType").Value;
 
-            string connectionString = configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;            
+            string connectionString = configuration.GetSection("ConnectionStrings").GetSection("ConnectionString").Value;
 
-            services.AddTransient<IUnitOfWork>(serviceProvider =>
+            services.AddTransient(serviceProvider =>
             {
                 return DbFactory.Create(Enum.Parse<VendorTypes>(dbNameValue), connectionString);
-            });            
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

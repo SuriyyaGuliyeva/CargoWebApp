@@ -1,13 +1,10 @@
-﻿using AdminPanelCargoWebApp.Models;
+﻿using Cargo.AdminPanel.Models;
+using Cargo.AdminPanel.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace AdminPanelCargoWebApp.Controllers
+namespace Cargo.AdminPanel.Controllers
 {
     public class HomeController : Controller
     {

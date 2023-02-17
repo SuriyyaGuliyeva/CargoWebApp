@@ -1,5 +1,5 @@
-﻿using AdminPanelCargoWebApp.Models;
-using AdminPanelCargoWebApp.ViewModels.Country;
+﻿using Cargo.AdminPanel.Models;
+using Cargo.AdminPanel.ViewModels.Country;
 using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -7,14 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace AdminPanelCargoWebApp.Controllers
+namespace Cargo.AdminPanel.Controllers
 {
     public class CountryController : Controller
     {
         private const string _dateTimeFormat = "dd.MM.yy HH:mm:ss";
 
         private readonly IUnitOfWork _unitOfWork;
-
         public CountryController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -24,7 +23,7 @@ namespace AdminPanelCargoWebApp.Controllers
         public string Message { get; set; }
 
         public IActionResult Index()
-        {            
+        {
             var countries = _unitOfWork.CountryRepository.GetAll();
 
             var models = new CountryViewModel();
@@ -42,14 +41,14 @@ namespace AdminPanelCargoWebApp.Controllers
 
                     if (models.Countries is null)
                     {
-                        models.Countries = new List<CountryModel>() { model };                       
+                        models.Countries = new List<CountryModel>() { model };
                     }
                     else
                     {
                         models.Countries.Add(model);
                     }
                 }
-            }                  
+            }
 
             ViewBag.Message = Message;
 
@@ -95,13 +94,13 @@ namespace AdminPanelCargoWebApp.Controllers
 
             if (country != null)
             {
-                _unitOfWork.CountryRepository.Delete(countryId);                
+                _unitOfWork.CountryRepository.Delete(countryId);
             }
 
             Message = "Successfully Deleted!";
 
             return RedirectToAction("Index");
-        }    
+        }
 
         [HttpGet]
         public IActionResult Add()

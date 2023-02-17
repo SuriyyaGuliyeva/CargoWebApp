@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AdminPanelCargoWebApp.Models
+namespace Cargo.AdminPanel.Models
 {
     public class CountryModel
     {

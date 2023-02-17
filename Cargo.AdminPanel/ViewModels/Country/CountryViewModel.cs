@@ -1,7 +1,7 @@
-﻿using AdminPanelCargoWebApp.Models;
+﻿using Cargo.AdminPanel.Models;
 using System.Collections.Generic;
 
-namespace AdminPanelCargoWebApp.ViewModels.Country
+namespace Cargo.AdminPanel.ViewModels.Country
 {
     public class CountryViewModel
     {
