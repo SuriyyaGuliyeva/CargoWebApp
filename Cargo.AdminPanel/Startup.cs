@@ -1,3 +1,5 @@
+using Cargo.AdminPanel.Services.Abstract;
+using Cargo.AdminPanel.Services.Implementation;
 using Cargo.Core;
 using Cargo.Core.Domain.Enums;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +24,7 @@ namespace Cargo.AdminPanel
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+               //.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());            
 
             var configuration = new ConfigurationBuilder()
                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
@@ -35,6 +38,8 @@ namespace Cargo.AdminPanel
             {
                 return DbFactory.Create(Enum.Parse<VendorTypes>(dbNameValue), connectionString);
             });
+
+            services.AddTransient<ICountryService, CountryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

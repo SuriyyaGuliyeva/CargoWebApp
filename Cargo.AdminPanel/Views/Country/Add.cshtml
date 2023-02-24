@@ -1,25 +1,30 @@
 ﻿@model CountryModel
 
-<form asp-controller="Country" asp-action="Add" class="form-group"> 
+<form asp-controller="Country" asp-action="Add" class="form-group">
     <h2 class="text-center text-primary"><i>Add New Country</i></h2>
 
     <div class="form-group">
         <label asp-for="Name" class="mr-sm-2">Name:</label>
         <input asp-for="Name" class="form-control mb-2 mr-sm-2" />
-    </div>    
-
-    <div class="form-group">
-        <label asp-for="CreationDateTime" class="mr-sm-2">Created Date/Time:</label>
-        <input asp-for="CreationDateTime" class="form-control mb-2 mr-sm-2" />
+        <span asp-validation-for="Name" class="text-danger font-weight-bold"></span>
     </div>
 
-     @{
-        if(Model != null && Model.Id > 0)
+    @{
+        if (Model != null && Model.Id > 0)
         {
-            <input type="hidden" value="@Model.Id" name="Id" />    
-        }        
-    }        
+            <input type="hidden" value="@Model.Id" name="Id" />
+        }
+
+        if (ViewBag.IsExistName != null)
+        {
+            <p class="font-weight-bold text-danger">@ViewBag.IsExistName</p>
+        }
+    }
 
     <a asp-action="Index" class="btn btn-dark">Back</a>
     <button type="submit" class="btn btn-primary">Add</button>
 </form>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

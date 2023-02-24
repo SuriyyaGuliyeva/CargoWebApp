@@ -74,7 +74,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
                     country.Name = reader.GetString(reader.GetOrdinal("Name"));
                     country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));                              
+                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
                 }
 
                 return country;
@@ -132,6 +132,38 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 {
                     // do something
                 }
+            }
+        }
+
+        public string GetByName(string name)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select * from countries where name = @name and isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("name", name);
+
+                var reader = cmd.ExecuteReader();
+
+                Country country = null;
+
+                if (reader.Read())
+                {
+                    country = new Country();
+
+                    country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    country.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
+                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                }
+
+                if (country == null)
+                    return string.Empty;
+
+                return country.Name;
             }
         }
     }

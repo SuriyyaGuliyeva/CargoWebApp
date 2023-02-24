@@ -1,47 +1,26 @@
 ﻿using Cargo.AdminPanel.Models;
+using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels.Country;
-using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace Cargo.AdminPanel.Controllers
 {
     public class CountryController : Controller
     {
-        private const string _dateTimeFormat = "dd.MM.yy HH:mm:ss";
+        private readonly ICountryService _countryService;
 
-        private readonly IUnitOfWork _unitOfWork;
-
-        public CountryController(IUnitOfWork unitOfWork)
+        public CountryController(ICountryService countryService)
         {
-            _unitOfWork = unitOfWork;
+            _countryService = countryService;
         }
 
         [TempData]
         public string Message { get; set; }
 
         public IActionResult Index()
-        {
-            var countries = _unitOfWork.CountryRepository.GetAll();
-
+        {          
             var viewModel = new CountryViewModel();
-
-            viewModel.Countries = new List<CountryModel>();
-
-            foreach (var country in countries)
-            {
-                var model = new CountryModel
-                {
-                    Id = country.Id,
-                    Name = country.Name,
-                    CreationDateTime = country.CreationDateTime.ToString(_dateTimeFormat)
-                };
-
-                viewModel.Countries.Add(model);
-            }
+            viewModel.Countries = _countryService.GetAll();
 
             ViewBag.Message = Message;
 
@@ -51,13 +30,12 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int countryId)
         {
-            var country = _unitOfWork.CountryRepository.Get(countryId);
+            var country = _countryService.Get(countryId);
 
             var model = new CountryModel
             {
                 Id = country.Id,
-                Name = country.Name,
-                CreationDateTime = country.CreationDateTime.ToString(_dateTimeFormat)
+                Name = country.Name
             };
 
             return View(model);
@@ -66,33 +44,26 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Update(CountryModel model)
         {
-            var country = new Country
+            if (!ModelState.IsValid || !IsExists(model))
             {
-                Id = model.Id,
-                Name = model.Name,
-                CreationDateTime = DateTime.ParseExact(model.CreationDateTime, _dateTimeFormat, CultureInfo.InvariantCulture)
-            };
+                return View(model);
+            }
 
-            _unitOfWork.CountryRepository.Update(country);
+            _countryService.Update(model);
 
             Message = "Successfully Updated!";
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         public IActionResult Delete(int countryId)
         {
-            var country = _unitOfWork.CountryRepository.Get(countryId);
-
-            if (country != null)
-            {
-                _unitOfWork.CountryRepository.Delete(countryId);
-            }
+            _countryService.Delete(countryId);
 
             Message = "Successfully Deleted!";
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
@@ -104,17 +75,29 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Add(CountryModel model)
         {
-            var country = new Country
+            if (!ModelState.IsValid || !IsExists(model))
             {
-                Name = model.Name,
-                CreationDateTime = DateTime.Now
-            };
+                return View(model);
+            }
 
-            _unitOfWork.CountryRepository.Add(country);
+            _countryService.Add(model);
 
             Message = "Successfully Added!";
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
+        }
+
+        public bool IsExists(CountryModel model)
+        {
+            string addedCountryName = _countryService.GetByName(model.Name);
+
+            if (model.Name.Equals(addedCountryName))
+            {
+                ViewBag.IsExistName = "This Country Name already exists!";
+                return false;
+            }
+
+            return true;
         }
     }
 }
