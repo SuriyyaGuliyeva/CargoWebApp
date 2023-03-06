@@ -2,6 +2,7 @@
 using Cargo.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -117,11 +118,22 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var reader = cmd.ExecuteReader();
 
-                List<Shop> shops = new List<Shop>();
+                List<Shop> shops = new List<Shop>();                
 
-                while(reader.Read())
+                while (reader.Read())
                 {
                     Shop shop = new Shop();
+
+                    //DataSet dataSet = new DataSet();
+                    //DataColumn shopId, countryId;
+                    ////gET COLUMNS AND CREATE THE CONSTRAINT    
+                    //shopId = dataSet.Tables["Shops"].Columns["Id"];
+                    //countryId = dataSet.Tables["Categories"].Columns["Id"];
+
+                    //ForeignKeyConstraint foreignKeyConstraint = new ForeignKeyConstraint("FK__Shops__CountryId__49C3F6B7", shopId, countryId);
+                    ////Setting Rule of constraint    
+                    //foreignKeyConstraint.DeleteRule = Rule.SetNull;
+                    //foreignKeyConstraint.UpdateRule = Rule.Cascade;
 
                     shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
                     shop.Name = reader.GetString(reader.GetOrdinal("Name"));
@@ -133,7 +145,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     shop.Country = new Country()
                     {
                         Id = shop.CountryId
-                    };
+                    };                  
                     shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
                     shop.Category = new Category()
                     {

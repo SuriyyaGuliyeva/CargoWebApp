@@ -40,6 +40,7 @@ namespace Cargo.AdminPanel
             });
 
             services.AddTransient<ICountryService, CountryService>();
+            services.AddTransient<IShopService, ShopService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
