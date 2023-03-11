@@ -23,7 +23,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into shops (Name, CreationDateTime, Link, Photo, CategoryId, CountryId) values (@Name, @CreationDateTime, @Link, @Photo, @CategoryId, @CountryId)";
+                string query = "insert into shops (Name, CreationDateTime, Link, IsDeleted, Photo, CountryId, CategoryId) values (@Name, @CreationDateTime, @Link, @IsDeleted, @Photo, @CountryId, @CategoryId)";
 
                 con.Open();
 
@@ -34,8 +34,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("Link", shop.Link);
                 cmd.Parameters.AddWithValue("Photo", shop.Photo);
                 cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
-                cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
                 cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
+                cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
 
                 cmd.ExecuteNonQuery();
             }
@@ -96,10 +96,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     {
                         Id = shop.CategoryId
                     };
-
-                    //GetFieldType
-                    //shop.Country.Name = reader.GetFieldType(reader.GetOrdinal("Country")).Name;
-                    //shop.Category.Name = reader.GetFieldType(reader.GetOrdinal("Category")).Name;
                 }
 
                 return shop;
@@ -118,22 +114,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var reader = cmd.ExecuteReader();
 
-                List<Shop> shops = new List<Shop>();                
+                List<Shop> shops = new List<Shop>();
 
                 while (reader.Read())
                 {
                     Shop shop = new Shop();
-
-                    //DataSet dataSet = new DataSet();
-                    //DataColumn shopId, countryId;
-                    ////gET COLUMNS AND CREATE THE CONSTRAINT    
-                    //shopId = dataSet.Tables["Shops"].Columns["Id"];
-                    //countryId = dataSet.Tables["Categories"].Columns["Id"];
-
-                    //ForeignKeyConstraint foreignKeyConstraint = new ForeignKeyConstraint("FK__Shops__CountryId__49C3F6B7", shopId, countryId);
-                    ////Setting Rule of constraint    
-                    //foreignKeyConstraint.DeleteRule = Rule.SetNull;
-                    //foreignKeyConstraint.UpdateRule = Rule.Cascade;
 
                     shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
                     shop.Name = reader.GetString(reader.GetOrdinal("Name"));
@@ -141,11 +126,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
                     shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
                     shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));                 
+                    shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
                     shop.Country = new Country()
                     {
                         Id = shop.CountryId
-                    };                  
+                    };
                     shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
                     shop.Category = new Category()
                     {
@@ -164,7 +149,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             using (var con = new SqlConnection(_connectionString))
             {
                 string query = "update shops set name = @name, link = @link, photo = @photo, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @id and IsDeleted = 0";
-
+                
                 con.Open();
 
                 var cmd = new SqlCommand(query, con);

@@ -1,6 +1,6 @@
 using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.Services.Implementation;
-using Cargo.Core;
+using Cargo.Core.Factories;
 using Cargo.Core.Domain.Enums;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -17,6 +17,7 @@ namespace Cargo.AdminPanel.Controllers
         [TempData]
         public string Message { get; set; }
 
+        [HttpGet]
         public IActionResult Index()
         {          
             var viewModel = new CountryViewModel();

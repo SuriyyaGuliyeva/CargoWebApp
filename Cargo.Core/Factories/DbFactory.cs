@@ -1,9 +1,8 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.DataAccessLayer.Implementation.SqlServer;
 using Cargo.Core.Domain.Enums;
-using System;
 
-namespace Cargo.Core
+namespace Cargo.Core.Factories
 {
     public static class DbFactory
     {      

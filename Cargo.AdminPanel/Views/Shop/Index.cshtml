@@ -9,11 +9,16 @@
 
     <a asp-action="Add" class="btn btn-primary mb-3">Add Shop</a>
 
+    @if(ViewBag.Message != null)
+    {
+        <p class="font-weight-bold text-danger">@ViewBag.Message</p>
+    }  
+
     <table id="example" class="table table-striped table-bordered table-hover text-center w-100">
         <thead>
             <tr>
-                <th>Shop No</th>
-                <th>Shop Name</th>
+                <th>No</th>
+                <th>Name</th>
                 <th>Link</th>
                 <th>Country Name</th>
                 <th>Category Name</th>
@@ -36,10 +41,10 @@
                         <td>@shop.CategoryName</td>
                         <td>@shop.Photo</td>
                         <td>@shop.CreationDateTime</td>
-                        <td>
-                            <a asp-action="Update" asp-route-shopId="@shop.Id" class="btn btn-warning">Update</a>
+                        <td style="display: flex; border-bottom: none;">
+                            <a asp-action="Update" asp-route-shopId="@shop.Id" class="btn btn-warning mr-1">Update</a>
                             <a href="#" data-id="@shop.Id" data-target="#DeleteRecord" data-toggle="modal"
-                       class="btn btn-danger delete">
+                                class="btn btn-danger delete">
                                 Delete
                             </a>
                         </td>
