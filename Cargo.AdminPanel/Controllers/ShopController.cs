@@ -63,6 +63,11 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Add(ShopModel model)
         {
+            if (!ModelState.IsValid || !IsExists(model))
+            {
+                return View(model);
+            }
+
             _shopService.Add(model);
 
             Message = "Successfully Added!";
@@ -108,6 +113,11 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Update(ShopModel model)
         {
+            if (!ModelState.IsValid || !IsExists(model))
+            {
+                return View(model);
+            }
+
             _shopService.Update(model);
 
             return RedirectToAction(nameof(Index));
@@ -121,6 +131,20 @@ namespace Cargo.AdminPanel.Controllers
             Message = "Successfully Deleted!";
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public bool IsExists(ShopModel model)
+        {
+            string addedShopName = _shopService.GetByName(model.Name);
+            int addedCategoryId = _shopService.GetByCategoryId(model.Name);
+
+            if (model.Name.Equals(addedShopName) && model.SelectedCategory.Equals(addedCategoryId.ToString()))
+            {
+                ViewBag.IsExistName = "This shop name already exists in this category!";
+                return false;
+            }
+
+            return true;
         }
     }
 }

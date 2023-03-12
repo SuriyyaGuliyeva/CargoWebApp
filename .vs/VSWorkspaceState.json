@@ -2,15 +2,16 @@
   "ExpandedNodes": [
     "",
     "\\Cargo.AdminPanel",
-    "\\Cargo.AdminPanel\\Controllers",
     "\\Cargo.AdminPanel\\Views",
     "\\Cargo.AdminPanel\\Views\\Shared",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer",
+    "\\Cargo.Core\\Domain",
+    "\\Cargo.Core\\Domain\\Entities",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer\\SqlShopRepository.cs",
+  "SelectedNode": "\\Cargo.Core\\Domain\\Entities\\Shop.cs",
   "PreviewInSolutionExplorer": false
 }

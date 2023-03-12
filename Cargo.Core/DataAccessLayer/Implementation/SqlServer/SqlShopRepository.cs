@@ -1,12 +1,7 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
@@ -173,7 +168,67 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
         public string GetByName(string name)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select * from shops where name = @name and isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("name", name);
+
+                var reader = cmd.ExecuteReader();
+
+                Shop shop = null;
+
+                if (reader.Read())
+                {
+                    shop = new Shop();
+
+                    shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));                  
+                }
+
+                if (shop == null)
+                    return string.Empty;
+
+                return shop.Name;
+            }
+        }
+
+        public int GetByCategoryId(string name)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select * from shops where name = @name and isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("name", name);
+
+                var reader = cmd.ExecuteReader();
+
+                Shop shop = null;
+
+                if (reader.Read())
+                {
+                    shop = new Shop();
+
+                    shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
+                    shop.Category = new Category()
+                    {
+                        Id = shop.CategoryId
+                    };
+                }
+
+                if (shop == null)
+                    return 0;
+
+                return shop.CategoryId;
+            }
         }
     }
 }

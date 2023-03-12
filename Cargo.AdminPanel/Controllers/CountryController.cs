@@ -94,7 +94,7 @@ namespace Cargo.AdminPanel.Controllers
 
             if (model.Name.Equals(addedCountryName))
             {
-                ViewBag.IsExistName = "This Country Name already exists!";
+                ViewBag.IsExistName = "This country name already exists!";
                 return false;
             }
 

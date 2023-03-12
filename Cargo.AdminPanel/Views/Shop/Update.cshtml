@@ -8,7 +8,7 @@
         <input asp-for="Name" class="form-control mb-2 mr-sm-2" />
     </div>
 
-     <div class="form-group">
+    <div class="form-group">
         <label asp-for="Link" class="mr-sm-2">Link:</label>
         <input asp-for="Link" class="form-control mb-2 mr-sm-2" />
     </div>
@@ -21,7 +21,7 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="SelectedCategory" class="mr-sm-2">Select Category:</label> 
+        <label asp-for="SelectedCategory" class="mr-sm-2">Select Category:</label>
         <select asp-for="SelectedCategory" class="custom-select" asp-items="@Model.CategoriesSelectList" id="@Model.Id">
             <option value="noselectedvalue" selected disabled>Select Category</option>
         </select>
@@ -31,9 +31,18 @@
         if (Model != null && Model.Id > 0)
         {
             <input type="hidden" value="@Model.Id" name="Id" />
-        }       
+        }
+
+        if (ViewBag.IsExistName != null)
+        {
+            <p class="font-weight-bold text-danger">@ViewBag.IsExistName</p>
+        }
     }
 
     <a asp-action="Index" class="btn btn-dark">Back</a>
     <button type="submit" class="btn btn-warning">Update</button>
 </form>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

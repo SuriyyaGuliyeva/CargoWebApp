@@ -24,6 +24,11 @@ namespace Cargo.AdminPanel.Services.Implementation
             var selectedCountry = model.SelectedCountry;
             var selectedCategory = model.SelectedCategory;
 
+            if (model.Link == null)
+            {
+                model.Link = string.Empty;
+            }
+
             var shop = new Shop
             {
                 Name = model.Name,
@@ -100,17 +105,31 @@ namespace Cargo.AdminPanel.Services.Implementation
             }
 
             return viewModel.Shops;
-        }
+        }     
 
         public string GetByName(string name)
         {
-            throw new System.NotImplementedException();
+            string addedShopName = _unitOfWork.ShopRepository.GetByName(name);
+
+            return addedShopName;
+        }
+
+        public int GetByCategoryId(string name)
+        {
+            int addedCategoryId = _unitOfWork.ShopRepository.GetByCategoryId(name);
+
+            return addedCategoryId;
         }
 
         public void Update(ShopModel model)
         {
             var selectedCountry = model.SelectedCountry;
             var selectedCategory = model.SelectedCategory;
+
+            if (model.Link == null)
+            {
+                model.Link = string.Empty;
+            }
 
             var shop = new Shop
             {
