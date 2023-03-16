@@ -1,6 +1,6 @@
 ﻿@model ShopModel
 
-<form asp-controller="Shop" asp-action="Add" class="form-group">
+<form asp-controller="Shop" asp-action="Add" enctype="multipart/form-data" class="form-group">
     <h2 class="text-center text-primary"><i>Add New Shop</i></h2>
 
     <div class="form-group">
@@ -12,6 +12,15 @@
     <div class="form-group">
         <label asp-for="Link" class="mr-sm-2">Link:</label>
         <input asp-for="Link" class="form-control mb-2 mr-sm-2" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CoverPhoto" class="mr-sm-2">Photo:</label>
+
+        <div class="custom-file">
+            <input type="file" asp-for="CoverPhoto" class="custom-file-input mb-2 mr-sm-2" id="customFile" />  
+            <label for="customFile" class="custom-file-label mr-sm-2">Choose Photo</label>
+        </div>       
     </div>
 
     <div class="form-group">

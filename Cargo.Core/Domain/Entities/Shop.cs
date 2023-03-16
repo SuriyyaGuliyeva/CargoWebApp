@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 
 namespace Cargo.Core.Domain.Entities
 {
@@ -9,7 +10,7 @@ namespace Cargo.Core.Domain.Entities
         public string Link { get; set; }
         public string Photo { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public DateTime CreationDateTime { get; set; } = DateTime.Now;
+        public DateTime CreationDateTime { get; set; } = DateTime.UtcNow;
         public int CountryId { get; set; }
         public Country Country { get; set; }
         public int CategoryId { get; set; }

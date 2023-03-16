@@ -39,7 +39,9 @@
                         <td><a href="@shop.Link" target="_blank" style="text-underline-offset: unset">@shop.Link</a></td>
                         <td>@shop.CountryName</td>
                         <td>@shop.CategoryName</td>
-                        <td>@shop.Photo</td>
+                        <td>
+                            <img src="@shop.CoverPhotoUrl" class="img-thumbnail" width="40" height="40" />
+                        </td>
                         <td>@shop.CreationDateTime</td>
                         <td style="display: flex; border-bottom: none;">
                             <a asp-action="Update" asp-route-shopId="@shop.Id" class="btn btn-warning mr-1">Update</a>

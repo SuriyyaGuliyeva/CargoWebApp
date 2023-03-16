@@ -55,7 +55,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         public Country Get(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
-            {
+            {               
                 string query = "select * from countries where id = @id and isDeleted = 0";
 
                 connection.Open();

@@ -58,7 +58,7 @@ namespace Cargo.AdminPanel.Controllers
             };
 
             return View(model);
-        }   
+        }
 
         [HttpPost]
         public IActionResult Add(ShopModel model)
@@ -78,19 +78,20 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int shopId)
         {
-            var shop = _shopService.Get(shopId);
+            var currentShopModel = _shopService.Get(shopId);
 
             var model = new ShopModel
             {
-                Id = shop.Id,
-                Name = shop.Name,
-                Link = shop.Link,
-                Photo = shop.Photo,
-                CountryName = shop.CountryName
+                Id = currentShopModel.Id,
+                Name = currentShopModel.Name,
+                Link = currentShopModel.Link,
+                CoverPhoto = currentShopModel.CoverPhoto,
+                CoverPhotoUrl = currentShopModel.CoverPhotoUrl,
+                CountryName = currentShopModel.CountryName
             };
 
             var countries = _unitOfWork.CountryRepository.GetAll();
-            var categories = _unitOfWork.CategoryRepository.GetAll();           
+            var categories = _unitOfWork.CategoryRepository.GetAll();
 
             model.CountriesSelectList = new List<SelectListItem>();
             model.CategoriesSelectList = new List<SelectListItem>();
@@ -113,7 +114,7 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Update(ShopModel model)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            if (!ModelState.IsValid) // || !IsExists(model)
             {
                 return View(model);
             }
@@ -136,15 +137,28 @@ namespace Cargo.AdminPanel.Controllers
         public bool IsExists(ShopModel model)
         {
             string addedShopName = _shopService.GetByName(model.Name);
-            int addedCategoryId = _shopService.GetByCategoryId(model.Name);
 
-            if (model.Name.Equals(addedShopName) && model.SelectedCategory.Equals(addedCategoryId.ToString()))
+            if (model.Name.Equals(addedShopName))
             {
-                ViewBag.IsExistName = "This shop name already exists in this category!";
+                ViewBag.IsExistName = "This shop name already exists!";
                 return false;
             }
 
             return true;
         }
+
+        //public bool IsExists(ShopModel model)
+        //{
+        //    string addedShopName = _shopService.GetByName(model.Name);
+        //    int addedCategoryId = _shopService.GetByCategoryId(model.Name);
+
+        //    if (model.Name.Equals(addedShopName) && model.SelectedCategory.Equals(addedCategoryId.ToString()))
+        //    {
+        //        ViewBag.IsExistName = "This shop name already exists in this category!";
+        //        return false;
+        //    }
+
+        //    return true;
+        //}
     }
 }

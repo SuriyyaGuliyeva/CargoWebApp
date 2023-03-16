@@ -144,7 +144,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             using (var con = new SqlConnection(_connectionString))
             {
                 string query = "update shops set name = @name, link = @link, photo = @photo, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @id and IsDeleted = 0";
-                
+
                 con.Open();
 
                 var cmd = new SqlCommand(query, con);
@@ -186,7 +186,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     shop = new Shop();
 
                     shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));                  
+                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));
                 }
 
                 if (shop == null)
