@@ -1,0 +1,9 @@
+﻿.shop-model-table td {
+    vertical-align: middle;
+}
+
+.shop-model-table td a,
+.shop-model-table td a:hover {
+    color: #000;
+    text-decoration: none;
+}

@@ -1,5 +1,9 @@
 ﻿@model ShopViewModel
 
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/css/style.css"  media="screen" />
+}
+
 @{
     int count = 1;
 }
@@ -9,10 +13,10 @@
 
     <a asp-action="Add" class="btn btn-primary mb-3">Add Shop</a>
 
-    @if(ViewBag.Message != null)
+    @if (ViewBag.Message != null)
     {
         <p class="font-weight-bold text-danger">@ViewBag.Message</p>
-    }  
+    }
 
     <table id="example" class="table table-striped table-bordered table-hover text-center w-100">
         <thead>
@@ -33,20 +37,31 @@
             {
                 foreach (var shop in Model.Shops)
                 {
-                    <tr>
-                        <td>@(count++)</td>
-                        <td>@shop.Name</td>
-                        <td><a href="@shop.Link" target="_blank" style="text-underline-offset: unset">@shop.Link</a></td>
-                        <td>@shop.CountryName</td>
-                        <td>@shop.CategoryName</td>
+                    <tr class="shop-model-table">
                         <td>
-                            <img src="@shop.CoverPhotoUrl" class="img-thumbnail" width="40" height="40" />
+                            <span>@(count++)</span>
                         </td>
-                        <td>@shop.CreationDateTime</td>
+                        <td>
+                            <span>@shop.Name</span>
+                        </td>
+                        <td><a href="@shop.Link" target="_blank">@shop.Link</a></td>
+                        <td>
+                            <span>@shop.CountryName</span>
+                        </td>
+                        <td>
+                            <span>@shop.CategoryName</span>
+                        </td>
+                        <td>
+                            <img src="@shop.CoverPhotoUrl" class="img-thumbnail" width="70" height="70" />
+                        </td>
+                        <td>
+                            <span>@shop.CreationDateTime</span>
+                        </td>
                         <td style="display: flex; border-bottom: none;">
                             <a asp-action="Update" asp-route-shopId="@shop.Id" class="btn btn-warning mr-1">Update</a>
+
                             <a href="#" data-id="@shop.Id" data-target="#DeleteRecord" data-toggle="modal"
-                                class="btn btn-danger delete">
+                       class="btn btn-danger delete">
                                 Delete
                             </a>
                         </td>

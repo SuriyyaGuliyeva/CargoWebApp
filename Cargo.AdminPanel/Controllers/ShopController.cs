@@ -87,7 +87,8 @@ namespace Cargo.AdminPanel.Controllers
                 Link = currentShopModel.Link,
                 CoverPhoto = currentShopModel.CoverPhoto,
                 CoverPhotoUrl = currentShopModel.CoverPhotoUrl,
-                CountryName = currentShopModel.CountryName
+                CountryName = currentShopModel.CountryName,
+                CategoryName = currentShopModel.CategoryName
             };
 
             var countries = _unitOfWork.CountryRepository.GetAll();
@@ -98,15 +99,20 @@ namespace Cargo.AdminPanel.Controllers
 
             foreach (var country in countries)
             {
-                model.CountriesSelectList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
+                if (model.CountryName == country.Name)
+                {
+                    model.CountriesSelectList.Add(new SelectListItem { Text = model.CountryName, Value = country.Id.ToString() });
+                }
+                else
+                {
+                    model.CountriesSelectList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
+                }                
             };
 
             foreach (var category in categories)
             {
-                model.CategoriesSelectList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
-            };
-
-            Message = "Successfully Updated!";
+                model.CategoriesSelectList.Add(new SelectListItem { Text = model.CategoryName, Value = category.Id.ToString() });
+            };           
 
             return View(model);
         }
@@ -120,6 +126,8 @@ namespace Cargo.AdminPanel.Controllers
             }
 
             _shopService.Update(model);
+
+            Message = "Successfully Updated!";
 
             return RedirectToAction(nameof(Index));
         }

@@ -164,8 +164,7 @@ namespace Cargo.AdminPanel.Services.Implementation
                 model.Link = string.Empty;
             }            
 
-            if (model.CoverPhoto != null)
-            {
+            
                 string folder = "images/";
                 folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
 
@@ -174,7 +173,7 @@ namespace Cargo.AdminPanel.Services.Implementation
                 string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
 
                 model.CoverPhoto.CopyTo(new FileStream(serverFolder, FileMode.Create));
-            }
+            
 
             var shop = new Shop
             {
