@@ -23,8 +23,7 @@ namespace Cargo.AdminPanel
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-               //.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());            
+            services.AddControllersWithViews();                    
 
             var configuration = new ConfigurationBuilder()
                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
@@ -61,6 +60,7 @@ namespace Cargo.AdminPanel
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

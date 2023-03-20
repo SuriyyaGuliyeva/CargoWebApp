@@ -5,12 +5,9 @@ using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Cargo.AdminPanel.Services.Implementation
 {
@@ -147,12 +144,12 @@ namespace Cargo.AdminPanel.Services.Implementation
             return addedShopName;
         }
 
-        public int GetByCategoryId(string name)
+        public int GetByCategoryId(string name, int categoryId)
         {
-            int addedCategoryId = _unitOfWork.ShopRepository.GetByCategoryId(name);
+            int addedCategoryId = _unitOfWork.ShopRepository.GetByCategoryId(name, categoryId);
 
             return addedCategoryId;
-        }
+        }  
 
         public void Update(ShopModel model)
         {

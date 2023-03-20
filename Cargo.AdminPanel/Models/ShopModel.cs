@@ -11,27 +11,27 @@ namespace Cargo.AdminPanel.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter a name!")]
-        [RegularExpression(@"^[a-zA-Z0-9_&\s]+$", ErrorMessage = "Please enter letters, digits or & _ symbols!")]
+        [MinLength(3, ErrorMessage = "Minimum Length must be 3!")]
+        [RegularExpression(@"[a-zA-Z0-9\\\-~!@#$%^*()_+{}:|""?`;',./[\]]+", ErrorMessage = "Please enter in the correct format!")]
         public string Name { get; set; }
         public string Link { get; set; }
         public string CountryName { get; set; }
-        public string CategoryName { get; set; }       
+        public string CategoryName { get; set; }
         public string CreationDateTime { get; set; }
 
         // Dropdown List for Country
         [Required(ErrorMessage = "Please enter a country name!")]
         public string SelectedCountry { get; set; }
-        public List<SelectListItem> CountriesSelectList { get; set; }
+        public List<SelectListItem> CountriesList { get; set; }
 
         // Dropdown List for Category
         [Required(ErrorMessage = "Please enter a category name!")]
         public string SelectedCategory { get; set; }
-        public List<SelectListItem> CategoriesSelectList { get; set; }
+        public List<SelectListItem> CategoriesList { get; set; }
 
-        /////////////////////
-        //public string Photo { get; set; }
-
-        [Display(Name="Choose the cover photo of the shop")]
+        // Upload and Display Cover Photo
+        [Display(Name = "Choose the cover photo of the shop")]
+        [Required(ErrorMessage = "Please upload cover photo!")]
         public IFormFile CoverPhoto { get; set; }
         public string CoverPhotoUrl { get; set; }
     }

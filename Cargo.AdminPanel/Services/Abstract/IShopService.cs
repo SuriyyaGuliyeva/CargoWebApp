@@ -11,6 +11,6 @@ namespace Cargo.AdminPanel.Services.Abstract
         IList<ShopModel> GetAll();
         ShopModel Get(int id);
         string GetByName(string name);
-        int GetByCategoryId(string name);
+        int GetByCategoryId(string name, int categoryId);
     }
 }

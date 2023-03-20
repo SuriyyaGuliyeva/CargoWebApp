@@ -44,17 +44,17 @@ namespace Cargo.AdminPanel.Controllers
 
             var model = new ShopModel();
 
-            model.CountriesSelectList = new List<SelectListItem>();
-            model.CategoriesSelectList = new List<SelectListItem>();
+            model.CountriesList = new List<SelectListItem>();
+            model.CategoriesList = new List<SelectListItem>();
 
             foreach (var country in countries)
             {
-                model.CountriesSelectList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
+                model.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
             };
 
             foreach (var category in categories)
             {
-                model.CategoriesSelectList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
+                model.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
             };
 
             return View(model);
@@ -94,25 +94,18 @@ namespace Cargo.AdminPanel.Controllers
             var countries = _unitOfWork.CountryRepository.GetAll();
             var categories = _unitOfWork.CategoryRepository.GetAll();
 
-            model.CountriesSelectList = new List<SelectListItem>();
-            model.CategoriesSelectList = new List<SelectListItem>();
+            model.CountriesList = new List<SelectListItem>();
+            model.CategoriesList = new List<SelectListItem>();
 
             foreach (var country in countries)
             {
-                if (model.CountryName == country.Name)
-                {
-                    model.CountriesSelectList.Add(new SelectListItem { Text = model.CountryName, Value = country.Id.ToString() });
-                }
-                else
-                {
-                    model.CountriesSelectList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
-                }                
+                model.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
             };
 
             foreach (var category in categories)
             {
-                model.CategoriesSelectList.Add(new SelectListItem { Text = model.CategoryName, Value = category.Id.ToString() });
-            };           
+                model.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
+            };
 
             return View(model);
         }
@@ -120,7 +113,7 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Update(ShopModel model)
         {
-            if (!ModelState.IsValid) // || !IsExists(model)
+            if (!ModelState.IsValid || !IsExists(model))
             {
                 return View(model);
             }
@@ -145,28 +138,15 @@ namespace Cargo.AdminPanel.Controllers
         public bool IsExists(ShopModel model)
         {
             string addedShopName = _shopService.GetByName(model.Name);
+            int addedCategoryId = _shopService.GetByCategoryId(model.Name, Int32.Parse(model.SelectedCategory));
 
-            if (model.Name.Equals(addedShopName))
+            if (model.Name.Equals(addedShopName) && model.SelectedCategory.Equals(addedCategoryId.ToString()))
             {
-                ViewBag.IsExistName = "This shop name already exists!";
+                ViewBag.IsExistName = "This shop name already exists in this category!";
                 return false;
             }
 
             return true;
         }
-
-        //public bool IsExists(ShopModel model)
-        //{
-        //    string addedShopName = _shopService.GetByName(model.Name);
-        //    int addedCategoryId = _shopService.GetByCategoryId(model.Name);
-
-        //    if (model.Name.Equals(addedShopName) && model.SelectedCategory.Equals(addedCategoryId.ToString()))
-        //    {
-        //        ViewBag.IsExistName = "This shop name already exists in this category!";
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
     }
 }

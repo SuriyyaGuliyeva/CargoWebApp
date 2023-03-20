@@ -196,16 +196,17 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public int GetByCategoryId(string name)
+        public int GetByCategoryId(string name, int categoryId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string query = "select * from shops where name = @name and isDeleted = 0";
+                string query = "select * from shops where name = @name and CategoryId = @categoryId and isDeleted = 0";
 
                 connection.Open();
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("name", name);
+                cmd.Parameters.AddWithValue("CategoryId", categoryId);
 
                 var reader = cmd.ExecuteReader();
 
