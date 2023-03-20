@@ -10,6 +10,6 @@ namespace Cargo.AdminPanel.Services.Abstract
         void Delete(int id);
         IList<CountryModel> GetAll();
         CountryModel Get(int id);
-        string GetByName(string name);
+        CountryModel GetByName(string name);
     }
 }

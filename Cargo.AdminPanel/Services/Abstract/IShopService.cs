@@ -10,7 +10,6 @@ namespace Cargo.AdminPanel.Services.Abstract
         void Delete(int id);
         IList<ShopModel> GetAll();
         ShopModel Get(int id);
-        string GetByName(string name);
-        int GetByCategoryId(string name, int categoryId);
+        ShopModel GetByCategoryId(string name, int categoryId);
     }
 }

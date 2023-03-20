@@ -5,6 +5,8 @@ using Cargo.AdminPanel.ViewModels.Country;
 using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Cargo.AdminPanel.Services.Implementation
 {
@@ -41,19 +43,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {            
             var country = _unitOfWork.CountryRepository.Get(id);
 
-            CountryModel model = null;
-
-            if (country != null)
-            {
-                model = new CountryModel
-                {
-                    Id = country.Id,
-                    Name = country.Name,
-                    CreationDateTime = country.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
-                };
-            }            
-
-            return model;
+            return Map(country);
         }
 
         public IList<CountryModel> GetAll()
@@ -66,12 +56,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             foreach (var country in countries)
             {
-                var model = new CountryModel
-                {
-                    Id = country.Id,
-                    Name = country.Name,
-                    CreationDateTime = country.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
-                };
+                var model = Map(country);
 
                 viewModel.Countries.Add(model);
             }
@@ -79,11 +64,11 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Countries;
         }
 
-        public string GetByName(string name)
+        public CountryModel GetByName(string name)
         {
-            string addedCountryName = _unitOfWork.CountryRepository.GetByName(name);
+            var country = _unitOfWork.CountryRepository.GetAll().FirstOrDefault(x=> x.Name == name);
 
-            return addedCountryName;
+            return Map(country);
         }
 
         public void Update(CountryModel model)
@@ -95,6 +80,21 @@ namespace Cargo.AdminPanel.Services.Implementation
             };
 
             _unitOfWork.CountryRepository.Update(country);
+        }
+
+        private CountryModel Map(Country country)
+        {
+            if (country == null)
+                return null;
+
+            var model = new CountryModel
+            {
+                Id = country.Id,
+                Name = country.Name,
+                CreationDateTime = country.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
+            };
+
+            return model;
         }
     }
 }

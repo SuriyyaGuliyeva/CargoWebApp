@@ -3,6 +3,6 @@
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
     public interface ICountryRepository : IGenericRepository<Country>
-    {        
+    {
     }
 }

@@ -42,29 +42,37 @@ namespace Cargo.AdminPanel.Controllers
             var countries = _unitOfWork.CountryRepository.GetAll();
             var categories = _unitOfWork.CategoryRepository.GetAll();
 
-            var model = new ShopModel();
+            var viewModel = new AddShopViewModel();
 
-            model.CountriesList = new List<SelectListItem>();
-            model.CategoriesList = new List<SelectListItem>();
+            viewModel.Shop = new ShopModel();
+            viewModel.CountriesList = new List<SelectListItem>();
+            viewModel.CategoriesList = new List<SelectListItem>();
 
             foreach (var country in countries)
             {
-                model.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
+                viewModel.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
             };
 
             foreach (var category in categories)
             {
-                model.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
+                viewModel.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Add(ShopModel model)
+        public IActionResult Add(AddShopViewModel viewModel)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            var model = viewModel.Shop;
+
+            if (ModelState.IsValid == false)
+                return View(model);
+
+            if (IsExists(model))
             {
+                ViewBag.IsExistName = "This shop name already exists in this category!";
+
                 return View(model);
             }
 
@@ -78,43 +86,44 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int shopId)
         {
-            var currentShopModel = _shopService.Get(shopId);
+            var model = _shopService.Get(shopId);
 
-            var model = new ShopModel
+            var viewModel = new AddShopViewModel()
             {
-                Id = currentShopModel.Id,
-                Name = currentShopModel.Name,
-                Link = currentShopModel.Link,
-                CoverPhoto = currentShopModel.CoverPhoto,
-                CoverPhotoUrl = currentShopModel.CoverPhotoUrl,
-                CountryName = currentShopModel.CountryName,
-                CategoryName = currentShopModel.CategoryName
+                Shop = model
             };
 
             var countries = _unitOfWork.CountryRepository.GetAll();
             var categories = _unitOfWork.CategoryRepository.GetAll();
 
-            model.CountriesList = new List<SelectListItem>();
-            model.CategoriesList = new List<SelectListItem>();
+            viewModel.CountriesList = new List<SelectListItem>();
+            viewModel.CategoriesList = new List<SelectListItem>();
 
             foreach (var country in countries)
             {
-                model.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
+                viewModel.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
             };
 
             foreach (var category in categories)
             {
-                model.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
+                viewModel.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Update(ShopModel model)
+        public IActionResult Update(AddShopViewModel viewModel)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            var model = viewModel.Shop;
+
+            if (ModelState.IsValid == false)
+                return View(model);
+
+            if (IsExists(model))
             {
+                ViewBag.IsExistName = "This shop name already exists in this category!";
+
                 return View(model);
             }
 
@@ -137,16 +146,10 @@ namespace Cargo.AdminPanel.Controllers
 
         public bool IsExists(ShopModel model)
         {
-            string addedShopName = _shopService.GetByName(model.Name);
-            int addedCategoryId = _shopService.GetByCategoryId(model.Name, Int32.Parse(model.SelectedCategory));
-
-            if (model.Name.Equals(addedShopName) && model.SelectedCategory.Equals(addedCategoryId.ToString()))
-            {
-                ViewBag.IsExistName = "This shop name already exists in this category!";
-                return false;
-            }
-
             return true;
+            //var shop = _shopService.GetByCategoryId(model.Name, int.Parse(model.SelectedCategory));
+
+            //return shop != null;
         }
     }
 }

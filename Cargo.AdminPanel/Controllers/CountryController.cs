@@ -21,6 +21,7 @@ namespace Cargo.AdminPanel.Controllers
         public IActionResult Index()
         {          
             var viewModel = new CountryViewModel();
+
             viewModel.Countries = _countryService.GetAll();
 
             ViewBag.Message = Message;
@@ -45,8 +46,12 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Update(CountryModel model)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            if (ModelState.IsValid == false)
+                return View(model);
+
+            if (IsExists(model))
             {
+                ViewBag.IsExistName = "This country name already exists!";
                 return View(model);
             }
 
@@ -76,8 +81,13 @@ namespace Cargo.AdminPanel.Controllers
         [HttpPost]
         public IActionResult Add(CountryModel model)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            if (ModelState.IsValid == false)
+                return View(model);
+
+            if(IsExists(model))
             {
+                ViewBag.IsExistName = "This country name already exists!";
+
                 return View(model);
             }
 
@@ -90,15 +100,9 @@ namespace Cargo.AdminPanel.Controllers
 
         public bool IsExists(CountryModel model)
         {
-            string addedCountryName = _countryService.GetByName(model.Name);
+            var country = _countryService.GetByName(model.Name);
 
-            if (model.Name.Equals(addedCountryName))
-            {
-                ViewBag.IsExistName = "This country name already exists!";
-                return false;
-            }
-
-            return true;
+            return country != null;
         }
     }
 }

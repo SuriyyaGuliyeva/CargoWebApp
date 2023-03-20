@@ -24,9 +24,6 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public void Add(ShopModel model)
         {            
-            var selectedCountry = model.SelectedCountry;
-            var selectedCategory = model.SelectedCategory;
-
             if (model.Link == null)
             {
                 model.Link = string.Empty;
@@ -49,8 +46,8 @@ namespace Cargo.AdminPanel.Services.Implementation
                 Name = model.Name,
                 Link = model.Link,
                 Photo = model.CoverPhotoUrl,
-                CountryId = Int32.Parse(selectedCountry),
-                CategoryId = Int32.Parse(selectedCategory)
+                CountryId = model.SelectedCountry.Id,
+                //CategoryId = int.Parse(selectedCategory) // TODO: use model.SelectedCategory.Id
             };
 
             _unitOfWork.ShopRepository.Add(shop);      
@@ -70,8 +67,8 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
 
-            var countryName = _unitOfWork.CountryRepository.Get(shop.Country.Id).Name;
-            var categoryName = _unitOfWork.CategoryRepository.Get(shop.Category.Id).Name;
+            var country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
+            var category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
 
             ShopModel model = null;
 
@@ -82,8 +79,8 @@ namespace Cargo.AdminPanel.Services.Implementation
                     Id = shop.Id,
                     Name = shop.Name,
                     Link = shop.Link,
-                    CountryName = countryName,
-                    CategoryName = categoryName,
+                    //SelectedCountry = country, // TODO: use countrymodel mapper
+                    //CategoryName = category, // TODO: use categorymodel mapper
                     CoverPhotoUrl = shop.Photo,
                     CreationDateTime = shop.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)                   
                 };
@@ -102,34 +99,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             foreach (var shop in shops)
             {
-                var countryName = string.Empty;
-
-                var country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
-
-                if (country != null)
-                {
-                    countryName = country.Name;
-                }
-
-                var categoryName = string.Empty;
-
-                var category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
-
-                if (category != null)
-                {
-                    categoryName = category.Name;
-                }
-
-                var model = new ShopModel
-                {
-                    Id = shop.Id,
-                    Name = shop.Name,
-                    Link = shop.Link,
-                    CountryName = countryName,
-                    CategoryName = categoryName,
-                    CoverPhotoUrl = shop.Photo,
-                    CreationDateTime = shop.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
-                };
+                var model = Map(shop);
 
                 viewModel.Shops.Add(model);
             }
@@ -137,40 +107,28 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Shops;
         }
 
-        public string GetByName(string name)
+        public ShopModel GetByCategoryId(string name, int categoryId)
         {
-            string addedShopName = _unitOfWork.ShopRepository.GetByName(name);
+            var shop = _unitOfWork.ShopRepository.GetByCategoryId(name, categoryId);
 
-            return addedShopName;
+            return Map(shop);
         }
-
-        public int GetByCategoryId(string name, int categoryId)
-        {
-            int addedCategoryId = _unitOfWork.ShopRepository.GetByCategoryId(name, categoryId);
-
-            return addedCategoryId;
-        }  
 
         public void Update(ShopModel model)
         {
-            var selectedCountry = model.SelectedCountry;
-            var selectedCategory = model.SelectedCategory;
-
             if (model.Link == null)
             {
                 model.Link = string.Empty;
-            }            
+            }
 
-            
-                string folder = "images/";
-                folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
+            string folder = "images/";
+            folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
 
-                model.CoverPhotoUrl = "/" + folder;
+            model.CoverPhotoUrl = "/" + folder;
 
-                string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+            string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
 
-                model.CoverPhoto.CopyTo(new FileStream(serverFolder, FileMode.Create));
-            
+            model.CoverPhoto.CopyTo(new FileStream(serverFolder, FileMode.Create));
 
             var shop = new Shop
             {
@@ -178,11 +136,30 @@ namespace Cargo.AdminPanel.Services.Implementation
                 Name = model.Name,
                 Link = model.Link,
                 Photo = model.CoverPhotoUrl,
-                CountryId = Int32.Parse(selectedCountry),
-                CategoryId = Int32.Parse(selectedCategory)
+                CountryId = model.SelectedCountry.Id,
+                //CategoryId = int.Parse(selectedCategory) / TODO: use model.SelectedCategory.Id
             };
 
             _unitOfWork.ShopRepository.Update(shop);
-        }               
+        }
+        
+        private ShopModel Map(Shop shop)
+        {
+            if (shop == null)
+                return null;
+
+            var model = new ShopModel
+            {
+                Id = shop.Id,
+                Name = shop.Name,
+                Link = shop.Link,
+                //SelectedCountry = shop.Country, // TODO: use CountryMapper
+                //SelectedCategory = shop.Category, // TODO: use CategoryMapper
+                CoverPhotoUrl = shop.Photo,
+                CreationDateTime = shop.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
+            };
+
+            return model;
+        }
     }
 }
