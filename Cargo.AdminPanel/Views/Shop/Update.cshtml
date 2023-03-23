@@ -26,11 +26,7 @@
 
     <div class="form-group">
         <label asp-for="SelectedCountry" class="mr-sm-2">Select Country:</label>
-        <select asp-for="SelectedCountry" class="custom-select" asp-items="@ViewBag.Countries" id="@Model.Id">
-            @foreach (var option in Model.CountriesList)
-            {
-                <option value="@option.Value">@option.Text</option>
-            }
+        <select asp-for="SelectedCountry" class="custom-select" asp-items="@Model.CountriesList" id="@Model.Id">            
             <option value="noselectedvalue" selected disabled>Select Country</option>
         </select>
         <span asp-validation-for="SelectedCountry" class="text-danger font-weight-bold"></span>
