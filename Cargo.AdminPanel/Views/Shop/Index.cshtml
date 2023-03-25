@@ -1,7 +1,7 @@
 ﻿@model ShopViewModel
 
 @section Styles {
-    <link rel="stylesheet" type="text/css" href="~/css/style.css"  media="screen" />
+<link rel="stylesheet" type="text/css" href="~/css/style.css" media="screen" />
 }
 
 @{
@@ -26,7 +26,7 @@
                 <th>Link</th>
                 <th>Country Name</th>
                 <th>Category Name</th>
-                <th>Photo</th>
+                @*<th>Photo</th>*@
                 <th>Created Date/Time</th>
                 <th>Actions</th>
             </tr>
@@ -44,16 +44,18 @@
                         <td>
                             <span>@shop.Name</span>
                         </td>
-                        <td><a href="@shop.Link" target="_blank">@shop.Link</a></td>
                         <td>
-                            <span>@shop.CountryName</span>
+                            <a href="@shop.Link" target="_blank">@shop.Link</a>
                         </td>
                         <td>
-                            <span>@shop.CategoryName</span>
+                            <span>@shop.SelectedCountry.Name</span>
                         </td>
                         <td>
+                            <span>@shop.SelectedCategory.Name</span>
+                        </td>
+                        @*<td>
                             <img src="@shop.CoverPhotoUrl" class="img-thumbnail" width="70" height="70" />
-                        </td>
+                            </td>*@
                         <td>
                             <span>@shop.CreationDateTime</span>
                         </td>

@@ -9,6 +9,5 @@ namespace Cargo.Core.DataAccessLayer.Abstract
         void Delete(int id);
         IList<T> GetAll();
         T Get(int id);
-        string GetByName(string name);
     }
 }

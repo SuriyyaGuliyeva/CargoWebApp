@@ -1,5 +1,5 @@
-﻿using Cargo.AdminPanel.Models;
-using Cargo.AdminPanel.Services.Abstract;
+﻿using Cargo.AdminPanel.Services.Abstract;
+using Cargo.AdminPanel.ViewModels;
 using Cargo.AdminPanel.ViewModels.Country;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,8 +19,9 @@ namespace Cargo.AdminPanel.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        {          
+        {
             var viewModel = new CountryViewModel();
+
             viewModel.Countries = _countryService.GetAll();
 
             ViewBag.Message = Message;
@@ -31,26 +32,26 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int countryId)
         {
-            var country = _countryService.Get(countryId);
+            var viewModel = _countryService.Get(countryId);         
 
-            var model = new CountryModel
-            {
-                Id = country.Id,
-                Name = country.Name
-            };
-
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Update(CountryModel model)
+        public IActionResult Update(AddCountryViewModel viewModel)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            var model = viewModel.Country;
+
+            if (ModelState.IsValid == false)
+                return View(viewModel);
+
+            if (_countryService.IsExists(model))
             {
-                return View(model);
+                ViewBag.IsExistName = "This country name already exists!";
+                return View(viewModel);
             }
 
-            _countryService.Update(model);
+            _countryService.Update(viewModel);
 
             Message = "Successfully Updated!";
 
@@ -74,31 +75,25 @@ namespace Cargo.AdminPanel.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(CountryModel model)
+        public IActionResult Add(AddCountryViewModel viewModel)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            var model = viewModel.Country;
+
+            if (ModelState.IsValid == false)
+                return View(viewModel);
+
+            if (_countryService.IsExists(model))
             {
-                return View(model);
+                ViewBag.IsExistName = "This country name already exists!";
+
+                return View(viewModel);
             }
 
-            _countryService.Add(model);
+            _countryService.Add(viewModel);
 
             Message = "Successfully Added!";
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public bool IsExists(CountryModel model)
-        {
-            string addedCountryName = _countryService.GetByName(model.Name);
-
-            if (model.Name.Equals(addedCountryName))
-            {
-                ViewBag.IsExistName = "This country name already exists!";
-                return false;
-            }
-
-            return true;
         }
     }
 }

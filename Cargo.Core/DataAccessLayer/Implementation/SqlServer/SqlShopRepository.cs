@@ -18,7 +18,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into shops (Name, CreationDateTime, Link, IsDeleted, Photo, CountryId, CategoryId) values (@Name, @CreationDateTime, @Link, @IsDeleted, @Photo, @CountryId, @CategoryId)";
+                string query = "insert into shops (Name, CreationDateTime, Link, IsDeleted, CountryId, CategoryId) values (@Name, @CreationDateTime, @Link, @IsDeleted, @CountryId, @CategoryId)";
 
                 con.Open();
 
@@ -27,7 +27,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("Name", shop.Name);
                 cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
                 cmd.Parameters.AddWithValue("Link", shop.Link);
-                cmd.Parameters.AddWithValue("Photo", shop.Photo);
+                //cmd.Parameters.AddWithValue("Photo", shop.Photo);
                 cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
                 cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
                 cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
@@ -69,31 +69,12 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var reader = cmd.ExecuteReader();
 
-                Shop shop = null;
-
                 if (reader.Read())
                 {
-                    shop = new();
-
-                    shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    shop.Link = reader.GetString(reader.GetOrdinal("Link"));
-                    shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
-                    shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
-                    shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
-                    shop.Country = new Country()
-                    {
-                        Id = shop.CountryId
-                    };
-                    shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
-                    shop.Category = new Category()
-                    {
-                        Id = shop.CategoryId
-                    };
+                    return GetFromReader(reader);
                 }
 
-                return shop;
+                return null;
             }
         }
 
@@ -113,24 +94,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 while (reader.Read())
                 {
-                    Shop shop = new Shop();
-
-                    shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    shop.Link = reader.GetString(reader.GetOrdinal("Link"));
-                    shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
-                    shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
-                    shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
-                    shop.Country = new Country()
-                    {
-                        Id = shop.CountryId
-                    };
-                    shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
-                    shop.Category = new Category()
-                    {
-                        Id = shop.CategoryId
-                    };
+                    var shop = GetFromReader(reader);                   
 
                     shops.Add(shop);
                 }
@@ -143,7 +107,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update shops set name = @name, link = @link, photo = @photo, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @id and IsDeleted = 0";
+                string query = "update shops set name = @name, link = @link, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @id and IsDeleted = 0";
 
                 con.Open();
 
@@ -152,7 +116,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("id", shop.Id);
                 cmd.Parameters.AddWithValue("name", shop.Name);
                 cmd.Parameters.AddWithValue("link", shop.Link);
-                cmd.Parameters.AddWithValue("photo", shop.Photo);
+                //cmd.Parameters.AddWithValue("photo", shop.Photo);
                 cmd.Parameters.AddWithValue("creationDateTime", shop.CreationDateTime);
                 cmd.Parameters.AddWithValue("countryId", shop.CountryId);
                 cmd.Parameters.AddWithValue("categoryId", shop.CategoryId);
@@ -166,7 +130,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public string GetByName(string name)
+        public Shop GetByName(string name)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -179,24 +143,16 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var reader = cmd.ExecuteReader();
 
-                Shop shop = null;
-
                 if (reader.Read())
                 {
-                    shop = new Shop();
-
-                    shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    return GetFromReader(reader);
                 }
 
-                if (shop == null)
-                    return string.Empty;
-
-                return shop.Name;
+                return null;
             }
         }
 
-        public int GetByCategoryId(string name, int categoryId)
+        public Shop GetByCategoryId(string name, int categoryId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -210,26 +166,71 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var reader = cmd.ExecuteReader();
 
-                Shop shop = null;
-
                 if (reader.Read())
                 {
-                    shop = new Shop();
-
-                    shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    shop.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
-                    shop.Category = new Category()
-                    {
-                        Id = shop.CategoryId
-                    };
+                    return GetFromReader(reader);
                 }
 
-                if (shop == null)
-                    return 0;
-
-                return shop.CategoryId;
+                return null;
             }
         }
+
+        public IList<Shop> GetAllWithJoinQuery()
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "select " +
+                    "sh.*," +
+                    "co.Name as CountryName," +
+                    "cat.Name as CategoryName " +
+                    "from shops as sh " +
+                    "join Countries as co " +
+                    "on sh.CountryId = co.Id " +
+                    "join Categories as cat " +
+                    "on sh.CategoryId = cat.Id " +
+                    "where sh.IsDeleted = 0";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+
+                var reader = cmd.ExecuteReader();
+
+                List<Shop> shops = new List<Shop>();
+
+                while (reader.Read())
+                {
+                    var shop = GetFromReader(reader);
+
+                    shops.Add(shop);
+                }
+
+                return shops;
+            }
+        }
+
+        private Shop GetFromReader(SqlDataReader reader)
+        {
+            Shop shop = new Shop();
+
+            shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+            shop.Name = reader.GetString(reader.GetOrdinal("Name"));
+            shop.Link = reader.GetString(reader.GetOrdinal("Link"));
+            //shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
+            shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+            shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
+            shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
+            shop.Country = new Country()
+            {
+                Id = shop.CountryId
+            };
+            shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
+            shop.Category = new Category()
+            {
+                Id = shop.CategoryId
+            };
+
+            return shop;
+        }      
     }
 }

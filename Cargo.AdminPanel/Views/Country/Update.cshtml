@@ -1,18 +1,18 @@
-﻿@model CountryModel
+﻿@model AddCountryViewModel
 
 <form asp-controller="Country" asp-action="Update" class="form-group">
-    <h2 class="text-center text-primary"><i>Update Country ID: @Model.Id</i></h2>
+    <h2 class="text-center text-primary"><i>Update Country ID: @Model.Country.Id</i></h2>
 
     <div class="form-group">
-        <label asp-for="Name" class="mr-sm-2">Name:</label>
-        <input asp-for="Name" class="form-control mb-2 mr-sm-2" />
-        <span asp-validation-for="Name" class="text-danger font-weight-bold"></span>
+        <label asp-for="Country.Name" class="mr-sm-2">Name:</label>
+        <input asp-for="Country.Name" class="form-control mb-2 mr-sm-2" />
+        <span asp-validation-for="Country.Name" class="text-danger font-weight-bold"></span>
     </div>
 
     @{
-        if (Model != null && Model.Id > 0)
+        if (Model.Country != null && Model.Country.Id > 0)
         {
-            <input type="hidden" value="@Model.Id" name="Id" />
+            <input type="hidden" value="@Model.Country.Id" name="Country.Id" />
         }
 
         if (ViewBag.IsExistName != null)

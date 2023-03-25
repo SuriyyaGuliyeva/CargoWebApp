@@ -1,9 +1,11 @@
 ﻿using Cargo.Core.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
     public interface IShopRepository : IGenericRepository<Shop>
     {
-        int GetByCategoryId(string name, int categoryId);
+        Shop GetByCategoryId(string name, int categoryId);
+        IList<Shop> GetAllWithJoinQuery();
     }
 }

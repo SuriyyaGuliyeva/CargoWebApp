@@ -1,28 +1,29 @@
-﻿using Cargo.AdminPanel.Constants;
+﻿using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
 using Cargo.AdminPanel.Services.Abstract;
+using Cargo.AdminPanel.ViewModels;
 using Cargo.AdminPanel.ViewModels.Country;
 using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.Domain.Entities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cargo.AdminPanel.Services.Implementation
 {
     public class CountryService : ICountryService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICountryMapper _mapper;
 
-        public CountryService(IUnitOfWork unitOfWork)
+        public CountryService(IUnitOfWork unitOfWork, ICountryMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public void Add(CountryModel model)
+        public void Add(AddCountryViewModel viewModel)
         {
-            var country = new Country
-            {
-                Name = model.Name
-            };
+            var model = viewModel.Country;
+            var country = _mapper.Map(model);
 
             _unitOfWork.CountryRepository.Add(country);
         }
@@ -37,23 +38,16 @@ namespace Cargo.AdminPanel.Services.Implementation
             }
         }
 
-        public CountryModel Get(int id)
+        public AddCountryViewModel Get(int id)
         {            
             var country = _unitOfWork.CountryRepository.Get(id);
 
-            CountryModel model = null;
+            var model = _mapper.Map(country);
 
-            if (country != null)
-            {
-                model = new CountryModel
-                {
-                    Id = country.Id,
-                    Name = country.Name,
-                    CreationDateTime = country.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
-                };
-            }            
+            var viewModel = new AddCountryViewModel();
+            viewModel.Country = model;
 
-            return model;
+            return viewModel;
         }
 
         public IList<CountryModel> GetAll()
@@ -66,12 +60,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             foreach (var country in countries)
             {
-                var model = new CountryModel
-                {
-                    Id = country.Id,
-                    Name = country.Name,
-                    CreationDateTime = country.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
-                };
+                var model = _mapper.Map(country);
 
                 viewModel.Countries.Add(model);
             }
@@ -79,22 +68,33 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Countries;
         }
 
-        public string GetByName(string name)
+        public CountryModel GetByName(string name)
         {
-            string addedCountryName = _unitOfWork.CountryRepository.GetByName(name);
+            var country = _unitOfWork.CountryRepository.GetAll().FirstOrDefault(x=> x.Name == name);
 
-            return addedCountryName;
+            var model = _mapper.Map(country);
+
+            return model;
         }
 
-        public void Update(CountryModel model)
+        public void Update(AddCountryViewModel viewModel)
         {
-            var country = new Country
-            {
-                Id = model.Id,
-                Name = model.Name
-            };
+            var model = viewModel.Country;
+            var country = _mapper.Map(model);
 
             _unitOfWork.CountryRepository.Update(country);
         }
+
+        public bool IsExists(CountryModel model)
+        {
+            var countryName = _unitOfWork.CountryRepository.GetByName(model.Name);
+
+            if (countryName == null)
+            {
+                return false;
+            }
+
+            return true;
+        }       
     }
 }

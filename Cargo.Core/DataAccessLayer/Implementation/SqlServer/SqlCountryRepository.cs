@@ -63,21 +63,14 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("id", id);
 
-                var reader = cmd.ExecuteReader();
-
-                Country country = null;
+                var reader = cmd.ExecuteReader();                
 
                 if (reader.Read())
-                {
-                    country = new Country();
-
-                    country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    country.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                {                   
+                    return GetFromReader(reader);
                 }
 
-                return country;
+                return null;
             }
         }
 
@@ -97,12 +90,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 while (reader.Read())
                 {
-                    Country country = new Country();
-
-                    country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    country.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                    var country = GetFromReader(reader);
 
                     countries.Add(country);
                 }
@@ -135,7 +123,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public string GetByName(string name)
+        public Country GetByName(string name)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -146,25 +134,27 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("name", name);
 
-                var reader = cmd.ExecuteReader();
-
-                Country country = null;
+                var reader = cmd.ExecuteReader();                             
 
                 if (reader.Read())
                 {
-                    country = new Country();
-
-                    country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    country.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+                    return GetFromReader(reader);
                 }
 
-                if (country == null)
-                    return string.Empty;
-
-                return country.Name;
+                return null;
             }
-        }      
+        }
+
+        private Country GetFromReader(SqlDataReader reader)
+        {
+            Country country = new Country();
+
+            country.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+            country.Name = reader.GetString(reader.GetOrdinal("Name"));
+            country.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
+            country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+
+            return country;
+        }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Cargo.AdminPanel.Models;
+﻿using Cargo.AdminPanel.Constants;
+using Cargo.AdminPanel.Models;
 using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -42,33 +42,89 @@ namespace Cargo.AdminPanel.Controllers
             var countries = _unitOfWork.CountryRepository.GetAll();
             var categories = _unitOfWork.CategoryRepository.GetAll();
 
-            var model = new ShopModel();
+            var viewModel = new AddShopViewModel();
 
-            model.CountriesList = new List<SelectListItem>();
-            model.CategoriesList = new List<SelectListItem>();
+            viewModel.Shop = new ShopModel();
+            viewModel.CountriesList = new List<SelectListItem>();
+            viewModel.CategoriesList = new List<SelectListItem>();
 
             foreach (var country in countries)
             {
-                model.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
+                viewModel.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
             };
 
             foreach (var category in categories)
             {
-                model.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
+                viewModel.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Add(ShopModel model)
+        public IActionResult Add(AddShopViewModel viewModel)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            var model = viewModel.Shop;            
+
+            // to get selected value from Dropdown List Country - START            
+            var selectedCountryValue = Request.Form["selectedCountry"].ToString();
+
+            if (selectedCountryValue.Equals(string.Empty))
             {
-                return View(model);
+                //ViewBag.IsExistName = "Please enter a country name!";
+
+                //return View(viewModel);
+            }
+            else
+            {
+                var country = _unitOfWork.CountryRepository.Get(Int32.Parse(selectedCountryValue));
+
+                var countryModel = new CountryModel
+                {
+                    Id = country.Id,
+                    Name = country.Name,
+                    CreationDateTime = country.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
+                };
+
+                model.SelectedCountry = countryModel;
+            }       
+            // to get selected value from Dropdown List Country - END
+
+            // to get selected value from Dropdown List Category - START
+            var selectedCategoryValue = Request.Form["selectedCategory"].ToString();
+
+            if (selectedCategoryValue.Equals(string.Empty))
+            {
+                //ViewBag.IsExistName = "Please enter a category name!";
+
+                //return View(viewModel);
+            }
+            else
+            {
+                var category = _unitOfWork.CategoryRepository.Get(Int32.Parse(selectedCategoryValue));
+
+                var categoryModel = new CategoryModel
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    CreationDateTime = category.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
+                };
+
+                model.SelectedCategory = categoryModel;
+            }
+            // to get selected value from Dropdown List Category - END
+            
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            if (_shopService.IsExists(model))
+            {
+                ViewBag.IsExistName = "This shop name already exists in this category!";
+
+                return View(viewModel);
             }
 
-            _shopService.Add(model);
+            _shopService.Add(viewModel);
 
             Message = "Successfully Added!";
 
@@ -78,45 +134,76 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int shopId)
         {
-            var currentShopModel = _shopService.Get(shopId);
+            var model = _shopService.Get(shopId);
 
-            var model = new ShopModel
+            var viewModel = new AddShopViewModel()
             {
-                Id = currentShopModel.Id,
-                Name = currentShopModel.Name,
-                Link = currentShopModel.Link,
-                CoverPhoto = currentShopModel.CoverPhoto,
-                CoverPhotoUrl = currentShopModel.CoverPhotoUrl,
-                CountryName = currentShopModel.CountryName,
-                CategoryName = currentShopModel.CategoryName
+                Shop = model
             };
 
             var countries = _unitOfWork.CountryRepository.GetAll();
             var categories = _unitOfWork.CategoryRepository.GetAll();
 
-            model.CountriesList = new List<SelectListItem>();
-            model.CategoriesList = new List<SelectListItem>();
+            viewModel.CountriesList = new List<SelectListItem>();
+            viewModel.CategoriesList = new List<SelectListItem>();
 
             foreach (var country in countries)
             {
-                model.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
+                viewModel.CountriesList.Add(new SelectListItem { Text = country.Name, Value = country.Id.ToString() });
             };
 
             foreach (var category in categories)
             {
-                model.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
+                viewModel.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Update(ShopModel model)
+        public IActionResult Update(AddShopViewModel viewModel)
         {
-            if (!ModelState.IsValid || !IsExists(model))
+            var model = viewModel.Shop;
+
+            if (ModelState.IsValid == false)
+                return View(model);
+
+            if (_shopService.IsExists(model))
             {
+                ViewBag.IsExistName = "This shop name already exists in this category!";
+
                 return View(model);
             }
+
+            // to get selected value from Dropdown List Country - START
+            var selectedCountryValue = Request.Form["selectedCountry"].ToString();
+
+            var country = _unitOfWork.CountryRepository.Get(Int32.Parse(selectedCountryValue));
+
+            var countryModel = new CountryModel
+            {
+                Id = country.Id,
+                Name = country.Name,
+                CreationDateTime = country.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
+            };
+
+            model.SelectedCountry = countryModel;
+            // to get selected value from Dropdown List Country - END
+
+            // to get selected value from Dropdown List Category - START
+            var selectedCategoryValue = Request.Form["selectedCategory"].ToString();
+
+            var category = _unitOfWork.CategoryRepository.Get(Int32.Parse(selectedCategoryValue));
+
+            var categoryModel = new CategoryModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                CreationDateTime = category.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
+            };
+
+            model.SelectedCategory = categoryModel;
+            // to get selected value from Dropdown List Category - END            
 
             _shopService.Update(model);
 
@@ -133,20 +220,6 @@ namespace Cargo.AdminPanel.Controllers
             Message = "Successfully Deleted!";
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public bool IsExists(ShopModel model)
-        {
-            string addedShopName = _shopService.GetByName(model.Name);
-            int addedCategoryId = _shopService.GetByCategoryId(model.Name, Int32.Parse(model.SelectedCategory));
-
-            if (model.Name.Equals(addedShopName) && model.SelectedCategory.Equals(addedCategoryId.ToString()))
-            {
-                ViewBag.IsExistName = "This shop name already exists in this category!";
-                return false;
-            }
-
-            return true;
         }
     }
 }

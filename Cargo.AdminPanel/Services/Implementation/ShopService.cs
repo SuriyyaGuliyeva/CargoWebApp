@@ -1,4 +1,5 @@
 ﻿using Cargo.AdminPanel.Constants;
+using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
 using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
@@ -14,46 +15,60 @@ namespace Cargo.AdminPanel.Services.Implementation
     public class ShopService : IShopService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _webHostEnvironment;        
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IShopMapper _mapper;
 
-        public ShopService(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public ShopService(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IShopMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _mapper = mapper;
         }
 
-        public void Add(ShopModel model)
-        {            
-            var selectedCountry = model.SelectedCountry;
-            var selectedCategory = model.SelectedCategory;
+        public void Add(AddShopViewModel viewModel)
+        {           
+            var model = viewModel.Shop;
 
             if (model.Link == null)
             {
                 model.Link = string.Empty;
             }
 
-            if (model.CoverPhoto != null)
-            {
-                string folder = "images/";
-                folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
+            //var base64String = string.Empty;
 
-                model.CoverPhotoUrl = "/" + folder;
+            //if (model.CoverPhoto != null)
+            //{
+            //    string folder = "images/";
+            //    folder += model.CoverPhoto.FileName;
 
-                string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+            //    model.CoverPhotoUrl = "/" + folder;               
 
-                model.CoverPhoto.CopyTo(new FileStream(serverFolder, FileMode.Create));
-            }
+            //    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+
+            //    var textBytes = Encoding.UTF8.GetBytes(model.CoverPhotoUrl);
+            //    base64String = Convert.ToBase64String(textBytes);
+
+            //    model.CoverPhotoUrl = base64String;
+
+            //    model.CoverPhoto.CopyTo(new FileStream(serverFolder, FileMode.Create));
+            //}
+
+            //var shop = _mapper.Map(model);
+
 
             var shop = new Shop
             {
                 Name = model.Name,
                 Link = model.Link,
-                Photo = model.CoverPhotoUrl,
-                CountryId = Int32.Parse(selectedCountry),
-                CategoryId = Int32.Parse(selectedCategory)
+                //Photo = model.CoverPhotoUrl
+                CountryId = model.SelectedCountry.Id,
+                CategoryId = model.SelectedCategory.Id
             };
 
-            _unitOfWork.ShopRepository.Add(shop);      
+            _unitOfWork.ShopRepository.Add(shop);
+
+            //var base64EncodedBytes = Convert.FromBase64String(base64String);
+            //model.CoverPhotoUrl = Encoding.UTF8.GetString(base64EncodedBytes);
         }
 
         public void Delete(int id)
@@ -70,23 +85,14 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
 
-            var countryName = _unitOfWork.CountryRepository.Get(shop.Country.Id).Name;
-            var categoryName = _unitOfWork.CategoryRepository.Get(shop.Category.Id).Name;
+            var country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
+            var category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
 
             ShopModel model = null;
 
             if (shop != null)
             {
-                model = new ShopModel
-                {
-                    Id = shop.Id,
-                    Name = shop.Name,
-                    Link = shop.Link,
-                    CountryName = countryName,
-                    CategoryName = categoryName,
-                    CoverPhotoUrl = shop.Photo,
-                    CreationDateTime = shop.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)                   
-                };
+                model = _mapper.Map(shop, country, category);
             }
 
             return model;
@@ -94,7 +100,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public IList<ShopModel> GetAll()
         {
-            var shops = _unitOfWork.ShopRepository.GetAll();
+            var shops = _unitOfWork.ShopRepository.GetAllWithJoinQuery();
 
             var viewModel = new ShopViewModel();
 
@@ -102,34 +108,10 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             foreach (var shop in shops)
             {
-                var countryName = string.Empty;
-
                 var country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
-
-                if (country != null)
-                {
-                    countryName = country.Name;
-                }
-
-                var categoryName = string.Empty;
-
                 var category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
 
-                if (category != null)
-                {
-                    categoryName = category.Name;
-                }
-
-                var model = new ShopModel
-                {
-                    Id = shop.Id,
-                    Name = shop.Name,
-                    Link = shop.Link,
-                    CountryName = countryName,
-                    CategoryName = categoryName,
-                    CoverPhotoUrl = shop.Photo,
-                    CreationDateTime = shop.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
-                };
+                var model = _mapper.Map(shop, country, category);
 
                 viewModel.Shops.Add(model);
             }
@@ -137,52 +119,47 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Shops;
         }
 
-        public string GetByName(string name)
-        {
-            string addedShopName = _unitOfWork.ShopRepository.GetByName(name);
-
-            return addedShopName;
-        }
-
-        public int GetByCategoryId(string name, int categoryId)
-        {
-            int addedCategoryId = _unitOfWork.ShopRepository.GetByCategoryId(name, categoryId);
-
-            return addedCategoryId;
-        }  
-
         public void Update(ShopModel model)
         {
-            var selectedCountry = model.SelectedCountry;
-            var selectedCategory = model.SelectedCategory;
-
             if (model.Link == null)
             {
                 model.Link = string.Empty;
-            }            
+            }
 
-            
-                string folder = "images/";
-                folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
+            //string folder = "images/";
+            //folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
 
-                model.CoverPhotoUrl = "/" + folder;
+            //model.CoverPhotoUrl = "/" + folder;
 
-                string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+            //string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
 
-                model.CoverPhoto.CopyTo(new FileStream(serverFolder, FileMode.Create));
-            
+            //model.CoverPhoto.CopyTo(new FileStream(serverFolder, FileMode.Create));
+
+            //var shop = _mapper.Map(model);
 
             var shop = new Shop
             {
                 Id = model.Id,
                 Name = model.Name,
                 Link = model.Link,
-                Photo = model.CoverPhotoUrl,
-                CountryId = Int32.Parse(selectedCountry),
-                CategoryId = Int32.Parse(selectedCategory)
+                //Photo = model.CoverPhotoUrl,
+                CountryId = model.SelectedCountry.Id,
+                CategoryId = model.SelectedCategory.Id
             };
 
             _unitOfWork.ShopRepository.Update(shop);
-        }               
+        }       
+
+        public bool IsExists(ShopModel model)
+        {
+            var shopname = _unitOfWork.ShopRepository.GetByCategoryId(model.Name, model.SelectedCategory.Id);
+
+            if (shopname == null)
+            {
+                return false;
+            }
+
+            return true;
+        }       
     }
 }

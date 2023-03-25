@@ -1,15 +1,17 @@
 ﻿using Cargo.AdminPanel.Models;
+using Cargo.AdminPanel.ViewModels;
 using System.Collections.Generic;
 
 namespace Cargo.AdminPanel.Services.Abstract
 {
     public interface ICountryService
     {
-        void Add(CountryModel model);
-        void Update(CountryModel model);
+        void Add(AddCountryViewModel model);
+        void Update(AddCountryViewModel model);
         void Delete(int id);
         IList<CountryModel> GetAll();
-        CountryModel Get(int id);
-        string GetByName(string name);
+        AddCountryViewModel Get(int id);
+        bool IsExists(CountryModel model);
+        CountryModel GetByName(string name);
     }
 }

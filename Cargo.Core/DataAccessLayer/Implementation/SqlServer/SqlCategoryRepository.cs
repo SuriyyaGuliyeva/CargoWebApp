@@ -84,11 +84,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public string GetByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Update(Category t)
         {
             throw new NotImplementedException();
