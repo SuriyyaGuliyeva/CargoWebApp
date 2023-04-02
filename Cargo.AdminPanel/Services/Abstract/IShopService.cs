@@ -11,7 +11,8 @@ namespace Cargo.AdminPanel.Services.Abstract
         void Delete(int id);
         IList<ShopModel> GetAll();
         ShopModel Get(int id);
-        bool IsExists(ShopModel model);
+        bool IsExists(ShopModel model, CategoryModel selectedCategory, CountryModel selectedCountry);
+
         //ShopModel GetByCategoryId(string name, int categoryId);
     }
 }

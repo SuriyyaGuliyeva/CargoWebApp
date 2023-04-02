@@ -5,7 +5,7 @@ namespace Cargo.Core.DataAccessLayer.Abstract
 {
     public interface IShopRepository : IGenericRepository<Shop>
     {
-        Shop GetByCategoryId(string name, int categoryId);
+        Shop GetByCategoryId(string name, int categoryId, int countryId);
         IList<Shop> GetAllWithJoinQuery();
     }
 }

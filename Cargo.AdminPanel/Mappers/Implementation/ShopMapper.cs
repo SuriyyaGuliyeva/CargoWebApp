@@ -33,25 +33,27 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Link = shop.Link,
                 SelectedCountry = _countryMapper.Map(country),
                 SelectedCategory = _categoryMapper.Map(category),
-                //CoverPhotoUrl = shop.Photo,
+                CoverPhotoUrl = shop.Photo,
                 CreationDateTime = shop.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat)
             };
 
             return model;
         }
 
-        public Shop Map(ShopModel model)
+        public Shop Map(ShopModel model, string hashCodeImage)
         {
             if (model == null)
             {
                 return null;
-            }
+            }           
 
             var shop = new Shop
             {
+                Id = model.Id,
                 Name = model.Name,
                 Link = model.Link,
-                //Photo = model.CoverPhotoUrl,
+                Photo = model.CoverPhotoUrl, 
+                ImageHashCode = hashCodeImage,
                 CountryId = model.SelectedCountry.Id,
                 CategoryId = model.SelectedCategory.Id
             };

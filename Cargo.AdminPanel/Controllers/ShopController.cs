@@ -56,7 +56,7 @@ namespace Cargo.AdminPanel.Controllers
             foreach (var category in categories)
             {
                 viewModel.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
-            };
+            };     
 
             return View(viewModel);
         }
@@ -71,9 +71,9 @@ namespace Cargo.AdminPanel.Controllers
 
             if (selectedCountryValue.Equals(string.Empty))
             {
-                //ViewBag.IsExistName = "Please enter a country name!";
+                ViewBag.CheckEmptyOrNot = "Please enter a country name!";
 
-                //return View(viewModel);
+                return View(viewModel);
             }
             else
             {
@@ -95,7 +95,7 @@ namespace Cargo.AdminPanel.Controllers
 
             if (selectedCategoryValue.Equals(string.Empty))
             {
-                //ViewBag.IsExistName = "Please enter a category name!";
+                //ViewBag.CheckEmptyOrNot = "Please enter a category name!";
 
                 //return View(viewModel);
             }
@@ -117,7 +117,7 @@ namespace Cargo.AdminPanel.Controllers
             if (!ModelState.IsValid)
                 return View(viewModel);
 
-            if (_shopService.IsExists(model))
+            if (_shopService.IsExists(model, model.SelectedCategory, model.SelectedCountry))
             {
                 ViewBag.IsExistName = "This shop name already exists in this category!";
 
@@ -165,16 +165,6 @@ namespace Cargo.AdminPanel.Controllers
         {
             var model = viewModel.Shop;
 
-            if (ModelState.IsValid == false)
-                return View(model);
-
-            if (_shopService.IsExists(model))
-            {
-                ViewBag.IsExistName = "This shop name already exists in this category!";
-
-                return View(model);
-            }
-
             // to get selected value from Dropdown List Country - START
             var selectedCountryValue = Request.Form["selectedCountry"].ToString();
 
@@ -203,7 +193,17 @@ namespace Cargo.AdminPanel.Controllers
             };
 
             model.SelectedCategory = categoryModel;
-            // to get selected value from Dropdown List Category - END            
+            // to get selected value from Dropdown List Category - END
+
+            if (ModelState.IsValid == false)
+                return View(viewModel);
+
+            if (_shopService.IsExists(model, model.SelectedCategory, model.SelectedCountry))
+            {
+                ViewBag.IsExistName = "This shop belonging to this category is available in this country!";
+
+                return View(viewModel);
+            }
 
             _shopService.Update(model);
 

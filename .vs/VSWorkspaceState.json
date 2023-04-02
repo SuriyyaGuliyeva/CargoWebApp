@@ -2,7 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\Cargo.AdminPanel",
-    "\\Cargo.AdminPanel\\Controllers",
+    "\\Cargo.AdminPanel\\Helpers",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
@@ -11,6 +11,6 @@
     "\\Cargo.Core\\Domain\\Entities",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\Cargo.AdminPanel\\Controllers\\ShopController.cs",
+  "SelectedNode": "\\Cargo.AdminPanel\\Helpers\\GetHashCode.cs",
   "PreviewInSolutionExplorer": false
 }
