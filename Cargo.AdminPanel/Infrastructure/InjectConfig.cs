@@ -8,10 +8,12 @@ namespace Cargo.AdminPanel.Infrastructure
 {
     public static class InjectConfig
     {
-        public static void ServiceConfig(this IServiceCollection services)
+        public static void ConfigServices(this IServiceCollection services)
         {
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<IShopService, ShopService>();
+
+            services.AddTransient<IAddShopMapper, AddShopMapper>();
             services.AddTransient<ICountryMapper, CountryMapper>();
             services.AddTransient<IShopMapper, ShopMapper>();
             services.AddTransient<ICategoryMapper, CategoryMapper>();

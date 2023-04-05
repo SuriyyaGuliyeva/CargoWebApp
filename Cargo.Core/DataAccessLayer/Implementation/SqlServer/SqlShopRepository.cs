@@ -1,5 +1,6 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -24,14 +25,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var cmd = new SqlCommand(query, con);
 
-                cmd.Parameters.AddWithValue("Name", shop.Name);
-                cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
-                cmd.Parameters.AddWithValue("Link", shop.Link);
-                cmd.Parameters.AddWithValue("Photo", shop.Photo);
-                cmd.Parameters.AddWithValue("ImageHashCode", shop.ImageHashCode);
-                cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
-                cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
-                cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
+                AddParameters(cmd, shop);
 
                 cmd.ExecuteNonQuery();
             }
@@ -97,25 +91,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 {
                     var shop = GetFromReader(reader);
 
-                    //Shop shop = new Shop();
-
-                    //shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    //shop.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    //shop.Link = reader.GetString(reader.GetOrdinal("Link"));
-                    //shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
-                    //shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
-                    //shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-                    //shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
-                    //shop.Country = new Country()
-                    //{
-                    //    Id = shop.CountryId
-                    //};
-                    //shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
-                    //shop.Category = new Category()
-                    //{
-                    //    Id = shop.CategoryId
-                    //};                    
-
                     shops.Add(shop);
                 }
 
@@ -134,15 +109,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 var cmd = new SqlCommand(query, con);
 
                 cmd.Parameters.AddWithValue("Id", shop.Id);
-                cmd.Parameters.AddWithValue("Name", shop.Name);
-                cmd.Parameters.AddWithValue("Link", shop.Link);
-                cmd.Parameters.AddWithValue("Photo", shop.Photo);
-                cmd.Parameters.AddWithValue("ImageHashCode", shop.ImageHashCode);
-                cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
-                cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
-                cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
-                cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);                
 
+                AddParameters(cmd, shop);
+                
                 int result = cmd.ExecuteNonQuery();
 
                 if (result == 0)
@@ -233,6 +202,20 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
+        #region private methods
+
+        private void AddParameters(SqlCommand cmd, Shop shop)
+        {
+            cmd.Parameters.AddWithValue("Name", shop.Name);
+            cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
+            cmd.Parameters.AddWithValue("Link", shop.Link ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("Photo", shop.Photo);
+            cmd.Parameters.AddWithValue("ImageHashCode", shop.ImageHashCode);
+            cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
+            cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
+            cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
+        }
+
         private Shop GetFromReader(SqlDataReader reader)
         {
             Shop shop = new Shop();
@@ -256,6 +239,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             };
 
             return shop;
-        }      
+        }
+
+        #endregion
     }
 }

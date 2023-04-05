@@ -5,36 +5,27 @@ using Cargo.Core.Domain.Entities;
 
 namespace Cargo.AdminPanel.Mappers.Implementation
 {
-    public class ShopMapper : IShopMapper
+    public class AddShopMapper : IAddShopMapper
     {
-        private readonly ICountryMapper _countryMapper;
-        private readonly ICategoryMapper _categoryMapper;
-
-        public ShopMapper(ICountryMapper countryMapper, ICategoryMapper categoryMapper)
-        {
-            _countryMapper = countryMapper;
-            _categoryMapper = categoryMapper;
-        }
-
-        public ShopModel Map(Shop shop) 
+        public AddShopModel Map(Shop shop) 
         {
             if (shop == null)
                 return null;
-            
-            ShopModel model = new ShopModel
+
+            AddShopModel model = new AddShopModel
             {
                 Id = shop.Id,
                 Name = shop.Name,
                 Link = shop.Link,
-                SelectedCountry = _countryMapper.Map(shop.Country),
-                SelectedCategory = _categoryMapper.Map(shop.Category),
+                SelectedCountry = shop.CountryId,
+                SelectedCategory =shop.CategoryId,
                 CoverPhotoUrl = shop.Photo,
             };
 
             return model;
         }
 
-        public Shop Map(ShopModel model, string hashCodeImage)
+        public Shop Map(AddShopModel model, string hashCodeImage)
         {
             if (model == null)
                 return null;
@@ -46,8 +37,8 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Link = model.Link,
                 Photo = model.CoverPhotoUrl, 
                 ImageHashCode = hashCodeImage,
-                CountryId = model.SelectedCountry.Id,
-                CategoryId = model.SelectedCategory.Id
+                CountryId = model.SelectedCountry,
+                CategoryId = model.SelectedCategory
             };
 
             return shop;

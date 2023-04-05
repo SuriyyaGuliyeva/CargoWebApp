@@ -41,7 +41,7 @@ namespace Cargo.AdminPanel
                 return DbFactory.Create(Enum.Parse<VendorTypes>(dbNameValue), connectionString);
             });
 
-            services.ServiceConfig();
+            services.ConfigServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

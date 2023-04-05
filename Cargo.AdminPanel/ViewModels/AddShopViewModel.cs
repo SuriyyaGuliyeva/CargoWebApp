@@ -9,6 +9,6 @@ namespace Cargo.AdminPanel.ViewModels
     {
         public List<SelectListItem> CountriesList { get; set; }
         public List<SelectListItem> CategoriesList { get; set; }
-        public ShopModel Shop { get; set; }
+        public AddShopModel Shop { get; set; }
     }
 }

@@ -6,13 +6,11 @@ namespace Cargo.AdminPanel.Services.Abstract
 {
     public interface IShopService
     {
-        void Add(AddShopViewModel model);
-        void Update(ShopModel model);
+        void Add(AddShopModel model);
+        void Update(AddShopModel model);
         void Delete(int id);
         IList<ShopModel> GetAll();
-        ShopModel Get(int id);
-        bool IsExists(ShopModel model, CategoryModel selectedCategory, CountryModel selectedCountry);
-
-        //ShopModel GetByCategoryId(string name, int categoryId);
+        AddShopModel Get(int id);
+        bool IsExists(string name, int categoryId, int countryId);
     }
 }

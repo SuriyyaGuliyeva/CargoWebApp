@@ -14,45 +14,44 @@ namespace Cargo.AdminPanel.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IShopMapper _mapper;
-
-        public ShopService(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IShopMapper mapper)
+        private readonly IShopMapper _shopMapper;
+        private readonly IAddShopMapper _addShopMapper;
+        public ShopService(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IShopMapper shopMapper, IAddShopMapper addShopMapper)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
-            _mapper = mapper;
+            _shopMapper = shopMapper;
+            _addShopMapper = addShopMapper;
         }
 
-        public void Add(AddShopViewModel viewModel)
+        public void Add(AddShopModel model)
         {
-            var model = viewModel.Shop;
-
             var hashCodeImage = string.Empty;
 
-            if (model.Link == null)
-            {
-                model.Link = string.Empty;
-            }
+            // 1. Get binary data for model.coverPhoto (may be we can use MemoryStream) 
+            // 2. Calculate hash for binary data
+            // 3. Save photo with hash name in specified folder 
+            // 4. Set hash for shop.Photo
 
-            if (model.CoverPhoto != null)
-            {
-                string folder = "images\\";
-                folder += model.CoverPhoto.FileName;
+            //if (model.CoverPhoto != null)
+            //{
+            //    string folder = "images\\";
+            //    folder += model.CoverPhoto.FileName;
 
-                string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+            //    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
 
-                var fileStream = new FileStream(serverFolder, FileMode.Create);
+            //    var fileStream = new FileStream(serverFolder, FileMode.Create);
 
-                model.CoverPhoto.CopyTo(fileStream);
+            //    model.CoverPhoto.CopyTo(fileStream);
 
-                fileStream.Close();
+            //    fileStream.Close();
 
-                hashCodeImage = GetHashCodeImage.GetImageHashCode(serverFolder);
+            //    hashCodeImage = SecurityUtil.CalculateHash(serverFolder);
 
-                model.CoverPhotoUrl = "\\" + folder;
-            }
+            //    model.CoverPhotoUrl = "\\" + folder;
+            //}
 
-            var shop = _mapper.Map(model, hashCodeImage);
+            var shop = _addShopMapper.Map(model, hashCodeImage);
 
             _unitOfWork.ShopRepository.Add(shop);
         }
@@ -67,21 +66,11 @@ namespace Cargo.AdminPanel.Services.Implementation
             }
         }
 
-        public ShopModel Get(int id)
+        public AddShopModel Get(int id)
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
 
-            var country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
-            var category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
-
-            ShopModel model = null;
-
-            if (shop != null)
-            {
-                model = _mapper.Map(shop, country, category);
-            }
-
-            return model;
+            return _addShopMapper.Map(shop);
         }
 
         public IList<ShopModel> GetAll()
@@ -94,10 +83,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             foreach (var shop in shops)
             {
-                var country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
-                var category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
-
-                var model = _mapper.Map(shop, country, category);
+                var model = _shopMapper.Map(shop);
 
                 viewModel.Shops.Add(model);
             }
@@ -105,57 +91,47 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Shops;
         }
 
-        public void Update(ShopModel model)
+        public void Update(AddShopModel model)
         {
             var hashCodeImage = string.Empty;
-            string folder = string.Empty;
-            string serverFolder = string.Empty;
+            //string folder = string.Empty;
+            //string serverFolder = string.Empty;
 
-            if (model.Link == null)
-            {
-                model.Link = string.Empty;
-            }
+            //if (model.CoverPhoto == null)
+            //{
+            //    folder = model.CoverPhotoUrl;
+            //    folder = folder.Substring(1);
 
-            if (model.CoverPhoto == null)
-            {
-                folder = model.CoverPhotoUrl;
-                folder = folder.Substring(1);
+            //    serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);                              
+            //}
+            //else
+            //{
+            //    folder = "images\\";
+            //    folder += model.CoverPhoto.FileName;
 
-                serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);                              
-            }
-            else
-            {
-                folder = "images\\";
-                folder += model.CoverPhoto.FileName;
+            //    serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
 
-                serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+            //    var fileStream = new FileStream(serverFolder, FileMode.Create);
 
-                var fileStream = new FileStream(serverFolder, FileMode.Create);
+            //    model.CoverPhoto.CopyTo(fileStream);
 
-                model.CoverPhoto.CopyTo(fileStream);
+            //    fileStream.Close();               
+            //}
 
-                fileStream.Close();               
-            }
+            //hashCodeImage = SecurityUtil.CalculateHash(serverFolder);
 
-            hashCodeImage = GetHashCodeImage.GetImageHashCode(serverFolder);
+            //model.CoverPhotoUrl = "\\" + folder;
 
-            model.CoverPhotoUrl = "\\" + folder;
-
-            var shop = _mapper.Map(model, hashCodeImage);
+            var shop = _addShopMapper.Map(model, hashCodeImage);
 
             _unitOfWork.ShopRepository.Update(shop);
         }
 
-        public bool IsExists(ShopModel model, CategoryModel selectedCategory, CountryModel selectedCountry)
+        public bool IsExists(string name, int selectedCategory, int selectedCountry)
         {
-            var shopname = _unitOfWork.ShopRepository.GetByCategoryId(model.Name, selectedCategory.Id, selectedCountry.Id);
+            var shopName = _unitOfWork.ShopRepository.GetByCategoryId(name, selectedCategory, selectedCountry);
 
-            if (shopname == null)
-            {
-                return false;
-            }
-
-            return true;
+            return shopName != null;
         }
     }
 }

@@ -27,7 +27,6 @@
                 <th>Country Name</th>
                 <th>Category Name</th>
                 <th>Photo</th>
-                <th>Created Date/Time</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -56,14 +55,10 @@
                         <td>
                             <img src="@shop.CoverPhotoUrl" class="img-thumbnail" width="70" height="70" />
                         </td>
-                        <td>
-                            <span>@shop.CreationDateTime</span>
-                        </td>
                         <td style="display: flex; border-bottom: none;">
                             <a asp-action="Update" asp-route-shopId="@shop.Id" class="btn btn-warning mr-1">Update</a>
 
-                            <a href="#" data-id="@shop.Id" data-target="#DeleteRecord" data-toggle="modal"
-                       class="btn btn-danger delete">
+                            <a href="#" data-id="@shop.Id" data-target="#DeleteRecord" data-toggle="modal" class="btn btn-danger delete">
                                 Delete
                             </a>
                         </td>

@@ -5,7 +5,7 @@ namespace Cargo.AdminPanel.Mappers.Abstract
 {
     public interface IShopMapper
     {
-        ShopModel Map(Shop shop, Country country, Category category);
+        ShopModel Map(Shop shop);
         Shop Map(ShopModel model, string hashCodeImage);
     }
 }
