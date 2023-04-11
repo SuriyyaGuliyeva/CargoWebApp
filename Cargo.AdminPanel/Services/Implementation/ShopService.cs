@@ -5,6 +5,7 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.DataAccessLayer.Abstract;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.IO;
 
@@ -28,8 +29,12 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var hashCodeImage = string.Empty;
 
-            // 1. Get binary data for model.coverPhoto (may be we can use MemoryStream) 
+            // 1. Get binary data for model.coverPhoto (may be we can use MemoryStream)
+            var binaryDataForImage = GetImageBytes(model.CoverPhotoUrl);
+
             // 2. Calculate hash for binary data
+            var hashCode  = SecurityUtil.CalculateHash(binaryDataForImage);
+
             // 3. Save photo with hash name in specified folder 
             // 4. Set hash for shop.Photo
 
@@ -75,7 +80,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public IList<ShopModel> GetAll()
         {
-            var shops = _unitOfWork.ShopRepository.GetAll();
+            var shops = _unitOfWork.ShopRepository.GetAllWithJoinQuery();
 
             var viewModel = new ShopViewModel();
 
@@ -83,6 +88,9 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             foreach (var shop in shops)
             {
+                shop.Country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
+                shop.Category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
+
                 var model = _shopMapper.Map(shop);
 
                 viewModel.Shops.Add(model);
@@ -133,5 +141,48 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             return shopName != null;
         }
+
+        public byte[] GetImageBytes(string imagePath)
+        {
+            // read the image bytes from the file
+            var imageBytes = File.ReadAllBytes(imagePath);
+
+            // create a memory stream from the image bytes
+            using (var memoryStream = new MemoryStream(imageBytes))
+            {
+                // read the image bytes into a byte array
+                byte[] binaryData = memoryStream.ToArray();
+
+                return binaryData;
+            }
+        }
+
+        public string SavePhoto(IFormFile photo)
+        {
+            // create a unique filename for the photo
+            var fileName = Path.GetExtension(photo.FileName);
+
+            // get the path to the folder where you want to save the photo
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photos");
+
+            // create the folder if it doesn't exist
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            // create the full path for the photo file
+            var filePath = Path.Combine(path, fileName);
+
+            // save the photo to the file system
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                photo.CopyTo(stream);
+            }
+
+            // return the filename of the saved photo
+            return fileName;
+        }  
+
     }
 }

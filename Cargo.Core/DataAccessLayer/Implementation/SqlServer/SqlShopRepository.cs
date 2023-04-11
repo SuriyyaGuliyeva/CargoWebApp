@@ -15,23 +15,39 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             _connectionString = connectionString;
         }
 
-        public void Add(Shop shop)
+        public SqlShopRepository()
         {
+        }
+
+        public int Add(Shop shop)
+        {
+            int insertedId = 0;
+
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into shops (Name, CreationDateTime, Link, IsDeleted, Photo, ImageHashCode, CountryId, CategoryId) values (@Name, @CreationDateTime, @Link, @IsDeleted, @Photo, @ImageHashCode, @CountryId, @CategoryId)";
+                string query = "insert into shops (Name, CreationDateTime, Link, Photo, IsDeleted, CountryId, CategoryId) values (@Name, @CreationDateTime, @Link, @Photo, @IsDeleted, @CountryId, @CategoryId); SELECT SCOPE_IDENTITY();";
 
                 con.Open();
 
                 var cmd = new SqlCommand(query, con);
 
-                AddParameters(cmd, shop);
+                //AddParameters(cmd, shop);
 
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("Name", shop.Name);
+                cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
+                cmd.Parameters.AddWithValue("Link", shop.Link ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("Photo", shop.Photo);
+                cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
+                cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
+                cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
+
+                insertedId = Convert.ToInt32(cmd.ExecuteScalar());
             }
+
+            return insertedId;
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             using (var con = new SqlConnection(_connectionString))
             {
@@ -45,9 +61,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 int result = cmd.ExecuteNonQuery();
 
                 if (result == 0)
-                {
-                    // do something
-                }
+                    return false;
+
+                return true;
             }
         }
 
@@ -210,7 +226,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
             cmd.Parameters.AddWithValue("Link", shop.Link ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("Photo", shop.Photo);
-            cmd.Parameters.AddWithValue("ImageHashCode", shop.ImageHashCode);
             cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
             cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
             cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
@@ -223,8 +238,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
             shop.Name = reader.GetString(reader.GetOrdinal("Name"));
             shop.Link = reader.GetString(reader.GetOrdinal("Link"));
-            shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
-            shop.ImageHashCode = reader.GetString(reader.GetOrdinal("ImageHashCode"));
+            //shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
             shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
             shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
             shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
@@ -240,7 +254,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
             return shop;
         }
-
         #endregion
+
+        public int Add2(Shop t)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

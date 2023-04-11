@@ -1,5 +1,6 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -14,25 +15,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             _connectionString = connectionString;
         }
 
-        public void Add(Country country)
-        {
-            using (var con = new SqlConnection(_connectionString))
-            {
-                string query = "insert into countries (name, creationDateTime, isDeleted) values(@name, @creationDateTime, @isDeleted)";
-
-                con.Open();
-
-                var cmd = new SqlCommand(query, con);
-
-                cmd.Parameters.AddWithValue("name", country.Name);
-                cmd.Parameters.AddWithValue("creationDateTime", country.CreationDateTime);
-                cmd.Parameters.AddWithValue("isDeleted", country.IsDeleted);
-
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             using (var con = new SqlConnection(_connectionString))
             {
@@ -46,16 +29,16 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 int result = cmd.ExecuteNonQuery();
 
                 if (result == 0)
-                {
-                    // do something
-                }
+                    return false;
+
+                return true;
             }
         }
 
         public Country Get(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
-            {               
+            {
                 string query = "select * from countries where id = @id and isDeleted = 0";
 
                 connection.Open();
@@ -63,10 +46,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("id", id);
 
-                var reader = cmd.ExecuteReader();                
+                var reader = cmd.ExecuteReader();
 
                 if (reader.Read())
-                {                   
+                {
                     return GetFromReader(reader);
                 }
 
@@ -110,9 +93,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 var cmd = new SqlCommand(query, con);
 
                 cmd.Parameters.AddWithValue("id", country.Id);
-                cmd.Parameters.AddWithValue("name", country.Name);
-                cmd.Parameters.AddWithValue("creationDateTime", country.CreationDateTime);
-                cmd.Parameters.AddWithValue("isDeleted", country.IsDeleted);
+                AddParameters(cmd, country);
 
                 int result = cmd.ExecuteNonQuery();
 
@@ -134,7 +115,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("name", name);
 
-                var reader = cmd.ExecuteReader();                             
+                var reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
@@ -143,6 +124,35 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 return null;
             }
+        }
+
+        public int Add(Country country)
+        {
+            int insertedId = 0;
+
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "insert into countries (name, creationDateTime, isDeleted) values(@name, @creationDateTime, @isDeleted); SELECT SCOPE_IDENTITY();";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+
+                AddParameters(cmd, country);
+
+                insertedId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            return insertedId;
+        }
+
+        #region private methods
+
+        private void AddParameters(SqlCommand cmd, Country country)
+        {
+            cmd.Parameters.AddWithValue("Name", country.Name);
+            cmd.Parameters.AddWithValue("CreationDateTime", country.CreationDateTime);
+            cmd.Parameters.AddWithValue("IsDeleted", country.IsDeleted);
         }
 
         private Country GetFromReader(SqlDataReader reader)
@@ -156,5 +166,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
             return country;
         }
+        #endregion
     }
 }

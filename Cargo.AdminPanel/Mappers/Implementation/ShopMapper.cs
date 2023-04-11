@@ -19,8 +19,8 @@ namespace Cargo.AdminPanel.Mappers.Implementation
         public ShopModel Map(Shop shop) 
         {
             if (shop == null)
-                return null;
-            
+                return null;            
+
             ShopModel model = new ShopModel
             {
                 Id = shop.Id,

@@ -12,8 +12,10 @@ namespace Cargo.AdminPanel.Models
         public string Name { get; set; }
         public string Link { get; set; }
 
+        [Required(ErrorMessage = "Please enter a country name!")]
         public int SelectedCountry { get; set; }
 
+        [Required(ErrorMessage = "Please enter a category name!")]
         public int SelectedCategory { get; set; }
 
         // Upload and Display Cover Photo

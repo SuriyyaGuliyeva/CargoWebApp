@@ -15,12 +15,12 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             _connectionString = connectionString;
         }
 
-        public void Add(Category t)
+        public int Add(Category t)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             throw new NotImplementedException();
         }
