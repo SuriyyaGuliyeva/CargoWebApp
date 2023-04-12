@@ -3,9 +3,11 @@ using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
 using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
+using Cargo.Core;
 using Cargo.Core.DataAccessLayer.Abstract;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -27,36 +29,33 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public void Add(AddShopModel model)
         {
-            var hashCodeImage = string.Empty;
+            var shop = _addShopMapper.Map(model);
 
-            // 1. Get binary data for model.coverPhoto (may be we can use MemoryStream)
-            var binaryDataForImage = GetImageBytes(model.CoverPhotoUrl);
+            Directory.CreateDirectory(StorageConstants.ShopsPhotoDirectory);
 
-            // 2. Calculate hash for binary data
-            var hashCode  = SecurityUtil.CalculateHash(binaryDataForImage);
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                // Step 1. Read photo to memory
+                model.CoverPhoto.CopyTo(memoryStream);
 
-            // 3. Save photo with hash name in specified folder 
-            // 4. Set hash for shop.Photo
+                // Step 2. Calculate hash for photo
+                var hash = SecurityUtil.CalculateHash(memoryStream.ToArray());
 
-            //if (model.CoverPhoto != null)
-            //{
-            //    string folder = "images\\";
-            //    folder += model.CoverPhoto.FileName;
+                // Step 3. Set photo name
+                shop.Photo = $"{hash}.jpg";
 
-            //    string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+                // Step 4. Create file path for photo
+                var filePath = Path.Combine(StorageConstants.ShopsPhotoDirectory, shop.Photo);
 
-            //    var fileStream = new FileStream(serverFolder, FileMode.Create);
-
-            //    model.CoverPhoto.CopyTo(fileStream);
-
-            //    fileStream.Close();
-
-            //    hashCodeImage = SecurityUtil.CalculateHash(serverFolder);
-
-            //    model.CoverPhotoUrl = "\\" + folder;
-            //}
-
-            var shop = _addShopMapper.Map(model, hashCodeImage);
+                // Step 5. Check this file already exists or not
+                if (File.Exists(filePath) == false)
+                {
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew))
+                    {
+                        memoryStream.WriteTo(fileStream);
+                    }
+                }
+            }
 
             _unitOfWork.ShopRepository.Add(shop);
         }
@@ -65,10 +64,10 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
 
-            if (shop != null)
-            {
-                _unitOfWork.ShopRepository.Delete(id);
-            }
+            if (shop == null)
+                throw new Exception("Shop not found");
+
+            _unitOfWork.ShopRepository.Delete(id);
         }
 
         public AddShopModel Get(int id)
@@ -80,7 +79,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public IList<ShopModel> GetAll()
         {
-            var shops = _unitOfWork.ShopRepository.GetAllWithJoinQuery();
+            var shops = _unitOfWork.ShopRepository.GetAll();
 
             var viewModel = new ShopViewModel();
 
@@ -88,9 +87,6 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             foreach (var shop in shops)
             {
-                shop.Country = _unitOfWork.CountryRepository.Get(shop.Country.Id);
-                shop.Category = _unitOfWork.CategoryRepository.Get(shop.Category.Id);
-
                 var model = _shopMapper.Map(shop);
 
                 viewModel.Shops.Add(model);
@@ -101,36 +97,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public void Update(AddShopModel model)
         {
-            var hashCodeImage = string.Empty;
-            //string folder = string.Empty;
-            //string serverFolder = string.Empty;
-
-            //if (model.CoverPhoto == null)
-            //{
-            //    folder = model.CoverPhotoUrl;
-            //    folder = folder.Substring(1);
-
-            //    serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);                              
-            //}
-            //else
-            //{
-            //    folder = "images\\";
-            //    folder += model.CoverPhoto.FileName;
-
-            //    serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
-
-            //    var fileStream = new FileStream(serverFolder, FileMode.Create);
-
-            //    model.CoverPhoto.CopyTo(fileStream);
-
-            //    fileStream.Close();               
-            //}
-
-            //hashCodeImage = SecurityUtil.CalculateHash(serverFolder);
-
-            //model.CoverPhotoUrl = "\\" + folder;
-
-            var shop = _addShopMapper.Map(model, hashCodeImage);
+            var shop = _addShopMapper.Map(model);
 
             _unitOfWork.ShopRepository.Update(shop);
         }
@@ -141,48 +108,5 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             return shopName != null;
         }
-
-        public byte[] GetImageBytes(string imagePath)
-        {
-            // read the image bytes from the file
-            var imageBytes = File.ReadAllBytes(imagePath);
-
-            // create a memory stream from the image bytes
-            using (var memoryStream = new MemoryStream(imageBytes))
-            {
-                // read the image bytes into a byte array
-                byte[] binaryData = memoryStream.ToArray();
-
-                return binaryData;
-            }
-        }
-
-        public string SavePhoto(IFormFile photo)
-        {
-            // create a unique filename for the photo
-            var fileName = Path.GetExtension(photo.FileName);
-
-            // get the path to the folder where you want to save the photo
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photos");
-
-            // create the folder if it doesn't exist
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            // create the full path for the photo file
-            var filePath = Path.Combine(path, fileName);
-
-            // save the photo to the file system
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                photo.CopyTo(stream);
-            }
-
-            // return the filename of the saved photo
-            return fileName;
-        }  
-
     }
 }

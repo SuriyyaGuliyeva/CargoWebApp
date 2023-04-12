@@ -11,11 +11,11 @@
 
     <a asp-action="Add" class="btn btn-primary mb-3">Add Country</a>
 
-    @if(ViewBag.Message != null)
+    @if (ViewBag.Message != null)
     {
         <p class="font-weight-bold text-danger">@ViewBag.Message</p>
-    }       
-    
+    }
+
     <table id="example" class="table table-striped table-bordered table-hover text-center w-100">
         <thead>
             <tr>
@@ -37,9 +37,8 @@
                         <td>@country.CreationDateTime</td>
                         <td>
                             <a asp-action="Update" asp-route-countryId="@country.Id" class="btn btn-warning">Update</a>
-                            <a href="#" data-id="@country.Id" data-target="#DeleteRecord" data-toggle="modal"
-                               class="btn btn-danger delete">
-                               Delete
+                            <a onclick="showDeleteModal(@country.Id)" href="#" data-id="@country.Id" data-target="#DeleteRecord" data-toggle="modal" class="btn btn-danger delete">
+                                Delete
                             </a>
                         </td>
                     </tr>
@@ -70,10 +69,9 @@
                 </div>
 
                 <div class="modal-footer">
-                    <form method="get" asp-controller="Country" asp-action="Delete">
-                        <button type="button" class="btn btn-dark" data-dismiss="modal">No</button>
-                        <button type="submit" class="btn btn-danger">Yes</button>
-                    </form>
+                    <input hidden id="deletedItemId" />
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">No</button>
+                    <button type="button" id="deleteYesButton" class="btn btn-danger">Yes</button>
                 </div>
             </div>
         </div>
@@ -81,18 +79,26 @@
     <!-- END - Modal for Delete Confirmation -->
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<script>
-     $(document).ready(function () {
-        $('table .delete').on('click', function () {
-            var id = $(this).data("id");
+@section Scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        function showDeleteModal(id) {
+            $("#deletedItemId").val(id);
+        }
+
+        $("#deleteYesButton").click(function () {
+            var id = $("#deletedItemId").val();
 
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'Country/Delete/',
-                data: { "countryId": id }
+                data: { "countryId": id },
+                success: function (data) {
+                    location.reload();
+                },
             })
         });
-    });
-</script>
+    </script>
+}

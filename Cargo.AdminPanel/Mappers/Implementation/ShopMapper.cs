@@ -45,7 +45,6 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Name = model.Name,
                 Link = model.Link,
                 Photo = model.CoverPhotoUrl, 
-                ImageHashCode = hashCodeImage,
                 CountryId = model.SelectedCountry.Id,
                 CategoryId = model.SelectedCategory.Id
             };

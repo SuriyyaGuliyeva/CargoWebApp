@@ -4,6 +4,7 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.AdminPanel.ViewModels.Country;
 using Cargo.Core.DataAccessLayer.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,10 +33,10 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var country = _unitOfWork.CountryRepository.Get(id);
 
-            if (country != null)
-            {
-                _unitOfWork.CountryRepository.Delete(id);
-            }
+            if (country == null)
+                throw new Exception("Country not found");
+
+            _unitOfWork.CountryRepository.Delete(id);
         }
 
         public AddCountryViewModel Get(int id)
