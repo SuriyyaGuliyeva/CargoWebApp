@@ -19,13 +19,12 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Link = shop.Link,
                 SelectedCountry = shop.CountryId,
                 SelectedCategory =shop.CategoryId,
-                CoverPhotoUrl = shop.Photo,
             };
 
             return model;
         }
 
-        public Shop Map(AddShopModel model, string hashCodeImage)
+        public Shop Map(AddShopModel model)
         {
             if (model == null)
                 return null;
@@ -35,8 +34,6 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Id = model.Id,
                 Name = model.Name,
                 Link = model.Link,
-                Photo = model.CoverPhotoUrl, 
-                ImageHashCode = hashCodeImage,
                 CountryId = model.SelectedCountry,
                 CategoryId = model.SelectedCategory
             };

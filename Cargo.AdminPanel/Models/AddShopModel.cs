@@ -22,8 +22,5 @@ namespace Cargo.AdminPanel.Models
         [Display(Name = "Choose the cover photo of the shop")]
         [Required(ErrorMessage = "Please upload cover photo!")]
         public IFormFile CoverPhoto { get; set; }
-        public string CoverPhotoUrl { get; set; }
-
     }
-
 }

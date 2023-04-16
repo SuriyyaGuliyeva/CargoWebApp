@@ -3,6 +3,7 @@ using Cargo.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Xml.Linq;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
@@ -21,30 +22,18 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
         public int Add(Shop shop)
         {
-            int insertedId = 0;
-
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "insert into shops (Name, CreationDateTime, Link, Photo, IsDeleted, CountryId, CategoryId) values (@Name, @CreationDateTime, @Link, @Photo, @IsDeleted, @CountryId, @CategoryId); SELECT SCOPE_IDENTITY();";
+                string query = "insert into shops (Name, CreationDateTime, Link, Photo, IsDeleted, CountryId, CategoryId) output inserted.Id values (@Name, @CreationDateTime, @Link, @Photo, @IsDeleted, @CountryId, @CategoryId)";
 
                 con.Open();
 
                 var cmd = new SqlCommand(query, con);
 
-                //AddParameters(cmd, shop);
+                AddParameters(cmd, shop);
 
-                cmd.Parameters.AddWithValue("Name", shop.Name);
-                cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
-                cmd.Parameters.AddWithValue("Link", shop.Link ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("Photo", shop.Photo);
-                cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
-                cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
-                cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
-
-                insertedId = Convert.ToInt32(cmd.ExecuteScalar());
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
-
-            return insertedId;
         }
 
         public bool Delete(int id)
@@ -89,31 +78,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public IList<Shop> GetAll()
-        {
-            using (var con = new SqlConnection(_connectionString))
-            {
-                string query = "select * from shops where isDeleted = 0";
-
-                con.Open();
-
-                var cmd = new SqlCommand(query, con);
-
-                var reader = cmd.ExecuteReader();
-
-                List<Shop> shops = new List<Shop>();               
-
-                while (reader.Read())
-                {
-                    var shop = GetFromReader(reader);
-
-                    shops.Add(shop);
-                }
-
-                return shops;
-            }
-        }
-
         public void Update(Shop shop)
         {
             using (var con = new SqlConnection(_connectionString))
@@ -134,28 +98,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 {
                     // do something
                 }
-            }
-        }
-
-        public Shop GetByName(string name)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                string query = "select * from shops where name = @name and isDeleted = 0";
-
-                connection.Open();
-
-                var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("name", name);
-
-                var reader = cmd.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    return GetFromReader(reader);
-                }
-
-                return null;
             }
         }
 
@@ -184,20 +126,20 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public IList<Shop> GetAllWithJoinQuery()
+        public IList<Shop> GetAll()
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "select " +
-                    "sh.*," +
-                    "co.Name as CountryName," +
-                    "cat.Name as CategoryName " +
-                    "from shops as sh " +
-                    "join Countries as co " +
-                    "on sh.CountryId = co.Id " +
-                    "join Categories as cat " +
-                    "on sh.CategoryId = cat.Id " +
-                    "where sh.IsDeleted = 0";
+                string query = @"select
+                    sh.*,
+                    co.Name as CountryName,
+                    cat.Name as CategoryName
+                    from shops as sh
+                    join Countries as co
+                    on sh.CountryId = co.Id
+                    join Categories as cat
+                    on sh.CategoryId = cat.Id
+                    where sh.IsDeleted = 0";
 
                 con.Open();
 
@@ -238,18 +180,22 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
             shop.Name = reader.GetString(reader.GetOrdinal("Name"));
             shop.Link = reader.GetString(reader.GetOrdinal("Link"));
-            //shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
+            shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
             shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
             shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
+
             shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
             shop.Country = new Country()
             {
-                Id = shop.CountryId
+                Id = shop.CountryId,
+                Name = reader.GetString(reader.GetOrdinal("CountryName"))
             };
+
             shop.CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId"));
             shop.Category = new Category()
             {
-                Id = shop.CategoryId
+                Id = shop.CategoryId,
+                Name = reader.GetString(reader.GetOrdinal("CategoryName"))
             };
 
             return shop;
