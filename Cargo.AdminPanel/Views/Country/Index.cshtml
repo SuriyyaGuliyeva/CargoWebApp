@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <form method="get" asp-controller="Country" asp-action="Delete">
+                    <form method="post" asp-controller="Country" asp-action="Delete">
                         <button type="button" class="btn btn-dark" data-dismiss="modal">No</button>
                         <button type="submit" class="btn btn-danger">Yes</button>
                     </form>
@@ -89,7 +89,7 @@
             var id = $(this).data("id");
 
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: 'Country/Delete/',
                 data: { "countryId": id }
             })

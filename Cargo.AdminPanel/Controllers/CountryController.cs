@@ -58,7 +58,7 @@ namespace Cargo.AdminPanel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult Delete(int countryId)
         {
             _countryService.Delete(countryId);

@@ -2,7 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\Cargo.AdminPanel",
-    "\\Cargo.AdminPanel\\Controllers",
+    "\\Cargo.AdminPanel\\Services",
+    "\\Cargo.AdminPanel\\Services\\Implementation",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
@@ -11,6 +12,6 @@
     "\\Cargo.Core\\Domain\\Entities",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\Cargo.AdminPanel\\Controllers\\ShopController.cs",
+  "SelectedNode": "\\Cargo.AdminPanel\\Services\\Implementation\\ShopService.cs",
   "PreviewInSolutionExplorer": false
 }
