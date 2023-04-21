@@ -4,9 +4,7 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.AdminPanel.ViewModels.Country;
 using Cargo.Core.DataAccessLayer.Abstract;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cargo.AdminPanel.Services.Implementation
 {
@@ -31,10 +29,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public void Delete(int id)
         {
-            var country = _unitOfWork.CountryRepository.Get(id);
-
-            if (country == null)
-                throw new Exception("Country not found");
+            _unitOfWork.CountryRepository.Get(id);           
 
             _unitOfWork.CountryRepository.Delete(id);
         }
@@ -69,14 +64,14 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Countries;
         }
 
-        public CountryModel GetByName(string name)
-        {
-            var country = _unitOfWork.CountryRepository.GetAll().FirstOrDefault(x=> x.Name == name);
+        //public CountryModel GetByName(string name)
+        //{
+        //    var country = _unitOfWork.CountryRepository.GetAll().FirstOrDefault(x=> x.Name == name);
 
-            var model = _mapper.Map(country);
+        //    var model = _mapper.Map(country);
 
-            return model;
-        }
+        //    return model;
+        //}
 
         public void Update(AddCountryViewModel viewModel)
         {

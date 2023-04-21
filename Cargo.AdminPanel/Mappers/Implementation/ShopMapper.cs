@@ -1,5 +1,4 @@
-﻿using Cargo.AdminPanel.Constants;
-using Cargo.AdminPanel.Mappers.Abstract;
+﻿using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
 using Cargo.Core.Domain.Entities;
 

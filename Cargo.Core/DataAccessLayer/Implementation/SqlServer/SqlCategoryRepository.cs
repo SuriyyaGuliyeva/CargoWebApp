@@ -84,7 +84,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public void Update(Category t)
+        public bool Update(Category t)
         {
             throw new NotImplementedException();
         }

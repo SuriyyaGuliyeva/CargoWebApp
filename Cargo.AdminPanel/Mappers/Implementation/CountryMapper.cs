@@ -1,9 +1,7 @@
-﻿using Cargo.AdminPanel.Constants;
-using Cargo.AdminPanel.Mappers.Abstract;
+﻿using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
-using Cargo.AdminPanel.ViewModels;
+using Cargo.Core.Constants;
 using Cargo.Core.Domain.Entities;
-using System;
 
 namespace Cargo.AdminPanel.Mappers.Implementation
 {

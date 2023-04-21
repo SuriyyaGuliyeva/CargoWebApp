@@ -12,5 +12,6 @@ namespace Cargo.AdminPanel.Services.Abstract
         IList<ShopModel> GetAll();
         AddShopModel Get(int id);
         bool IsExists(string name, int categoryId, int countryId);
+        ShopModel ShowImage(int id);
     }
 }

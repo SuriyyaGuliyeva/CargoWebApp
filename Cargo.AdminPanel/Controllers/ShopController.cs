@@ -1,12 +1,12 @@
-﻿using Cargo.AdminPanel.Constants;
-using Cargo.AdminPanel.Models;
+﻿using Cargo.AdminPanel.Models;
 using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
+using Cargo.Core.Constants;
 using Cargo.Core.DataAccessLayer.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Cargo.AdminPanel.Controllers
 {
@@ -57,7 +57,7 @@ namespace Cargo.AdminPanel.Controllers
             foreach (var category in categories)
             {
                 viewModel.CategoriesList.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString() });
-            };     
+            };
 
             return View(viewModel);
         }
@@ -135,7 +135,7 @@ namespace Cargo.AdminPanel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult Delete(int shopId)
         {
             _shopService.Delete(shopId);
@@ -143,6 +143,18 @@ namespace Cargo.AdminPanel.Controllers
             Message = "Successfully Deleted!";
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public string ShowImage(int shopId)
+        {
+            //var model = _shopService.Get(shopId); 
+
+            //var viewModel = new ShopModel();           
+
+            var model = _shopService.ShowImage(shopId);
+
+            return model.CoverPhotoUrl;
         }
     }
 }

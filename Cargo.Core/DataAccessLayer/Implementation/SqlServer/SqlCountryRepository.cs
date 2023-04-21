@@ -82,7 +82,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public void Update(Country country)
+        public bool Update(Country country)
         {
             using (var con = new SqlConnection(_connectionString))
             {
@@ -98,9 +98,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 int result = cmd.ExecuteNonQuery();
 
                 if (result == 0)
-                {
-                    // do something
-                }
+                    return false;
+
+                return true;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Cargo.AdminPanel.Constants
+﻿namespace Cargo.Core.Constants
 {
     public class SystemConstants
     {

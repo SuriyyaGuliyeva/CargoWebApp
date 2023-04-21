@@ -3,26 +3,26 @@ using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
 using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
-using Cargo.Core;
+using Cargo.Core.Constants;
 using Cargo.Core.DataAccessLayer.Abstract;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Cargo.AdminPanel.Services.Implementation
 {
     public class ShopService : IShopService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IShopMapper _shopMapper;
         private readonly IAddShopMapper _addShopMapper;
-        public ShopService(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IShopMapper shopMapper, IAddShopMapper addShopMapper)
+
+        private static readonly Encoding LocalEncoding = Encoding.UTF8;
+
+        public ShopService(IUnitOfWork unitOfWork, IShopMapper shopMapper, IAddShopMapper addShopMapper)
         {
             _unitOfWork = unitOfWork;
-            _webHostEnvironment = webHostEnvironment;
             _shopMapper = shopMapper;
             _addShopMapper = addShopMapper;
         }
@@ -65,7 +65,9 @@ namespace Cargo.AdminPanel.Services.Implementation
             var shop = _unitOfWork.ShopRepository.Get(id);
 
             if (shop == null)
-                throw new Exception("Shop not found");
+            {
+                throw new Exception("not found");
+            }
 
             _unitOfWork.ShopRepository.Delete(id);
         }
@@ -74,7 +76,19 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
 
-            return _addShopMapper.Map(shop);
+            var model = _addShopMapper.Map(shop);
+
+            return model;
+        }
+
+        public ShopModel ShowImage(int id)
+        {
+            var shop = _unitOfWork.ShopRepository.Get(id);
+            shop.Photo = Path.Combine(StorageConstants.ShopsPhotoDirectory, shop.Photo);
+
+            var model = _shopMapper.Map(shop);
+
+            return model;
         }
 
         public IList<ShopModel> GetAll()
@@ -83,11 +97,24 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             var viewModel = new ShopViewModel();
 
-            viewModel.Shops = new List<ShopModel>();
+            viewModel.Shops = new List<ShopModel>();            
 
             foreach (var shop in shops)
-            {
+            {                                               
+                string filePath = Path.Combine(StorageConstants.ShopsPhotoDirectory, shop.Photo);
+                shop.Photo = filePath;
+
                 var model = _shopMapper.Map(shop);
+
+                //if (File.Exists(filePath) == true)
+                //{
+                //    byte[] bytes = Encoding.ASCII.GetBytes(shop.Photo);
+
+                //    using (MemoryStream memoryStream = new MemoryStream(50))
+                //    {
+                //        memoryStream.Read(bytes, 0, bytes.Length);                       
+                //    }
+                //}
 
                 viewModel.Shops.Add(model);
             }
@@ -108,5 +135,17 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             return shopName != null;
         }
+
+        //public byte[] GetImage(string sBase64String)
+        //{
+        //    byte[] bytes = null;
+
+        //    if (!string.IsNullOrEmpty(sBase64String))
+        //    {
+        //        bytes = Convert.FromBase64String(sBase64String);
+        //    }
+
+        //    return bytes;
+        //}
     }
 }

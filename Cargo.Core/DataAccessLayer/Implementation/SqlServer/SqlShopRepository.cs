@@ -3,7 +3,6 @@ using Cargo.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Xml.Linq;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
@@ -60,7 +59,16 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "select * from shops where id = @id and isDeleted = 0";
+                string query = @"select
+                    sh.*,
+                    co.Name as CountryName,
+                    cat.Name as CategoryName
+                    from shops as sh
+                    join Countries as co
+                    on sh.CountryId = co.Id
+                    join Categories as cat
+                    on sh.CategoryId = cat.Id
+                    where sh.id = @id and sh.IsDeleted = 0";
 
                 con.Open();
 
@@ -78,7 +86,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public void Update(Shop shop)
+        public bool Update(Shop shop)
         {
             using (var con = new SqlConnection(_connectionString))
             {
@@ -95,9 +103,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 int result = cmd.ExecuteNonQuery();
 
                 if (result == 0)
-                {
-                    // do something
-                }
+                    return false;
+
+                return true;
             }
         }
 
@@ -187,7 +195,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
             shop.Country = new Country()
             {
-                Id = shop.CountryId,
+                Id = shop.CountryId,                
                 Name = reader.GetString(reader.GetOrdinal("CountryName"))
             };
 
@@ -200,11 +208,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
             return shop;
         }
-        #endregion
-
-        public int Add2(Shop t)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion      
     }
 }

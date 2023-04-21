@@ -1,4 +1,4 @@
-﻿namespace Cargo.Core
+﻿namespace Cargo.Core.Constants
 {
     public static class StorageConstants
     {

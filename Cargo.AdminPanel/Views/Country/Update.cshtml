@@ -6,6 +6,7 @@
     <div class="form-group">
         <label asp-for="Country.Name" class="mr-sm-2">Name:</label>
         <input asp-for="Country.Name" class="form-control mb-2 mr-sm-2" />
+
         <span asp-validation-for="Country.Name" class="text-danger font-weight-bold"></span>
     </div>
 
@@ -26,5 +27,5 @@
 </form>
 
 @section Scripts {
-<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -69,10 +69,10 @@
                 </div>
 
                 <div class="modal-footer">
-                    <form method="get" asp-controller="Country" asp-action="Delete">
-                        <button type="button" class="btn btn-dark" data-dismiss="modal">No</button>
-                        <button type="submit" class="btn btn-danger">Yes</button>
-                    </form>
+                    <input hidden id="deletedItemId" />
+
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">No</button>
+                    <button type="button" id="deleteYesButton" class="btn btn-danger">Yes</button>
                 </div>
             </div>
         </div>
@@ -82,24 +82,24 @@
 
 
 @section Scripts{
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <script>
-        function showDeleteModal(id) {
-            $("#deletedItemId").val(id);
-        }
+<script>
+    function showDeleteModal(id) {
+        $("#deletedItemId").val(id);
+    }
 
-        $("#deleteYesButton").click(function () {
-            var id = $("#deletedItemId").val();
+    $("#deleteYesButton").click(function () {
+        var id = $("#deletedItemId").val();
 
-            $.ajax({
-                type: 'POST',
-                url: 'Country/Delete/',
-                data: { "countryId": id },
-                success: function (data) {
-                    location.reload();
-                },
-            })
-        });
-    </script>
+        $.ajax({
+            type: 'POST',
+            url: 'Country/Delete/',
+            data: { "countryId": id },
+            success: function (data) {
+                location.reload();
+            },
+        })
+    });
+</script>
 }
