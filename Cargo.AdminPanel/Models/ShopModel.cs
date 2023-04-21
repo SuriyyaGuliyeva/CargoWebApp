@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Cargo.AdminPanel.Models
+﻿namespace Cargo.AdminPanel.Models
 {
     public class ShopModel
     {
@@ -11,7 +7,6 @@ namespace Cargo.AdminPanel.Models
         public string Link { get; set; }
         public CountryModel SelectedCountry { get; set; }
         public CategoryModel SelectedCategory { get; set; }
-        public IFormFile CoverPhoto { get; set; }
         public string CoverPhotoUrl { get; set; }
     }
 }

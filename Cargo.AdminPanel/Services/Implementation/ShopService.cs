@@ -17,9 +17,6 @@ namespace Cargo.AdminPanel.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IShopMapper _shopMapper;
         private readonly IAddShopMapper _addShopMapper;
-
-        private static readonly Encoding LocalEncoding = Encoding.UTF8;
-
         public ShopService(IUnitOfWork unitOfWork, IShopMapper shopMapper, IAddShopMapper addShopMapper)
         {
             _unitOfWork = unitOfWork;
@@ -72,7 +69,7 @@ namespace Cargo.AdminPanel.Services.Implementation
             _unitOfWork.ShopRepository.Delete(id);
         }
 
-        public AddShopModel Get(int id)
+        public AddShopModel GetAddModel(int id)
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
 
@@ -81,10 +78,9 @@ namespace Cargo.AdminPanel.Services.Implementation
             return model;
         }
 
-        public ShopModel ShowImage(int id)
+        public ShopModel Get(int id)
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
-            shop.Photo = Path.Combine(StorageConstants.ShopsPhotoDirectory, shop.Photo);
 
             var model = _shopMapper.Map(shop);
 
@@ -135,17 +131,5 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             return shopName != null;
         }
-
-        //public byte[] GetImage(string sBase64String)
-        //{
-        //    byte[] bytes = null;
-
-        //    if (!string.IsNullOrEmpty(sBase64String))
-        //    {
-        //        bytes = Convert.FromBase64String(sBase64String);
-        //    }
-
-        //    return bytes;
-        //}
     }
 }

@@ -3,10 +3,13 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.Constants;
 using Cargo.Core.DataAccessLayer.Abstract;
+using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace Cargo.AdminPanel.Controllers
 {
@@ -87,7 +90,7 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int shopId)
         {
-            var model = _shopService.Get(shopId);
+            var model = _shopService.GetAddModel(shopId);
 
             var viewModel = new AddShopViewModel()
             {
@@ -146,15 +149,15 @@ namespace Cargo.AdminPanel.Controllers
         }
 
         [HttpGet]
-        public string ShowImage(int shopId)
+        public IActionResult DownloadImage(int shopId)
         {
-            //var model = _shopService.Get(shopId); 
+            var model = _shopService.Get(shopId);
 
-            //var viewModel = new ShopModel();           
+            string fullPath = Path.Combine(StorageConstants.ShopsPhotoDirectory, model.CoverPhotoUrl);
 
-            var model = _shopService.ShowImage(shopId);
+            var content = System.IO.File.ReadAllBytes(fullPath);
 
-            return model.CoverPhotoUrl;
+            return File(content, "img/jpg", $"{model.Name}.jpg");
         }
     }
 }

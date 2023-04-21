@@ -10,8 +10,8 @@ namespace Cargo.AdminPanel.Services.Abstract
         void Update(AddShopModel model);
         void Delete(int id);
         IList<ShopModel> GetAll();
-        AddShopModel Get(int id);
+        AddShopModel GetAddModel(int id);
         bool IsExists(string name, int categoryId, int countryId);
-        ShopModel ShowImage(int id);
+        ShopModel Get(int id);
     }
 }
