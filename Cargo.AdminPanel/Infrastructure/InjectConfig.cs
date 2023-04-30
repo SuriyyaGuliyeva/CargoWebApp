@@ -13,10 +13,13 @@ namespace Cargo.AdminPanel.Infrastructure
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<IShopService, ShopService>();
 
-            services.AddTransient<IAddShopMapper, AddShopMapper>();
             services.AddTransient<ICountryMapper, CountryMapper>();
             services.AddTransient<IShopMapper, ShopMapper>();
             services.AddTransient<ICategoryMapper, CategoryMapper>();
+
+            services.AddTransient<IAddShopMapper, AddShopMapper>();
+            
+            services.AddTransient<IUpdateShopMapper, UpdateShopMapper>();           
         }
     }
 }

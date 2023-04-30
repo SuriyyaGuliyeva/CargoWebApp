@@ -5,10 +5,10 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.Constants;
 using Cargo.Core.DataAccessLayer.Abstract;
+using Cargo.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Cargo.AdminPanel.Services.Implementation
 {
@@ -17,11 +17,14 @@ namespace Cargo.AdminPanel.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IShopMapper _shopMapper;
         private readonly IAddShopMapper _addShopMapper;
-        public ShopService(IUnitOfWork unitOfWork, IShopMapper shopMapper, IAddShopMapper addShopMapper)
+        private readonly IUpdateShopMapper _updateShopMapper;
+
+        public ShopService(IUnitOfWork unitOfWork, IShopMapper shopMapper, IAddShopMapper addShopMapper, IUpdateShopMapper updateShopMapper)
         {
             _unitOfWork = unitOfWork;
             _shopMapper = shopMapper;
             _addShopMapper = addShopMapper;
+            _updateShopMapper = updateShopMapper;
         }
 
         public void Add(AddShopModel model)
@@ -78,6 +81,27 @@ namespace Cargo.AdminPanel.Services.Implementation
             return model;
         }
 
+        public UpdateShopModel GetUpdateModel(int id)
+        {
+            var shop = _unitOfWork.ShopRepository.Get(id);
+
+            var model = _updateShopMapper.Map(shop);
+
+            return model;
+        }
+
+        public UploadImageShopModel GetUploadImageModel(int id)
+        {
+            var shop = _unitOfWork.ShopRepository.Get(id);
+
+            var model = new UploadImageShopModel
+            {
+                Id = shop.Id
+            };
+
+            return model;
+        }
+
         public ShopModel Get(int id)
         {
             var shop = _unitOfWork.ShopRepository.Get(id);
@@ -93,24 +117,15 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             var viewModel = new ShopViewModel();
 
-            viewModel.Shops = new List<ShopModel>();            
+            viewModel.Shops = new List<ShopModel>();
 
             foreach (var shop in shops)
-            {                                               
+            {
                 string filePath = Path.Combine(StorageConstants.ShopsPhotoDirectory, shop.Photo);
+
                 shop.Photo = filePath;
 
-                var model = _shopMapper.Map(shop);
-
-                //if (File.Exists(filePath) == true)
-                //{
-                //    byte[] bytes = Encoding.ASCII.GetBytes(shop.Photo);
-
-                //    using (MemoryStream memoryStream = new MemoryStream(50))
-                //    {
-                //        memoryStream.Read(bytes, 0, bytes.Length);                       
-                //    }
-                //}
+                var model = _shopMapper.Map(shop);             
 
                 viewModel.Shops.Add(model);
             }
@@ -118,11 +133,47 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Shops;
         }
 
-        public void Update(AddShopModel model)
+        public void Update(UpdateShopModel model)
         {
-            var shop = _addShopMapper.Map(model);
+            var shop = _updateShopMapper.Map(model);
 
             _unitOfWork.ShopRepository.Update(shop);
+        }
+
+        public void UploadNewImage(UploadImageShopModel model)
+        {
+            var shop = new Shop
+            {
+                Id = model.Id
+            };
+
+            Directory.CreateDirectory(StorageConstants.ShopsPhotoDirectory);
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                // Step 1. Read photo to memory
+                model.CoverPhoto.CopyTo(memoryStream);
+
+                // Step 2. Calculate hash for photo
+                var hash = SecurityUtil.CalculateHash(memoryStream.ToArray());
+
+                // Step 3. Set photo name
+                shop.Photo = $"{hash}.jpg";
+
+                // Step 4. Create file path for photo
+                var filePath = Path.Combine(StorageConstants.ShopsPhotoDirectory, shop.Photo);
+
+                // Step 5. Check this file already exists or not
+                if (File.Exists(filePath) == false)
+                {
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.CreateNew))
+                    {
+                        memoryStream.WriteTo(fileStream);
+                    }
+                }
+            }            
+
+            _unitOfWork.ShopRepository.UploadNewImage(shop);
         }
 
         public bool IsExists(string name, int selectedCategory, int selectedCountry)

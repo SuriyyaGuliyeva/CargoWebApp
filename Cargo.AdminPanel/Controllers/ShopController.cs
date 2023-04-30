@@ -3,13 +3,10 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.Constants;
 using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Xml.Linq;
 
 namespace Cargo.AdminPanel.Controllers
 {
@@ -90,9 +87,9 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int shopId)
         {
-            var model = _shopService.GetAddModel(shopId);
+            var model = _shopService.GetUpdateModel(shopId);
 
-            var viewModel = new AddShopViewModel()
+            var viewModel = new UpdateShopViewModel()
             {
                 Shop = model
             };
@@ -117,7 +114,7 @@ namespace Cargo.AdminPanel.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(AddShopViewModel viewModel)
+        public IActionResult Update(UpdateShopViewModel viewModel)
         {
             if (ModelState.IsValid == false)
                 return View(viewModel);
@@ -134,6 +131,34 @@ namespace Cargo.AdminPanel.Controllers
             _shopService.Update(model);
 
             Message = "Successfully Updated!";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult UploadNewImage(int shopId)
+        {
+            var model = _shopService.GetUploadImageModel(shopId);
+
+            var viewModel = new UploadImageShopViewModel()
+            {
+                Shop = model
+            };           
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult UploadNewImage(UploadImageShopViewModel viewModel)
+        {
+            if (ModelState.IsValid == false)
+                return View(viewModel);
+
+            var model = viewModel.Shop;          
+
+            _shopService.UploadNewImage(model);
+
+            Message = "Successfully Uploaded New Image!";
 
             return RedirectToAction(nameof(Index));
         }

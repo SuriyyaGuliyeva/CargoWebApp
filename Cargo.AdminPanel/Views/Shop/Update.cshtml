@@ -1,6 +1,6 @@
-﻿@model AddShopViewModel
+﻿@model UpdateShopViewModel
 
-<form asp-controller="Shop" asp-action="Update" enctype="multipart/form-data" class="form-group">
+<form asp-controller="Shop" asp-action="Update" class="form-group">
     <h2 class="text-center text-primary"><i>Update Shop ID: @Model.Shop.Id</i></h2>
 
     <div class="form-group">
@@ -12,16 +12,6 @@
     <div class="form-group">
         <label asp-for="Shop.Link" class="mr-sm-2">Link:</label>
         <input asp-for="Shop.Link" class="form-control mb-2 mr-sm-2" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Shop.CoverPhoto" class="mr-sm-2">Photo:</label>
-
-        <div class="custom-file">
-            <input type="file" asp-for="Shop.CoverPhoto" class="custom-file-input mb-2 mr-sm-2" id="customFile" />
-            <label for="customFile" class="custom-file-label mr-sm-2">Choose Photo</label>
-            <span asp-validation-for="Shop.CoverPhoto" class="text-danger font-weight-bold"></span>
-        </div>
     </div>
 
     <div class="form-group">

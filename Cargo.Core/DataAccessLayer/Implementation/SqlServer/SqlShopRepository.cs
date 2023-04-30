@@ -90,16 +90,38 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update shops set name = @name, link = @link, photo = @photo, imagehashcode = @imagehashcode, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @Id and IsDeleted = 0";
+                string query = "update shops set name = @name, link = @link, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @Id and IsDeleted = 0";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+              
+                cmd.Parameters.AddWithValue("Id", shop.Id);
+
+                AddParameters(cmd, shop);                
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                    return false;
+
+                return true;
+            }
+        }
+
+        public bool UploadNewImage(Shop shop)
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "update shops set Photo = @Photo where id = @Id and IsDeleted = 0";
 
                 con.Open();
 
                 var cmd = new SqlCommand(query, con);
 
                 cmd.Parameters.AddWithValue("Id", shop.Id);
+                cmd.Parameters.AddWithValue("Photo", shop.Photo);
 
-                AddParameters(cmd, shop);
-                
                 int result = cmd.ExecuteNonQuery();
 
                 if (result == 0)
@@ -175,7 +197,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             cmd.Parameters.AddWithValue("Name", shop.Name);
             cmd.Parameters.AddWithValue("CreationDateTime", shop.CreationDateTime);
             cmd.Parameters.AddWithValue("Link", shop.Link ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("Photo", shop.Photo);
+            cmd.Parameters.AddWithValue("Photo", shop.Photo ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("IsDeleted", shop.IsDeleted);
             cmd.Parameters.AddWithValue("CountryId", shop.CountryId);
             cmd.Parameters.AddWithValue("CategoryId", shop.CategoryId);
@@ -195,7 +217,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             shop.CountryId = reader.GetInt32(reader.GetOrdinal("CountryId"));
             shop.Country = new Country()
             {
-                Id = shop.CountryId,                
+                Id = shop.CountryId,
                 Name = reader.GetString(reader.GetOrdinal("CountryName"))
             };
 
@@ -208,6 +230,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
             return shop;
         }
-        #endregion      
+        #endregion
     }
 }
