@@ -1,10 +1,12 @@
 ﻿using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.AdminPanel.ViewModels.Country;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cargo.AdminPanel.Controllers
 {
+    [Authorize]
     public class CountryController : Controller
     {
         private readonly ICountryService _countryService;

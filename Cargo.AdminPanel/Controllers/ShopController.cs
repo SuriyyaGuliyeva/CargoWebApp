@@ -3,6 +3,7 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.Constants;
 using Cargo.Core.DataAccessLayer.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.IO;
 
 namespace Cargo.AdminPanel.Controllers
 {
+    [Authorize]
     public class ShopController : Controller
     {
         private readonly IShopService _shopService;

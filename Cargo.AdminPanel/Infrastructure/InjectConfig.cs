@@ -1,7 +1,10 @@
-﻿using Cargo.AdminPanel.Mappers.Abstract;
+﻿using Cargo.AdminPanel.Identity;
+using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Mappers.Implementation;
 using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.Services.Implementation;
+using Cargo.Core.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cargo.AdminPanel.Infrastructure
@@ -19,7 +22,10 @@ namespace Cargo.AdminPanel.Infrastructure
 
             services.AddTransient<IAddShopMapper, AddShopMapper>();
             
-            services.AddTransient<IUpdateShopMapper, UpdateShopMapper>();           
+            services.AddTransient<IUpdateShopMapper, UpdateShopMapper>();
+
+            services.AddTransient<IUserStore<User>, UserStore>();
+            services.AddTransient<IRoleStore<Role>, RoleStore>();
         }
     }
 }

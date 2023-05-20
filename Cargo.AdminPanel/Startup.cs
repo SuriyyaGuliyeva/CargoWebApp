@@ -11,6 +11,8 @@ using System;
 using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Mappers.Implementation;
 using Cargo.AdminPanel.Infrastructure;
+using Cargo.Core.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Cargo.AdminPanel
 {
@@ -41,7 +43,17 @@ namespace Cargo.AdminPanel
                 return DbFactory.Create(Enum.Parse<VendorTypes>(dbNameValue), connectionString);
             });
 
-            services.ConfigServices();
+
+            // IDENTITY - START
+
+            services.AddAuthentication();
+
+            //services.AddIdentityCore<User>();
+                //.AddUserStore<IUserStore<User>>();
+
+            // IDENTITY - END
+
+            services.ConfigServices();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
