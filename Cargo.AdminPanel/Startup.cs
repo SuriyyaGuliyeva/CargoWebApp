@@ -48,12 +48,16 @@ namespace Cargo.AdminPanel
 
             services.AddAuthentication();
 
-            //services.AddIdentityCore<User>();
-                //.AddUserStore<IUserStore<User>>();
+            services.AddIdentity<User, Role>();
 
             // IDENTITY - END
 
-            services.ConfigServices();            
+            services.ConfigServices();
+
+            services.ConfigureApplicationCookie(x =>
+            {
+                x.LoginPath = "/Account/SignIn";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

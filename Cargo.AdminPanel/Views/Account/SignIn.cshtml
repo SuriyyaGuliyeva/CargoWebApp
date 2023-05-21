@@ -1,0 +1,32 @@
+﻿@section LoginStyle
+{
+    <link rel="stylesheet" href="~/css/login.css" />
+}
+
+@model SignInModel
+
+<form asp-controller="Account" asp-action="SignIn">
+    <div class="container">
+        <label>Username</label>
+        <input asp-for="Username" placeholder="Enter Username" />
+
+        <label>Password</label>
+        <input asp-for="PasswordHash" placeholder="Enter Password" />
+
+        <button type="submit">Sign In</button>
+
+        <label>
+            <input asp-for="RememberMe" type="checkbox"> Remember Me
+        </label>
+    </div>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="container" style="background-color: #f1f1f1">
+        <button type="button" class="cancelbtn">Cancel</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

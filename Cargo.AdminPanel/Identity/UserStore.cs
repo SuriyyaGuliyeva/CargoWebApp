@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace Cargo.AdminPanel.Identity
 {
-    public class UserStore : IUserStore<User>, IUserRoleStore<User>
-    {        
+    public class UserStore : IUserStore<User>, IUserRoleStore<User>, IUserPasswordStore<User>
+    {
         private readonly string _connectionString;
 
         public UserStore(IConfiguration configuration)
@@ -25,17 +25,17 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();                
 
                 var normalizedRoleName = roleName.ToUpper();
 
-                string query = "SELECT Id FROM roles WHERE NormalizedRoleName = @normalizedRoleName and isDeleted = 0";
+                string query = "SELECT Id FROM roles WHERE NormalizedRoleName = @normalizedRoleName";
 
                 var cmd = new SqlCommand(query, connection);
 
                 cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
 
-                int? roleId = cmd.ExecuteNonQuery();
+                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
 
                 if (roleId == null)
                 {
@@ -68,9 +68,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
-                string query = "insert into users (Name, NormalizedUserName, Surname, Email, Password, PhoneNumber) output inserted.Id values (@Name, @NormalizedUserName, @Surname, @Email, @Password, @PhoneNumber)";
+                string query = "insert into users (Name, NormalizedUserName, Surname, Email, PasswordHash, PhoneNumber) output inserted.Id values (@Name, @NormalizedUserName, @Surname, @Email, @PasswordHash, @PhoneNumber)";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -78,7 +78,7 @@ namespace Cargo.AdminPanel.Identity
                 cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName);
                 cmd.Parameters.AddWithValue("Surname", user.Surname ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("Password", user.Password);
+                cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
                 cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
 
 
@@ -94,9 +94,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
-                string query = "update users set isDeleted = 1 where id = @id";
+                string query = "delete from users where id = @id";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -109,7 +109,7 @@ namespace Cargo.AdminPanel.Identity
         }
 
         public void Dispose()
-        {            
+        {
         }
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
@@ -118,9 +118,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                connection.Open();
 
-                string query = "select * from users where isDeleted = 0 and Id = @Id";
+                string query = "select * from users where Id = @Id";
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("Id", Int32.Parse(userId));
@@ -132,12 +132,12 @@ namespace Cargo.AdminPanel.Identity
                     User user = new User();
 
                     user.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    user.Name = reader.GetString(reader.GetOrdinal("Name"));                    
-                    user.NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName"));                    
-                    user.Surname = reader.GetString(reader.GetOrdinal("Surname"));                    
-                    user.Email = reader.GetString(reader.GetOrdinal("Email"));                    
-                    user.Password = reader.GetString(reader.GetOrdinal("Password"));                    
-                    user.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));                    
+                    user.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    user.NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName"));
+                    user.Surname = reader.GetString(reader.GetOrdinal("Surname"));
+                    user.Email = reader.GetString(reader.GetOrdinal("Email"));
+                    user.PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash"));
+                    user.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
 
                     return Task.FromResult(user);
                 }
@@ -152,9 +152,11 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                // connection.Open();
 
-                string query = "select * from users where isDeleted = 0 and NormalizedUserName = @NormalizedUserName";
+                connection.Open();
+
+                string query = "select * from users where NormalizedUserName = @NormalizedUserName";
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("NormalizedUserName", normalizedUserName);
@@ -170,7 +172,7 @@ namespace Cargo.AdminPanel.Identity
                     user.NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName"));
                     user.Surname = reader.GetString(reader.GetOrdinal("Surname"));
                     user.Email = reader.GetString(reader.GetOrdinal("Email"));
-                    user.Password = reader.GetString(reader.GetOrdinal("Password"));
+                    user.PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash"));
                     user.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
 
                     return Task.FromResult(user);
@@ -185,13 +187,18 @@ namespace Cargo.AdminPanel.Identity
             return Task.FromResult(user.NormalizedUserName);
         }
 
+        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.PasswordHash);
+        }
+
         public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
                 string query = "SELECT r.Name FROM Roles r INNER JOIN UserRoles ur ON ur.roleId = r.Id WHERE ur.userId = @userId";
 
@@ -211,8 +218,8 @@ namespace Cargo.AdminPanel.Identity
                     role.NormalizedRoleName = reader.GetString(reader.GetOrdinal("NormalizedRoleName"));
 
                     roles.Add(role);
-                }              
-           
+                }
+
                 return Task.FromResult(roles.ToList() as IList<string>);
             }
         }
@@ -229,22 +236,115 @@ namespace Cargo.AdminPanel.Identity
 
         public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                 connection.Open();
+
+                string query = "SELECT u.* FROM Users u INNER JOIN UserRoles ur ON ur.UserId = u.Id INNER JOIN Roles r ON r.Id = ur.RoleId WHERE r.NormalizedRoleName = @normalizedName";
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("normalizedRoleName", roleName.ToUpper());
+
+                var reader = cmd.ExecuteReader();
+
+                IList<User> users = new List<User>();
+
+                while (reader.Read())
+                {
+                    User user = new User();
+
+                    user.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    user.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    user.NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName"));
+                    user.Surname = reader.GetString(reader.GetOrdinal("Surname"));
+                    user.Email = reader.GetString(reader.GetOrdinal("Email"));
+                    user.PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash"));
+                    user.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
+
+                    users.Add(user);
+                }
+
+                return Task.FromResult(users.ToList() as IList<User>);
+            }
+        }
+
+        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.PasswordHash != null);
         }
 
         public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                 connection.Open();
+
+                string query = "SELECT Id FROM Roles WHERE NormalizedRoleName = @normalizedRoleName";
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("normalizedRoleName", roleName.ToUpper());
+
+                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                if (roleId == default(int))
+                    return Task.FromResult(false);
+
+                string mainQuery = "SELECT COUNT(*) FROM UserRoles WHERE userId = @userId AND roleId = @roleId";
+
+                cmd = new SqlCommand(mainQuery, connection);
+
+                cmd.Parameters.AddWithValue("userId", user.Id);
+                cmd.Parameters.AddWithValue("roleId", roleId);
+
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return Task.FromResult(result > 0);
+            }
         }
 
         public Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                 connection.Open();
+
+                string query = "SELECT Id FROM Roles WHERE NormalizedRoleName = @normalizedRoleName";
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("normalizedRoleName", roleName.ToUpper());
+
+                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());              
+                
+                if (roleId != null)
+                {
+                    string mainQuery = "DELETE FROM UserRoles WHERE userId = @userId AND roleId = @roleId";
+
+                    cmd = new SqlCommand(mainQuery, connection);
+
+                    cmd.Parameters.AddWithValue("userId", user.Id);
+                    cmd.Parameters.AddWithValue("roleId", roleId);
+                }
+
+                return Task.CompletedTask;
+            }
         }
 
         public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
             user.NormalizedUserName = normalizedName;
+
+            return Task.CompletedTask;
+        }
+
+        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
+        {
+            user.PasswordHash = passwordHash;
 
             return Task.CompletedTask;
         }
@@ -262,9 +362,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
-                string query = "update users set Name = @Name, NormalizedUserName = @NormalizedUserName, Surname = @Surname, Email = @Email, Password = @Password, PhoneNumber = @PhoneNumber where id = @Id and IsDeleted = 0";
+                string query = "update users set Name = @Name, NormalizedUserName = @NormalizedUserName, Surname = @Surname, Email = @Email, PasswordHash = @PasswordHash, PhoneNumber = @PhoneNumber where id = @Id";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -273,10 +373,10 @@ namespace Cargo.AdminPanel.Identity
                 cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName);
                 cmd.Parameters.AddWithValue("Surname", user.Surname ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("Password", user.Password);
+                cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
                 cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
 
-                cmd.ExecuteNonQuery();            
+                cmd.ExecuteNonQuery();
             }
 
             return Task.FromResult(IdentityResult.Success);

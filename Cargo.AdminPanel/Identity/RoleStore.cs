@@ -23,7 +23,7 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
                 string query = "insert into roles (Name, NormalizedRoleName) output inserted.Id values (@Name, @NormalizedRoleName)";
 
@@ -44,9 +44,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
-                string query = "update roles set isDeleted = 1 where id = @id";
+                string query = "delete from roles where id = @id";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -59,8 +59,7 @@ namespace Cargo.AdminPanel.Identity
         }
 
         public void Dispose()
-        {
-            throw new System.NotImplementedException();
+        {            
         }
 
         public Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
@@ -69,9 +68,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
-                string query = "select * from roles where isDeleted = 0 and Id = @Id";
+                string query = "select * from roles where Id = @Id";
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("Id", Int32.Parse(roleId));
@@ -100,9 +99,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
-                string query = "select * from roles where isDeleted = 0 and NormalizedRoleName = @NormalizedRoleName";
+                string query = "select * from roles where NormalizedRoleName = @NormalizedRoleName";
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("NormalizedRoleName", normalizedRoleName);
@@ -159,9 +158,9 @@ namespace Cargo.AdminPanel.Identity
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.OpenAsync(cancellationToken);
+                 connection.Open();
 
-                string query = "update roles set Name = @Name, NormalizedRoleName = @NormalizedRoleName where id = @Id and IsDeleted = 0";
+                string query = "update roles set Name = @Name, NormalizedRoleName = @NormalizedRoleName where id = @Id";
 
                 var cmd = new SqlCommand(query, connection);
 
