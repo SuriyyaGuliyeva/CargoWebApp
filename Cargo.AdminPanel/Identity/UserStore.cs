@@ -75,7 +75,7 @@ namespace Cargo.AdminPanel.Identity
                 var cmd = new SqlCommand(query, connection);
 
                 cmd.Parameters.AddWithValue("Name", user.Name);
-                cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName);
+                cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("Surname", user.Surname ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
@@ -110,6 +110,10 @@ namespace Cargo.AdminPanel.Identity
 
         public void Dispose()
         {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Close();
+            }
         }
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
@@ -200,7 +204,7 @@ namespace Cargo.AdminPanel.Identity
             {
                  connection.Open();
 
-                string query = "SELECT r.Name FROM Roles r INNER JOIN UserRoles ur ON ur.roleId = r.Id WHERE ur.userId = @userId";
+                string query = "SELECT r.* FROM Roles r INNER JOIN UserRoles ur ON ur.roleId = r.Id WHERE ur.userId = @userId";
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("userId", user.Id);
@@ -370,7 +374,7 @@ namespace Cargo.AdminPanel.Identity
 
                 cmd.Parameters.AddWithValue("Id", user.Id);
                 cmd.Parameters.AddWithValue("Name", user.Name);
-                cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName);
+                cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("Surname", user.Surname ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);

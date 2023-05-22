@@ -38,6 +38,23 @@
                         </li>
                     </ul>
                 </div>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-right">
+                    <ul class="navbar-nav flex-grow-1" style="justify-content: right">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" asp-area="" asp-controller="Account" asp-action="SignOut">Sign Out</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="Account" asp-action="SignIn">Sign In</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>

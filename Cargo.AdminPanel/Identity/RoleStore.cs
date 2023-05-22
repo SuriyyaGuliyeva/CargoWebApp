@@ -59,7 +59,11 @@ namespace Cargo.AdminPanel.Identity
         }
 
         public void Dispose()
-        {            
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Close();
+            }
         }
 
         public Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)

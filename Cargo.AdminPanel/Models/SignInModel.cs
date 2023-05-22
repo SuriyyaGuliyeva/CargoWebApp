@@ -11,6 +11,6 @@ namespace Cargo.AdminPanel.Models
         [DataType(DataType.Password)]
         public string PasswordHash { get; set; }
 
-        public bool RememberMe { get; set; }
+        public bool RememberMe { get; set; } = true;
     }
 }

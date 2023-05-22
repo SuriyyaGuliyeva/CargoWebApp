@@ -2,6 +2,7 @@
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Cargo.AdminPanel.Controllers
 {
@@ -31,7 +32,7 @@ namespace Cargo.AdminPanel.Controllers
             {
                 return View(model);
             }
-
+           
             var user = _userManager.FindByNameAsync(model.Username).Result;
 
             if (user == null)
@@ -48,9 +49,26 @@ namespace Cargo.AdminPanel.Controllers
                 return View(model);
             }
 
-            _signInManager.SignInAsync(user, model.RememberMe);
+            if (_signInManager != null && user != null)
+            {
+                //Task.Run(() =>
+                //{
+                    _signInManager.SignInAsync(user, model.RememberMe).GetAwaiter().GetResult();
+                //});                
+            }
+
+            //_signInManager.SignInAsync(user, model.RememberMe).GetAwaiter().GetResult();
 
             return Redirect(returnUrl ?? "/");
+        }
+
+        [HttpGet]
+        public IActionResult SignOut(string returnUrl)
+        {
+            _signInManager.SignOutAsync()
+                .GetAwaiter().GetResult();
+
+            return Redirect("/");
         }
     }
 }

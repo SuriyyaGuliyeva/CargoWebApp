@@ -1,5 +1,6 @@
 ﻿form {
     border: 3px solid #f1f1f1;
+    padding: 10px;
 }
 
 input[type=text],
@@ -11,10 +12,4 @@ input[type=password]
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    padding: 16px;
 }
