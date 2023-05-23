@@ -26,13 +26,13 @@ namespace Cargo.AdminPanel.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignIn(SignInModel model, string returnUrl)
+        public async Task<IActionResult> SignIn(SignInModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-           
+
             var user = _userManager.FindByNameAsync(model.Username).Result;
 
             if (user == null)
@@ -49,15 +49,7 @@ namespace Cargo.AdminPanel.Controllers
                 return View(model);
             }
 
-            if (_signInManager != null && user != null)
-            {
-                //Task.Run(() =>
-                //{
-                    _signInManager.SignInAsync(user, model.RememberMe).GetAwaiter().GetResult();
-                //});                
-            }
-
-            //_signInManager.SignInAsync(user, model.RememberMe).GetAwaiter().GetResult();
+            await _signInManager.SignInAsync(user, model.RememberMe);
 
             return Redirect(returnUrl ?? "/");
         }

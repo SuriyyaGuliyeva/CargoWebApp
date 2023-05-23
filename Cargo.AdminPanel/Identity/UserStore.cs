@@ -224,7 +224,9 @@ namespace Cargo.AdminPanel.Identity
                     roles.Add(role);
                 }
 
-                return Task.FromResult(roles.ToList() as IList<string>);
+                IList<string> roleNames = roles.Select(x => x.Name).ToList();
+
+                return Task.FromResult(roleNames);
             }
         }
 

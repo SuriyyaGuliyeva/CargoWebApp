@@ -2,8 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\Cargo.AdminPanel",
-    "\\Cargo.AdminPanel\\Views",
-    "\\Cargo.AdminPanel\\Views\\Account",
+    "\\Cargo.AdminPanel\\Controllers",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
@@ -12,6 +11,6 @@
     "\\Cargo.Core\\Domain\\Entities",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\Cargo.AdminPanel\\Views\\Account\\SignIn.cshtml",
+  "SelectedNode": "\\Cargo.AdminPanel\\Controllers\\AccountController.cs",
   "PreviewInSolutionExplorer": false
 }
