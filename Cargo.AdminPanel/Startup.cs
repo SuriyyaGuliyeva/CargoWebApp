@@ -1,18 +1,15 @@
-using Cargo.AdminPanel.Services.Abstract;
-using Cargo.AdminPanel.Services.Implementation;
-using Cargo.Core.Factories;
+using Cargo.AdminPanel.Helpers;
+using Cargo.AdminPanel.Infrastructure;
+using Cargo.Core.Domain.Entities;
 using Cargo.Core.Domain.Enums;
+using Cargo.Core.Factories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using Cargo.AdminPanel.Mappers.Abstract;
-using Cargo.AdminPanel.Mappers.Implementation;
-using Cargo.AdminPanel.Infrastructure;
-using Cargo.Core.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
 namespace Cargo.AdminPanel
 {
@@ -27,8 +24,8 @@ namespace Cargo.AdminPanel
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllersWithViews();                    
+        {          
+            services.AddControllersWithViews();
 
             var configuration = new ConfigurationBuilder()
                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)

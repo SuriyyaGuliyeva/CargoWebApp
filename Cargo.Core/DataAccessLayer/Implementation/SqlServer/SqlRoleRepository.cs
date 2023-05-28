@@ -1,29 +1,26 @@
-﻿using Cargo.Core.Domain.Entities;
+﻿using Cargo.Core.DataAccessLayer.Abstract;
+using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Data.SqlClient;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cargo.AdminPanel.Identity
+namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
-    public class RoleStore : IRoleStore<Role>
+    public class SqlRoleRepository : IRoleRepository
     {
         private readonly string _connectionString;
 
-        public RoleStore(IConfiguration configuration)
+        public SqlRoleRepository(string connectionString)
         {
-            _connectionString = configuration.GetConnectionString("ConnectionString");
+            _connectionString = connectionString;
         }
 
-        public Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
+        public Task<IdentityResult> CreateAsync(Role role)
+        {            
             using (var connection = new SqlConnection(_connectionString))
             {
-                 connection.Open();
+                connection.Open();
 
                 string query = "insert into roles (Name, NormalizedRoleName) output inserted.Id values (@Name, @NormalizedRoleName)";
 
@@ -38,13 +35,11 @@ namespace Cargo.AdminPanel.Identity
             return Task.FromResult(IdentityResult.Success);
         }
 
-        public Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
+        public Task<IdentityResult> DeleteAsync(Role role)
+        {            
             using (var connection = new SqlConnection(_connectionString))
             {
-                 connection.Open();
+                connection.Open();
 
                 string query = "update roles set isDeleted = 1 where id = @id";
 
@@ -66,13 +61,11 @@ namespace Cargo.AdminPanel.Identity
             }
         }
 
-        public Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
+        public Task<Role> FindByIdAsync(string roleId)
+        {            
             using (var connection = new SqlConnection(_connectionString))
             {
-                 connection.Open();
+                connection.Open();
 
                 string query = "select * from roles where Id = @Id";
 
@@ -96,14 +89,11 @@ namespace Cargo.AdminPanel.Identity
             }
         }
 
-        public Task<Role> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-
+        public Task<Role> FindByNameAsync(string normalizedRoleName)
+        {            
             using (var connection = new SqlConnection(_connectionString))
             {
-                 connection.Open();
+                connection.Open();
 
                 string query = "select * from roles where NormalizedRoleName = @NormalizedRoleName";
 
@@ -127,42 +117,40 @@ namespace Cargo.AdminPanel.Identity
             }
         }
 
-        public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedRoleNameAsync(Role role)
         {
             return Task.FromResult(role.NormalizedRoleName);
         }
 
-        public Task<string> GetRoleIdAsync(Role role, CancellationToken cancellationToken)
+        public Task<string> GetRoleIdAsync(Role role)
         {
             return Task.FromResult(role.Id.ToString());
         }
 
-        public Task<string> GetRoleNameAsync(Role role, CancellationToken cancellationToken)
+        public Task<string> GetRoleNameAsync(Role role)
         {
             return Task.FromResult(role.Name);
         }
 
-        public Task SetNormalizedRoleNameAsync(Role role, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedRoleNameAsync(Role role, string normalizedName)
         {
             role.NormalizedRoleName = normalizedName;
 
             return Task.CompletedTask;
         }
 
-        public Task SetRoleNameAsync(Role role, string roleName, CancellationToken cancellationToken)
+        public Task SetRoleNameAsync(Role role, string roleName)
         {
             role.Name = roleName;
 
             return Task.CompletedTask;
         }
 
-        public Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
+        public Task<IdentityResult> UpdateAsync(Role role)
+        {            
             using (var connection = new SqlConnection(_connectionString))
             {
-                 connection.Open();
+                connection.Open();
 
                 string query = "update roles set Name = @Name, NormalizedRoleName = @NormalizedRoleName where id = @Id";
 

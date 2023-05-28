@@ -96,7 +96,7 @@ namespace Cargo.AdminPanel.Identity
             {
                  connection.Open();
 
-                string query = "delete from users where id = @id";
+                string query = "update users set IsDeleted = 1 where id = @id";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -155,9 +155,7 @@ namespace Cargo.AdminPanel.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             using (var connection = new SqlConnection(_connectionString))
-            {
-                // connection.Open();
-
+            {                
                 connection.Open();
 
                 string query = "select * from users where NormalizedUserName = @NormalizedUserName";
@@ -329,7 +327,7 @@ namespace Cargo.AdminPanel.Identity
                 
                 if (roleId != null)
                 {
-                    string mainQuery = "DELETE FROM UserRoles WHERE userId = @userId AND roleId = @roleId";
+                    string mainQuery = "update UserRoles set IsDeleted = 1 WHERE userId = @userId AND roleId = @roleId";
 
                     cmd = new SqlCommand(mainQuery, connection);
 

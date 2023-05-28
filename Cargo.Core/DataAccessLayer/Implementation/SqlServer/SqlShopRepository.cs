@@ -13,11 +13,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         public SqlShopRepository(string connectionString)
         {
             _connectionString = connectionString;
-        }
-
-        public SqlShopRepository()
-        {
-        }
+        }        
 
         public int Add(Shop shop)
         {

@@ -1,4 +1,5 @@
 ﻿using Cargo.AdminPanel.Models;
+using Cargo.AdminPanel.Services.Abstract;
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,13 @@ namespace Cargo.AdminPanel.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IUserService _userService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -34,6 +37,7 @@ namespace Cargo.AdminPanel.Controllers
             }
 
             var user = _userManager.FindByNameAsync(model.Username).Result;
+            var user2 = _userService.FindByNameAsync(model.Username).Result;
 
             if (user == null)
             {
@@ -42,6 +46,7 @@ namespace Cargo.AdminPanel.Controllers
             }
 
             bool hasCorrectPassword = _userManager.CheckPasswordAsync(user, model.PasswordHash).Result;
+            //bool hasCorrectPassword2 = _userService.CheckPasswordAsync(user2, model.PasswordHash).Result;
 
             if (hasCorrectPassword == false)
             {
@@ -51,14 +56,19 @@ namespace Cargo.AdminPanel.Controllers
 
             await _signInManager.SignInAsync(user, model.RememberMe);
 
+            //await _userService.SignInAsync(user2, model.RememberMe);
+            
+
             return Redirect(returnUrl ?? "/");
         }
 
         [HttpGet]
-        public IActionResult SignOut(string returnUrl)
+        public new IActionResult SignOut()
         {
             _signInManager.SignOutAsync()
                 .GetAwaiter().GetResult();
+
+            //_userService.SignOutAsync();
 
             return Redirect("/");
         }

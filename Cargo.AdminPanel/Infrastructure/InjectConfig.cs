@@ -15,14 +15,20 @@ namespace Cargo.AdminPanel.Infrastructure
         {
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<IShopService, ShopService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<ICountryMapper, CountryMapper>();
+
             services.AddTransient<IShopMapper, ShopMapper>();
+            services.AddTransient<IAddShopMapper, AddShopMapper>();
+            services.AddTransient<IUpdateShopMapper, UpdateShopMapper>();
+
             services.AddTransient<ICategoryMapper, CategoryMapper>();
 
-            services.AddTransient<IAddShopMapper, AddShopMapper>();
-            
-            services.AddTransient<IUpdateShopMapper, UpdateShopMapper>();
+            services.AddTransient<IUserMapper, UserMapper>();
+
+            services.AddTransient<IRoleMapper, RoleMapper>();        
 
             services.AddTransient<IUserStore<User>, UserStore>();
             services.AddTransient<IRoleStore<Role>, RoleStore>();

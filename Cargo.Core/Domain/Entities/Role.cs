@@ -7,6 +7,7 @@ namespace Cargo.Core.Domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string NormalizedRoleName { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         //public virtual ICollection<UserRole> UserRoles { get; set; }
     }
