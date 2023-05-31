@@ -46,7 +46,7 @@ namespace Cargo.AdminPanel.Controllers
             }
 
             bool hasCorrectPassword = _userManager.CheckPasswordAsync(user, model.PasswordHash).Result;
-            //bool hasCorrectPassword2 = _userService.CheckPasswordAsync(user2, model.PasswordHash).Result;
+            bool hasCorrectPassword2 = _userService.CheckPasswordAsync(user2, model.PasswordHash).Result;
 
             if (hasCorrectPassword == false)
             {

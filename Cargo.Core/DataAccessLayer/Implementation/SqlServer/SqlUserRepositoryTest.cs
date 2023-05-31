@@ -1,33 +1,30 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
-    public class SqlUserRepository : IUserRepository
+    public class SqlUserRepositoryTest : IUserRepositoryTest
     {
         private readonly string _connectionString;
-        private readonly UserManager<User> _userManager;
-        //private readonly SignInManager<User> _signInManager;
+        //private readonly UserManager<User> _userManager;
 
-        public SqlUserRepository(string connectionString, UserManager<User> userManager)
-        {
-            _connectionString = connectionString;
-            _userManager = userManager;
-        }
-
-        public SqlUserRepository(string connectionString)
+        public SqlUserRepositoryTest(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public Task AddToRoleAsync(User user, string roleName)
+        public Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -54,7 +51,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     roleId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                string mainQuery = "IF NOT EXISTS(SELECT 1 FROM UserRoles WHERE userId = @userId AND roleId = @roleId) INSERT INTO UserRoles(userId, roleId) VALUES(@userId, @roleId)";
+                string mainQuery = "IF NOT EXISTS(SELECT 1 FROM UserRoles] WHERE userId = @userId AND roleId = @roleId) INSERT INTO UserRoles(userId, roleId) VALUES(@userId, @roleId)";
 
                 cmd = new SqlCommand(mainQuery, connection);
 
@@ -67,8 +64,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             return Task.CompletedTask;
         }
 
-        public Task<IdentityResult> CreateAsync(User user)
+        public Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -77,7 +76,13 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var cmd = new SqlCommand(query, connection);
 
-                AddParameters(cmd, user);
+                cmd.Parameters.AddWithValue("Name", user.Name);
+                cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("Surname", user.Surname ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
+                cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
+
 
                 cmd.ExecuteScalar();
             }
@@ -85,13 +90,15 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             return Task.FromResult(IdentityResult.Success);
         }
 
-        public Task<IdentityResult> DeleteAsync(User user)
+        public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string query = "update users set isDeleted = 1 where id = @id";
+                string query = "update users set IsDeleted = 1 where id = @id";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -111,8 +118,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task<User> FindByIdAsync(string userId)
+        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -128,7 +137,13 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 {
                     User user = new User();
 
-                    AddParameters(cmd, user);
+                    user.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    user.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    user.NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName"));
+                    user.Surname = reader.GetString(reader.GetOrdinal("Surname"));
+                    user.Email = reader.GetString(reader.GetOrdinal("Email"));
+                    user.PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash"));
+                    user.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
 
                     return Task.FromResult(user);
                 }
@@ -137,8 +152,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task<User> FindByNameAsync(string normalizedUserName)
+        public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -152,25 +169,37 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 if (reader.Read())
                 {
-                    return GetFromReader(reader);
-                }               
+                    User user = new User();
+
+                    user.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    user.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    user.NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName"));
+                    user.Surname = reader.GetString(reader.GetOrdinal("Surname"));
+                    user.Email = reader.GetString(reader.GetOrdinal("Email"));
+                    user.PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash"));
+                    user.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
+
+                    return Task.FromResult(user);
+                }
 
                 return null;
             }
         }
 
-        public Task<string> GetNormalizedUserNameAsync(User user)
+        public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.NormalizedUserName);
         }
 
-        public Task<string> GetPasswordHashAsync(User user)
+        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.PasswordHash);
         }
 
-        public Task<IList<string>> GetRolesAsync(User user)
+        public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -201,18 +230,20 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task<string> GetUserIdAsync(User user)
+        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.Id.ToString());
         }
 
-        public Task<string> GetUserNameAsync(User user)
+        public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.Name);
         }
 
-        public Task<IList<User>> GetUsersInRoleAsync(string roleName)
+        public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -228,23 +259,32 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 while (reader.Read())
                 {
+                    User user = new User();
 
-                    var user = GetFromReader(reader).Result;
+                    user.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                    user.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    user.NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName"));
+                    user.Surname = reader.GetString(reader.GetOrdinal("Surname"));
+                    user.Email = reader.GetString(reader.GetOrdinal("Email"));
+                    user.PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash"));
+                    user.PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber"));
 
-                    users.Add(user);                    
+                    users.Add(user);
                 }
 
                 return Task.FromResult(users.ToList() as IList<User>);
             }
         }
 
-        public Task<bool> HasPasswordAsync(User user)
+        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.PasswordHash != null);
         }
 
-        public Task<bool> IsInRoleAsync(User user, string roleName)
+        public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -272,8 +312,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task RemoveFromRoleAsync(User user, string roleName)
+        public Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -287,7 +329,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 if (roleId != null)
                 {
-                    string mainQuery = "update UserRoles set isDeleted = 1 WHERE userId = @userId AND roleId = @roleId";
+                    string mainQuery = "update UserRoles set IsDeleted = 1 WHERE userId = @userId AND roleId = @roleId";
 
                     cmd = new SqlCommand(mainQuery, connection);
 
@@ -299,29 +341,31 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task SetNormalizedUserNameAsync(User user, string normalizedName)
+        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
             user.NormalizedUserName = normalizedName;
 
             return Task.CompletedTask;
         }
 
-        public Task SetPasswordHashAsync(User user, string passwordHash)
+        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
         {
             user.PasswordHash = passwordHash;
 
             return Task.CompletedTask;
         }
 
-        public Task SetUserNameAsync(User user, string userName)
+        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
             user.Name = userName;
 
             return Task.CompletedTask;
         }
 
-        public Task<IdentityResult> UpdateAsync(User user)
+        public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -330,7 +374,13 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var cmd = new SqlCommand(query, connection);
 
-                AddParameters(cmd, user);
+                cmd.Parameters.AddWithValue("Id", user.Id);
+                cmd.Parameters.AddWithValue("Name", user.Name);
+                cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("Surname", user.Surname ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
+                cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
 
                 cmd.ExecuteNonQuery();
             }
@@ -340,57 +390,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
         public Task<bool> CheckPasswordAsync(User user, string password)
         {
-            var result = _userManager.CheckPasswordAsync(user, password).Result;
+           //var result = _userManager.CheckPasswordAsync(user, password).Result;
 
-            return Task.FromResult(result);
+           return Task.FromResult(true);
         }
-
-        public Task SignOutAsync()
-        {
-            //_signInManager.SignOutAsync().GetAwaiter().GetResult();
-
-            return Task.CompletedTask;
-        }
-
-        public Task SignInAsync(User user, bool isPersistent)
-        {
-            var username = FindByNameAsync(user.ToString().ToUpper()).Result;
-
-            //_signInManager.SignInAsync(username, isPersistent);
-
-            return Task.CompletedTask;
-        }
-
-        #region private methods
-
-        private void AddParameters(SqlCommand cmd, User user)
-        {
-            cmd.Parameters.AddWithValue("Id", user.Id);
-            cmd.Parameters.AddWithValue("Name", user.Name);
-            cmd.Parameters.AddWithValue("NormalizedUserName", user.NormalizedUserName ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("Surname", user.Surname ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
-            cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("IsDeleted", user.IsDeleted);
-        }
-
-        private Task<User> GetFromReader(SqlDataReader reader)
-        {
-            User user = new User
-            {
-                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
-                NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName")),
-                Surname = reader.GetString(reader.GetOrdinal("Surname")),
-                Email = reader.GetString(reader.GetOrdinal("Email")),
-                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
-                PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
-            };
-
-            return Task.FromResult(user);
-        }
-        #endregion
     }
 }

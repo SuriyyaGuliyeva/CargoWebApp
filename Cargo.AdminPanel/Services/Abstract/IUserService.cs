@@ -47,9 +47,9 @@ namespace Cargo.AdminPanel.Services.Abstract
 
         Task<bool> CheckPasswordAsync(SignInModel model, string password);
 
-        Task SignOutAsync();
+        //Task SignOutAsync();
 
-        Task SignInAsync(SignInModel model, bool isPersistent);
+        //Task SignInAsync(SignInModel model, bool isPersistent);
 
         void Dispose();
     }

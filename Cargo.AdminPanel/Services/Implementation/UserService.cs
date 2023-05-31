@@ -25,7 +25,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.AddToRoleAsync(user, roleName);
+            _unitOfWork.UserRepositoryTest.AddToRoleAsync(user, roleName, CancellationToken.None);
 
             return Task.CompletedTask;
         }
@@ -34,7 +34,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var result = _unitOfWork.UserRepository.CheckPasswordAsync(user, password).Result;
+            var result = _unitOfWork.UserRepositoryTest.CheckPasswordAsync(user, password).Result;
 
             return Task.FromResult(result);
         }
@@ -43,7 +43,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.CreateAsync(user);
+            _unitOfWork.UserRepositoryTest.CreateAsync(user, CancellationToken.None);
 
             return Task.FromResult(IdentityResult.Success);
         }
@@ -52,19 +52,19 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.DeleteAsync(user);
+            _unitOfWork.UserRepositoryTest.DeleteAsync(user, CancellationToken.None);
 
             return Task.FromResult(IdentityResult.Success);
         }
 
         public void Dispose()
         {
-            _unitOfWork.UserRepository.Dispose();
+            _unitOfWork.UserRepositoryTest.Dispose();
         }
 
         public Task<SignInModel> FindByIdAsync(string userId)
         {
-            var user = _unitOfWork.UserRepository.FindByIdAsync(userId).Result;
+            var user = _unitOfWork.UserRepositoryTest.FindByIdAsync(userId, CancellationToken.None).Result;
 
             var model = _userMapper.Map(user);
 
@@ -73,7 +73,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public Task<SignInModel> FindByNameAsync(string normalizedUserName)
         {
-            var user = _unitOfWork.UserRepository.FindByNameAsync(normalizedUserName).Result;
+            var user = _unitOfWork.UserRepositoryTest.FindByNameAsync(normalizedUserName, CancellationToken.None).Result;
 
             var model = _userMapper.Map(user);
 
@@ -84,7 +84,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var normalizedUserName = _unitOfWork.UserRepository.GetNormalizedUserNameAsync(user);
+            var normalizedUserName = _unitOfWork.UserRepositoryTest.GetNormalizedUserNameAsync(user, CancellationToken.None);
 
             return normalizedUserName;
         }
@@ -93,7 +93,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var password = _unitOfWork.UserRepository.GetPasswordHashAsync(user);
+            var password = _unitOfWork.UserRepositoryTest.GetPasswordHashAsync(user, CancellationToken.None);
 
             return password;
         }
@@ -102,7 +102,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var roles = _unitOfWork.UserRepository.GetRolesAsync(user);
+            var roles = _unitOfWork.UserRepositoryTest.GetRolesAsync(user, CancellationToken.None);
 
             return roles;
         }
@@ -111,7 +111,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var userId = _unitOfWork.UserRepository.GetUserIdAsync(user);
+            var userId = _unitOfWork.UserRepositoryTest.GetUserIdAsync(user, CancellationToken.None);
 
             return userId;
         }
@@ -120,14 +120,14 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var username = _unitOfWork.UserRepository.GetUserNameAsync(user);
+            var username = _unitOfWork.UserRepositoryTest.GetUserNameAsync(user, CancellationToken.None);
 
             return username;
         }
 
         public Task<IList<SignInModel>> GetUsersInRoleAsync(string roleName)
         {
-            var users = _unitOfWork.UserRepository.GetUsersInRoleAsync(roleName).Result;
+            var users = _unitOfWork.UserRepositoryTest.GetUsersInRoleAsync(roleName, CancellationToken.None).Result;
 
             IList<SignInModel> models = null;
 
@@ -145,7 +145,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var result = _unitOfWork.UserRepository.HasPasswordAsync(user).Result;
+            var result = _unitOfWork.UserRepositoryTest.HasPasswordAsync(user, CancellationToken.None).Result;
 
             return Task.FromResult(result);
         }
@@ -154,7 +154,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            var result = _unitOfWork.UserRepository.IsInRoleAsync(user, roleName).Result;
+            var result = _unitOfWork.UserRepositoryTest.IsInRoleAsync(user, roleName, CancellationToken.None).Result;
 
             return Task.FromResult(result);
         }
@@ -163,7 +163,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.RemoveFromRoleAsync(user, roleName);
+            _unitOfWork.UserRepositoryTest.RemoveFromRoleAsync(user, roleName, CancellationToken.None);
 
             return Task.CompletedTask;
         }
@@ -172,7 +172,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.SetNormalizedUserNameAsync(user, normalizedName);
+            _unitOfWork.UserRepositoryTest.SetNormalizedUserNameAsync(user, normalizedName, CancellationToken.None);
 
             return Task.CompletedTask;
         }
@@ -181,7 +181,7 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.SetPasswordHashAsync(user, passwordHash);
+            _unitOfWork.UserRepositoryTest.SetPasswordHashAsync(user, passwordHash, CancellationToken.None);
 
             return Task.CompletedTask;
         }
@@ -190,32 +190,32 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.SetUserNameAsync(user, userName);
+            _unitOfWork.UserRepositoryTest.SetUserNameAsync(user, userName, CancellationToken.None);
 
             return Task.CompletedTask;
         }
 
-        public Task SignInAsync(SignInModel model, bool isPersistent)
-        {
-            var user = _userMapper.Map(model);
+        //public Task SignInAsync(SignInModel model, bool isPersistent)
+        //{
+        //    var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.SignInAsync(user, isPersistent);
+        //    _unitOfWork.UserRepositoryTest.SignInAsync(user, isPersistent);
 
-            return Task.CompletedTask;
-        }
+        //    return Task.CompletedTask;
+        //}
 
-        public Task SignOutAsync()
-        {
-            _unitOfWork.UserRepository.SignOutAsync();
+        //public Task SignOutAsync()
+        //{
+        //    _unitOfWork.UserRepositoryTest.SignOutAsync();
 
-            return Task.CompletedTask;
-        }
+        //    return Task.CompletedTask;
+        //}
 
         public Task<IdentityResult> UpdateAsync(SignInModel model)
         {
             var user = _userMapper.Map(model);
 
-            _unitOfWork.UserRepository.UpdateAsync(user);
+            _unitOfWork.UserRepositoryTest.UpdateAsync(user, CancellationToken.None);
 
             return Task.FromResult(IdentityResult.Success);
         }

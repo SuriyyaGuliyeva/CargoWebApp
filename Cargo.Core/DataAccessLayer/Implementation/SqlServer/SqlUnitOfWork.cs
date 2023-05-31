@@ -10,7 +10,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
         public SqlUnitOfWork(string connectionString)
         {
-            _connectionString = connectionString;           
+            _connectionString = connectionString;      
         }
 
         public ICountryRepository CountryRepository => new SqlCountryRepository(_connectionString);
@@ -22,5 +22,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         public IUserRepository UserRepository => new SqlUserRepository(_connectionString);
 
         public IRoleRepository RoleRepository => new SqlRoleRepository(_connectionString);
+
+        public IUserRepositoryTest UserRepositoryTest => new SqlUserRepositoryTest(_connectionString);
     }
 }

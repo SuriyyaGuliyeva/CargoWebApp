@@ -45,11 +45,13 @@ namespace Cargo.AdminPanel
 
             services.AddAuthentication();
 
-            services.AddIdentity<User, Role>();
+            services.AddIdentity<User, Role>();           
 
             // IDENTITY - END
 
             services.ConfigServices();
+
+            //services.AddScoped<UserManager<User>>();
 
             services.ConfigureApplicationCookie(x =>
             {
