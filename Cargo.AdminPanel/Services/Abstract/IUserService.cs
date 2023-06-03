@@ -1,8 +1,6 @@
 ﻿using Cargo.AdminPanel.Models;
-using Cargo.Core.Domain.Entities;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cargo.AdminPanel.Services.Abstract
@@ -43,13 +41,7 @@ namespace Cargo.AdminPanel.Services.Abstract
 
         Task SetUserNameAsync(SignInModel model, string userName);
 
-        Task<IdentityResult> UpdateAsync(SignInModel model);
-
-        Task<bool> CheckPasswordAsync(SignInModel model, string password);
-
-        //Task SignOutAsync();
-
-        //Task SignInAsync(SignInModel model, bool isPersistent);
+        Task<IdentityResult> UpdateAsync(SignInModel model);        
 
         void Dispose();
     }

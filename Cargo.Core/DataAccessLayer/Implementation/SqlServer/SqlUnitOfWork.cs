@@ -1,6 +1,4 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 {
@@ -22,7 +20,5 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         public IUserRepository UserRepository => new SqlUserRepository(_connectionString);
 
         public IRoleRepository RoleRepository => new SqlRoleRepository(_connectionString);
-
-        public IUserRepositoryTest UserRepositoryTest => new SqlUserRepositoryTest(_connectionString);
     }
 }

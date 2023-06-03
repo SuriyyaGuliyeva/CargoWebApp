@@ -6,7 +6,6 @@
         public IShopRepository ShopRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
         public IUserRepository UserRepository { get; }
-        public IUserRepositoryTest UserRepositoryTest { get; }
         public IRoleRepository RoleRepository { get; }
     }
 }

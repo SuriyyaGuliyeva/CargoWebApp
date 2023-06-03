@@ -9,19 +9,21 @@
     <div>
         <div class="form-group">
             <label for="Username">Username</label>
-            <input asp-for="Username" type="text" class="form-control" placeholder="Enter Username">
+            <input asp-for="Username" type="text" class="form-control" placeholder="İstifadəçi adı daxil edin">
         </div>
         <div class="form-group">
             <label for="PasswordHash">Password</label>
-            <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Enter Password">
+            <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Parol daxil edin">
         </div>
         <div class="form-group form-check">
             <input type="checkbox" class="form-check-input">
-            <label asp-for="RememberMe" class="form-check-label">Remember Me</label>
+            <label asp-for="RememberMe" class="form-check-label">Xatırla</label>
         </div>
+
+        <div class="text-danger font-weight-bold" asp-validation-summary="All"></div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Sign In</button>
+    <button type="submit" class="btn btn-primary">Daxil ol</button>
 </form>
 
 @section Scripts {

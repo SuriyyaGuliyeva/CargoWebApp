@@ -1,0 +1,240 @@
+﻿@media (min-width: 991px) 
+{
+    .footer-main {
+        padding: 56px 0 32px;
+    }
+}
+
+.footer-main {
+    padding: 40px 0;
+}
+
+@media (min-width: 1248px)
+{
+    .wrapper {
+        width: 1216px;
+        margin: 0 auto;
+        padding: 0;
+    }
+}
+
+.wrapper {
+    width: 100%;
+    padding: 0 16px;
+}
+
+@media (min-width: 991px)
+{
+    .footer-main__logo {
+        margin: 0 0 48px;
+    }
+}
+
+.footer-main__logo {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 120px;
+    margin: 0 auto 40px;
+}
+
+@media (min-width: 991px)
+{
+    .social-list {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+    }
+}
+
+.social-list {
+    margin: 0;
+    padding: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.social-list__item {
+    list-style-type: none;
+    margin-right: 40px;
+}
+
+.social-list__item__link {
+    font-size: 24px;
+    color: #fff;
+    text-decoration: none;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+[class*=" icon-"], [class^=icon-] {
+    font-family: icomoon !important;
+    speak: never;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-facebook:before {
+    content: "\e903";
+}
+
+.icon-instagram:before {
+    content: "\e901";
+}
+
+.icon-youtube:before {
+    content: "\e900";
+}
+
+@media (min-width: 991px) 
+{
+    .footer-main__list {
+        margin: 0;
+    }
+}
+
+.footer-main__list {
+    margin: 60px 0 48px;
+    padding: 0;
+}
+
+.footer-main__list__item {
+    list-style-type: none;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 991px) 
+{
+    .footer-main__list__item__link {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+
+.footer-main__list__item__link {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+@media (min-width: 991px) 
+{
+    .footer-main__block {
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+    }
+}
+
+.footer-main__block {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.footer-main__block__app {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.footer-main__block__app__item {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    text-decoration: none;
+    margin-right: 10px;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+@media (min-width: 991px) 
+{
+    .footer-copyright {
+        padding: 24px 0;
+    }
+}
+
+.footer-copyright {
+    padding: 16px 0;
+    border-top: 1px solid rgba(119,148,153,.1);
+}
+
+@media (min-width: 991px)
+{
+    .footer-copyright__holder {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+
+.footer-copyright__holder {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #fff;
+}
+
+@media (min-width: 991px) 
+{
+    .footer-copyright__holder__icon {
+        font-size: 20px;
+    }
+}
+
+.footer-copyright__holder__icon {
+    font-size: 16px;
+    margin-right: 6px;
+}
+
+[class*=" icon-"], [class^=icon-] {
+    font-family: icomoon !important;
+    speak: never;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-copyright:before {
+    content: "\e919";
+}

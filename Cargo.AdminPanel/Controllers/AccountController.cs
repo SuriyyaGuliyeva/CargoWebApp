@@ -11,13 +11,11 @@ namespace Cargo.AdminPanel.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly IUserService _userService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserService userService)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _userService = userService;
         }
 
         [HttpGet]
@@ -37,7 +35,6 @@ namespace Cargo.AdminPanel.Controllers
             }
 
             var user = _userManager.FindByNameAsync(model.Username).Result;
-            var user2 = _userService.FindByNameAsync(model.Username).Result;
 
             if (user == null)
             {
@@ -46,7 +43,6 @@ namespace Cargo.AdminPanel.Controllers
             }
 
             bool hasCorrectPassword = _userManager.CheckPasswordAsync(user, model.PasswordHash).Result;
-            bool hasCorrectPassword2 = _userService.CheckPasswordAsync(user2, model.PasswordHash).Result;
 
             if (hasCorrectPassword == false)
             {
@@ -54,10 +50,7 @@ namespace Cargo.AdminPanel.Controllers
                 return View(model);
             }
 
-            await _signInManager.SignInAsync(user, model.RememberMe);
-
-            //await _userService.SignInAsync(user2, model.RememberMe);
-            
+            await _signInManager.SignInAsync(user, model.RememberMe);            
 
             return Redirect(returnUrl ?? "/");
         }
@@ -67,8 +60,6 @@ namespace Cargo.AdminPanel.Controllers
         {
             _signInManager.SignOutAsync()
                 .GetAwaiter().GetResult();
-
-            //_userService.SignOutAsync();
 
             return Redirect("/");
         }
