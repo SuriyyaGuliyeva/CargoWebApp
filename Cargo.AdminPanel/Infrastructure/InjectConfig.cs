@@ -1,4 +1,4 @@
-﻿using Cargo.AdminPanel.Identity;
+﻿using Cargo.Core.Identity;
 using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Mappers.Implementation;
 using Cargo.AdminPanel.Services.Abstract;
@@ -15,7 +15,6 @@ namespace Cargo.AdminPanel.Infrastructure
         {
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<IShopService, ShopService>();
-            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<ICountryMapper, CountryMapper>();

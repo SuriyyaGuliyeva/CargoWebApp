@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cargo.AdminPanel.Identity
+namespace Cargo.Core.Identity
 {
     public class UserStore : IUserStore<User>, IUserRoleStore<User>, IUserPasswordStore<User>
     {

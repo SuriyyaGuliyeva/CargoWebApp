@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cargo.AdminPanel.Identity
+namespace Cargo.Core.Identity
 {
     public class RoleStore : IRoleStore<Role>
     {

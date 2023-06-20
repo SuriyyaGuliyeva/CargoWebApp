@@ -1,16 +1,17 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Cargo.AdminPanel",
-    "\\Cargo.AdminPanel\\Identity",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer",
     "\\Cargo.Core\\Domain",
     "\\Cargo.Core\\Domain\\Entities",
+    "\\CargoApi",
+    "\\CargoApi\\Models",
+    "\\CargoApi\\Models\\AccountModels",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\CargoWebApplication.sln",
+  "SelectedNode": "\\CargoApi\\Models\\AccountModels\\LoginResponseModel.cs",
   "PreviewInSolutionExplorer": false
 }

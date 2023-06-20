@@ -51,8 +51,6 @@ namespace Cargo.AdminPanel
 
             services.ConfigServices();
 
-            //services.AddScoped<UserManager<User>>();
-
             services.ConfigureApplicationCookie(x =>
             {
                 x.LoginPath = "/Account/SignIn";
