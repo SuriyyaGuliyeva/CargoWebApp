@@ -12,6 +12,6 @@
     "\\CargoApi\\Models\\AccountModels",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\CargoApi\\Models\\AccountModels\\LoginResponseModel.cs",
+  "SelectedNode": "\\CargoApi\\Startup.cs",
   "PreviewInSolutionExplorer": false
 }

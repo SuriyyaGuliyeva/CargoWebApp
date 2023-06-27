@@ -1,5 +1,4 @@
 ﻿using Cargo.AdminPanel.Models;
-using Cargo.AdminPanel.Services.Abstract;
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

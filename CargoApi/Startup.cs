@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Reflection;
 
 namespace CargoApi
 {
@@ -24,12 +25,11 @@ namespace CargoApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the container.    
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddFluentValidation(
-                x => x.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
+                    .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));            
 
             var configuration = new ConfigurationBuilder()
                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)

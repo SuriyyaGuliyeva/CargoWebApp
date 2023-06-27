@@ -1,4 +1,6 @@
-﻿namespace Cargo.Core.DataAccessLayer.Abstract
+﻿using System.Threading.Tasks;
+
+namespace Cargo.Core.DataAccessLayer.Abstract
 {
     public interface IUnitOfWork
     {        
@@ -7,5 +9,6 @@
         public ICategoryRepository CategoryRepository { get; }
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
+        Task<int> SaveAsync();
     }
 }

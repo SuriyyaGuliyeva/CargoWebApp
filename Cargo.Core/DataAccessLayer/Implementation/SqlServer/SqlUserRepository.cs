@@ -127,7 +127,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 if (reader.Read())
                 {
-                    return GetFromReader(reader);                    
+                    return GetFromReader(reader);
                 }
 
                 return null;
