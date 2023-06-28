@@ -1,31 +1,17 @@
 ﻿using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
-    public interface IRoleRepository
+    public interface IRoleRepository : IGenericRepository<Role>
     {
-        Task<IdentityResult> CreateAsync(Role role);
-
-        Task<IdentityResult> DeleteAsync(Role role);
-
-        Task<Role> FindByIdAsync(string roleId);
-
-        Task<Role> FindByNameAsync(string normalizedRoleName);
-
-        Task<string> GetNormalizedRoleNameAsync(Role role);
-
-        Task<string> GetRoleIdAsync(Role role);
-
-        Task<string> GetRoleNameAsync(Role role);
-
-        Task SetNormalizedRoleNameAsync(Role role, string normalizedName);
-
-        Task SetRoleNameAsync(Role role, string roleName);
-
-        Task<IdentityResult> UpdateAsync(Role role);
-
+        Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken);
+        Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken);
+        Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken);
+        Task<Role> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken);      
+        Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken);
         void Dispose();
     }
 }

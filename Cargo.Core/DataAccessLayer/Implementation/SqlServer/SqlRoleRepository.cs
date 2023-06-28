@@ -2,7 +2,9 @@
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
@@ -16,8 +18,15 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             _connectionString = connectionString;
         }
 
-        public Task<IdentityResult> CreateAsync(Role role)
-        {            
+        public int Add(Role t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -35,8 +44,15 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             return Task.FromResult(IdentityResult.Success);
         }
 
-        public Task<IdentityResult> DeleteAsync(Role role)
-        {            
+        public bool Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -61,8 +77,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task<Role> FindByIdAsync(string roleId)
-        {            
+        public Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -89,8 +107,10 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task<Role> FindByNameAsync(string normalizedRoleName)
-        {            
+        public Task<Role> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -117,37 +137,25 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task<string> GetNormalizedRoleNameAsync(Role role)
+        public Role Get(int id)
         {
-            return Task.FromResult(role.NormalizedRoleName);
+            throw new NotImplementedException();
         }
 
-        public Task<string> GetRoleIdAsync(Role role)
+        public IList<Role> GetAll()
         {
-            return Task.FromResult(role.Id.ToString());
+            throw new NotImplementedException();
         }
 
-        public Task<string> GetRoleNameAsync(Role role)
+        public bool Update(Role t)
         {
-            return Task.FromResult(role.Name);
+            throw new NotImplementedException();
         }
 
-        public Task SetNormalizedRoleNameAsync(Role role, string normalizedName)
+        public Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken)
         {
-            role.NormalizedRoleName = normalizedName;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.CompletedTask;
-        }
-
-        public Task SetRoleNameAsync(Role role, string roleName)
-        {
-            role.Name = roleName;
-
-            return Task.CompletedTask;
-        }
-
-        public Task<IdentityResult> UpdateAsync(Role role)
-        {            
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();

@@ -2,16 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\Cargo.Core",
-    "\\Cargo.Core\\DataAccessLayer",
-    "\\Cargo.Core\\DataAccessLayer\\Implementation",
-    "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer",
     "\\Cargo.Core\\Domain",
     "\\Cargo.Core\\Domain\\Entities",
     "\\CargoApi",
     "\\CargoApi\\Models",
     "\\CargoApi\\Models\\AccountModels",
+    "\\CargoApi\\Services",
+    "\\CargoApi\\Services\\Implementation",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\CargoApi\\Startup.cs",
+  "SelectedNode": "\\CargoApi\\Services\\Implementation\\AccountService.cs",
   "PreviewInSolutionExplorer": false
 }

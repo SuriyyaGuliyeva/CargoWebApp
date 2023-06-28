@@ -19,6 +19,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             _connectionString = connectionString;
         }
 
+        public int Add(User t)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -80,6 +85,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
 
             return Task.FromResult(IdentityResult.Success);
+        }
+
+        public bool Delete(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
@@ -158,15 +168,15 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
+        public User Get(int id)
         {
-            return Task.FromResult(user.NormalizedUserName);
+            throw new NotImplementedException();
         }
 
-        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
+        public IList<User> GetAll()
         {
-            return Task.FromResult(user.PasswordHash);
-        }
+            throw new NotImplementedException();
+        }        
 
         public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
         {
@@ -200,17 +210,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 return Task.FromResult(roleNames);
             }
-        }
-
-        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(user.Id.ToString());
-        }
-
-        public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(user.Name);
-        }
+        }       
 
         public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
@@ -238,12 +238,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 return Task.FromResult(users.ToList() as IList<User>);
             }
-        }
-
-        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(user.PasswordHash != null);
-        }
+        }        
 
         public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
@@ -303,27 +298,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 return Task.CompletedTask;
             }
-        }
+        }        
 
-        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
+        public bool Update(User t)
         {
-            user.NormalizedUserName = normalizedName;
-
-            return Task.CompletedTask;
-        }
-
-        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
-        {
-            user.PasswordHash = passwordHash;
-
-            return Task.CompletedTask;
-        }
-
-        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
-        {
-            user.Name = userName;
-
-            return Task.CompletedTask;
+            throw new NotImplementedException();
         }
 
         public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
@@ -348,8 +327,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             return Task.FromResult(IdentityResult.Success);
         }
 
-        #region private methods
 
+        #region private methods
         private void AddParameters(SqlCommand cmd, User user)
         {
             cmd.Parameters.AddWithValue("Name", user.Name);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Cargo.Core.Identity
 {
     public class UserStore : IUserStore<User>, IUserRoleStore<User>, IUserPasswordStore<User>
-    {
+    {      
         private readonly IUnitOfWork _unitOfWork;
 
         public UserStore(IUnitOfWork unitOfWork)
@@ -54,12 +54,12 @@ namespace Cargo.Core.Identity
 
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.GetNormalizedUserNameAsync(user, cancellationToken);
+            return Task.FromResult(user.NormalizedUserName);
         }
 
         public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.GetPasswordHashAsync(user, cancellationToken);
+            return Task.FromResult(user.PasswordHash);
         }
 
         public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
@@ -69,12 +69,12 @@ namespace Cargo.Core.Identity
 
         public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.GetUserIdAsync(user, cancellationToken);
+            return Task.FromResult(user.Id.ToString());
         }
 
         public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.GetUserNameAsync(user, cancellationToken);
+            return Task.FromResult(user.Name);
         }
 
         public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
@@ -84,7 +84,7 @@ namespace Cargo.Core.Identity
 
         public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.HasPasswordAsync(user, cancellationToken);
+            return Task.FromResult(user.PasswordHash != null);
         }
 
         public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
@@ -99,17 +99,23 @@ namespace Cargo.Core.Identity
 
         public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.SetNormalizedUserNameAsync(user, normalizedName, cancellationToken);
+            user.NormalizedUserName = normalizedName;
+
+            return Task.CompletedTask;
         }
 
         public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.SetPasswordHashAsync(user, passwordHash, cancellationToken);
+            user.PasswordHash = passwordHash;
+
+            return Task.CompletedTask;
         }
 
         public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.SetUserNameAsync(user, userName, cancellationToken);
+            user.Name = userName;
+
+            return Task.CompletedTask;
         }
 
         public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
