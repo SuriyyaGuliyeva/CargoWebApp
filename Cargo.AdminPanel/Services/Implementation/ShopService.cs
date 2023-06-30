@@ -142,11 +142,6 @@ namespace Cargo.AdminPanel.Services.Implementation
 
         public void UploadNewImage(UploadImageShopModel model)
         {
-            var shop = new Shop
-            {
-                Id = model.Id
-            };
-
             Directory.CreateDirectory(StorageConstants.ShopsPhotoDirectory);
 
             using (MemoryStream memoryStream = new MemoryStream())
@@ -158,10 +153,10 @@ namespace Cargo.AdminPanel.Services.Implementation
                 var hash = SecurityUtil.CalculateHash(memoryStream.ToArray());
 
                 // Step 3. Set photo name
-                shop.Photo = $"{hash}.jpg";
+                var photo = $"{hash}.jpg";
 
                 // Step 4. Create file path for photo
-                var filePath = Path.Combine(StorageConstants.ShopsPhotoDirectory, shop.Photo);
+                var filePath = Path.Combine(StorageConstants.ShopsPhotoDirectory, photo);
 
                 // Step 5. Check this file already exists or not
                 if (File.Exists(filePath) == false)
@@ -171,9 +166,14 @@ namespace Cargo.AdminPanel.Services.Implementation
                         memoryStream.WriteTo(fileStream);
                     }
                 }
-            }            
 
-            _unitOfWork.ShopRepository.UploadNewImage(shop);
+                // Step 6. Update in database
+                var shop = _unitOfWork.ShopRepository.Get(model.Id);
+
+                shop.Photo = photo;
+
+                _unitOfWork.ShopRepository.Update(shop);
+            }
         }
 
         public bool IsExists(string name, int selectedCategory, int selectedCountry)

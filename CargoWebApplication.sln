@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cargo.AdminPanel", "Cargo.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CargoApi", "CargoApi\CargoApi.csproj", "{0A29F25F-066B-4730-9B20-B963C1368EF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cargo.IdentityServer", "Cargo.IdentityServer\Cargo.IdentityServer.csproj", "{49837F10-DD66-43E1-8383-33AE5A0B9509}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0A29F25F-066B-4730-9B20-B963C1368EF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A29F25F-066B-4730-9B20-B963C1368EF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A29F25F-066B-4730-9B20-B963C1368EF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49837F10-DD66-43E1-8383-33AE5A0B9509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49837F10-DD66-43E1-8383-33AE5A0B9509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49837F10-DD66-43E1-8383-33AE5A0B9509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49837F10-DD66-43E1-8383-33AE5A0B9509}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

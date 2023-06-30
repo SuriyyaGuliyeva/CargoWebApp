@@ -1,6 +1,5 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -13,64 +12,13 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
     public class SqlUserRepository : IUserRepository
     {
         private readonly string _connectionString;
-
         public SqlUserRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public int Add(User t)
+        public int Add(User user)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                var normalizedRoleName = roleName.ToUpper();
-
-                string query = "SELECT Id FROM roles WHERE NormalizedRoleName = @normalizedRoleName";
-
-                var cmd = new SqlCommand(query, connection);
-
-                cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
-
-                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                if (roleId == null)
-                {
-                    query = "INSERT INTO roles (Name, NormalizedName) output inserted.Id VALUES (@roleName, @normalizedRoleName)";
-
-                    cmd = new SqlCommand(query, connection);
-
-                    cmd.Parameters.AddWithValue("roleName", roleName);
-                    cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
-
-                    roleId = Convert.ToInt32(cmd.ExecuteScalar());
-                }
-
-                string mainQuery = "IF NOT EXISTS(SELECT 1 FROM UserRoles] WHERE userId = @userId AND roleId = @roleId) INSERT INTO UserRoles(userId, roleId) VALUES(@userId, @roleId)";
-
-                cmd = new SqlCommand(mainQuery, connection);
-
-                cmd.Parameters.AddWithValue("userId", user.Id);
-                cmd.Parameters.AddWithValue("roleId", roleId);
-
-                cmd.ExecuteScalar();
-            }
-
-            return Task.CompletedTask;
-        }
-
-        public Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -81,21 +29,12 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 AddParameters(cmd, user);
 
-                cmd.ExecuteScalar();
+                return (int) cmd.ExecuteScalar();
             }
-
-            return Task.FromResult(IdentityResult.Success);
         }
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -104,19 +43,29 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var cmd = new SqlCommand(query, connection);
 
-                cmd.Parameters.AddWithValue("id", user.Id);
+                cmd.Parameters.AddWithValue("id", id);
 
-                cmd.ExecuteNonQuery();
+                return cmd.ExecuteNonQuery() > 0;
             }
-
-            return Task.FromResult(IdentityResult.Success);
         }
 
-        public void Dispose()
+        public bool Update(User user)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                connection.Close();
+                connection.Open();
+
+                string query = "update users set Name = @Name, NormalizedUserName = @NormalizedUserName, Surname = @Surname, Email = @Email, PasswordHash = @PasswordHash, PhoneNumber = @PhoneNumber where id = @Id";
+
+                var cmd = new SqlCommand(query, connection);
+
+                cmd.Parameters.AddWithValue("Id", user.Id);
+
+                AddParameters(cmd, user);
+
+                var affectedRows = cmd.ExecuteNonQuery();
+
+                return affectedRows > 0;
             }
         }
 
@@ -166,6 +115,49 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 return null;
             }
+        }
+
+        public Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var normalizedRoleName = roleName.ToUpper();
+
+                string query = "SELECT Id FROM roles WHERE NormalizedRoleName = @normalizedRoleName";
+
+                var cmd = new SqlCommand(query, connection);
+
+                cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
+
+                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                if (roleId == null)
+                {
+                    query = "INSERT INTO roles (Name, NormalizedName) output inserted.Id VALUES (@roleName, @normalizedRoleName)";
+
+                    cmd = new SqlCommand(query, connection);
+
+                    cmd.Parameters.AddWithValue("roleName", roleName);
+                    cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
+
+                    roleId = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+                string mainQuery = "IF NOT EXISTS(SELECT 1 FROM UserRoles] WHERE userId = @userId AND roleId = @roleId) INSERT INTO UserRoles(userId, roleId) VALUES(@userId, @roleId)";
+
+                cmd = new SqlCommand(mainQuery, connection);
+
+                cmd.Parameters.AddWithValue("userId", user.Id);
+                cmd.Parameters.AddWithValue("roleId", roleId);
+
+                cmd.ExecuteScalar();
+            }
+
+            return Task.CompletedTask;
         }
 
         public User Get(int id)
@@ -299,34 +291,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 return Task.CompletedTask;
             }
         }        
-
-        public bool Update(User t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string query = "update users set Name = @Name, NormalizedUserName = @NormalizedUserName, Surname = @Surname, Email = @Email, PasswordHash = @PasswordHash, PhoneNumber = @PhoneNumber where id = @Id";
-
-                var cmd = new SqlCommand(query, connection);
-
-                cmd.Parameters.AddWithValue("Id", user.Id);
-
-                AddParameters(cmd, user);
-
-                cmd.ExecuteNonQuery();
-            }
-
-            return Task.FromResult(IdentityResult.Success);
-        }
-
 
         #region private methods
         private void AddParameters(SqlCommand cmd, User user)

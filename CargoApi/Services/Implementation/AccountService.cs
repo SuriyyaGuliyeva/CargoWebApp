@@ -66,7 +66,6 @@ namespace CargoApi.Services.Implementation
             }
 
             await _unitOfWork.SaveAsync();
-
         }
 
         // To generate Token

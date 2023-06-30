@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\Entities\" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.31" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <ProjectReference Include="..\Cargo.Core\Cargo.Core.csproj" />
   </ItemGroup>
 
 </Project>

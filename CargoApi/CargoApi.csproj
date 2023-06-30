@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cargo.Core\Cargo.Core.csproj" />
+    <ProjectReference Include="..\Cargo.IdentityServer\Cargo.IdentityServer.csproj" />
   </ItemGroup>
 
 </Project>

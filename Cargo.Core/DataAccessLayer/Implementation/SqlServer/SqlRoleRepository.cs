@@ -1,6 +1,5 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -12,21 +11,13 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
     public class SqlRoleRepository : IRoleRepository
     {
         private readonly string _connectionString;
-
         public SqlRoleRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public int Add(Role t)
+        public int Add(Role role)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -38,21 +29,12 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("Name", role.Name);
                 cmd.Parameters.AddWithValue("NormalizedRoleName", role.NormalizedRoleName);
 
-                cmd.ExecuteScalar();
+                return (int) cmd.ExecuteScalar();
             }
-
-            return Task.FromResult(IdentityResult.Success);
         }
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -61,19 +43,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 var cmd = new SqlCommand(query, connection);
 
-                cmd.Parameters.AddWithValue("id", role.Id);
+                cmd.Parameters.AddWithValue("id", id);
 
-                cmd.ExecuteNonQuery();
-            }
-
-            return Task.FromResult(IdentityResult.Success);
-        }
-
-        public void Dispose()
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Close();
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
 
@@ -147,15 +119,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             throw new NotImplementedException();
         }
 
-        public bool Update(Role t)
+        public bool Update(Role role)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -168,10 +133,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("Name", role.Name);
                 cmd.Parameters.AddWithValue("NormalizedRoleName", role.NormalizedRoleName);
 
-                cmd.ExecuteNonQuery();
+                return cmd.ExecuteNonQuery() > 0;
             }
-
-            return Task.FromResult(IdentityResult.Success);
         }
     }
 }

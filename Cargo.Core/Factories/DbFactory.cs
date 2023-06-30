@@ -1,8 +1,6 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.DataAccessLayer.Implementation.SqlServer;
-using Cargo.Core.Domain.Entities;
 using Cargo.Core.Domain.Enums;
-using Microsoft.AspNetCore.Identity;
 
 namespace Cargo.Core.Factories
 {

@@ -10,7 +10,6 @@ namespace Cargo.Core.Identity
     public class UserStore : IUserStore<User>, IUserRoleStore<User>, IUserPasswordStore<User>
     {      
         private readonly IUnitOfWork _unitOfWork;
-
         public UserStore(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -25,21 +24,40 @@ namespace Cargo.Core.Identity
 
         public Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
-            _unitOfWork.UserRepository.CreateAsync(user, cancellationToken);
+            var id = _unitOfWork.UserRepository.Add(user);
 
-            return Task.FromResult(IdentityResult.Success);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (id > 0)
+                return Task.FromResult(IdentityResult.Success);
+
+            var identityError = new IdentityError
+            {
+                Description = "Can not add user"
+            };
+
+            return Task.FromResult(IdentityResult.Failed(identityError));
         }
 
         public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
-            _unitOfWork.UserRepository.DeleteAsync(user, cancellationToken);
+            var success = _unitOfWork.UserRepository.Delete(user.Id);
 
-            return Task.FromResult(IdentityResult.Success);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (success)
+                return Task.FromResult(IdentityResult.Success);
+
+            var identityError = new IdentityError
+            {
+                Description = "Can not delete user"
+            };
+
+            return Task.FromResult(IdentityResult.Failed(identityError));
         }
 
         public void Dispose()
         {
-            _unitOfWork.UserRepository.Dispose();
         }
 
         public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
@@ -120,7 +138,17 @@ namespace Cargo.Core.Identity
 
         public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
-            return _unitOfWork.UserRepository.UpdateAsync(user, cancellationToken);
+            var success = _unitOfWork.UserRepository.Update(user);
+
+            if (success)
+                return Task.FromResult(IdentityResult.Success);
+
+            var identityError = new IdentityError
+            {
+                Description = "Can not update user"
+            };
+
+            return Task.FromResult(IdentityResult.Failed(identityError));
         }
     }
 }

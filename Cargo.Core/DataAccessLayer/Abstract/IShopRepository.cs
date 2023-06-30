@@ -6,6 +6,5 @@ namespace Cargo.Core.DataAccessLayer.Abstract
     public interface IShopRepository : IGenericRepository<Shop>
     {
         Shop GetByCategoryId(string name, int categoryId, int countryId);
-        bool UploadNewImage(Shop shop);
     }
 }
