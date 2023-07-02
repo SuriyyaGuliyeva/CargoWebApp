@@ -18,7 +18,7 @@ namespace CargoApi.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate([FromBody] LoginRequestModel requestModel)
+        public async Task<IActionResult> Login([FromBody] LoginRequestModel requestModel)
         {
             var response = await _accountService.Authenticate(requestModel);
 

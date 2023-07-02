@@ -25,6 +25,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         public ICategoryRepository CategoryRepository => new SqlCategoryRepository(_connectionString);
         public IUserRepository UserRepository => new SqlUserRepository(_connectionString);
         public IRoleRepository RoleRepository => new SqlRoleRepository(_connectionString);
+        public IUserRoleRepository UserRoleRepository => new SqlUserRoleRepository(_connectionString);
 
         public async Task<int> SaveAsync()
         {

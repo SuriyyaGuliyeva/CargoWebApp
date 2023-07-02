@@ -5,7 +5,6 @@ using Cargo.AdminPanel.Services.Abstract;
 using Cargo.AdminPanel.ViewModels;
 using Cargo.Core.Constants;
 using Cargo.Core.DataAccessLayer.Abstract;
-using Cargo.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -153,7 +152,7 @@ namespace Cargo.AdminPanel.Services.Implementation
                 var hash = SecurityUtil.CalculateHash(memoryStream.ToArray());
 
                 // Step 3. Set photo name
-                var photo = $"{hash}.jpg";
+                var photo = $"{hash}.jpg";              
 
                 // Step 4. Create file path for photo
                 var filePath = Path.Combine(StorageConstants.ShopsPhotoDirectory, photo);
@@ -172,7 +171,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
                 shop.Photo = photo;
 
-                _unitOfWork.ShopRepository.Update(shop);
+                _unitOfWork.ShopRepository.UploadNewImage(shop);
             }
         }
 

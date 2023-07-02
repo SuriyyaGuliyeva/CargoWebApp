@@ -29,7 +29,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 AddParameters(cmd, user);
 
-                return (int) cmd.ExecuteScalar();
+                return (int)cmd.ExecuteScalar();
             }
         }
 
@@ -68,35 +68,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 return affectedRows > 0;
             }
         }
-
-        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        
+        public User FindByName(string normalizedUserName)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string query = "select * from users where Id = @Id";
-
-                var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("Id", Int32.Parse(userId));
-
-                var reader = cmd.ExecuteReader();
-
-                if (reader.Read())
-                {
-                    return GetFromReader(reader);
-                }
-
-                return null;
-            }
-        }
-
-        public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -117,105 +91,37 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                var normalizedRoleName = roleName.ToUpper();
-
-                string query = "SELECT Id FROM roles WHERE NormalizedRoleName = @normalizedRoleName";
-
-                var cmd = new SqlCommand(query, connection);
-
-                cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
-
-                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                if (roleId == null)
-                {
-                    query = "INSERT INTO roles (Name, NormalizedName) output inserted.Id VALUES (@roleName, @normalizedRoleName)";
-
-                    cmd = new SqlCommand(query, connection);
-
-                    cmd.Parameters.AddWithValue("roleName", roleName);
-                    cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
-
-                    roleId = Convert.ToInt32(cmd.ExecuteScalar());
-                }
-
-                string mainQuery = "IF NOT EXISTS(SELECT 1 FROM UserRoles] WHERE userId = @userId AND roleId = @roleId) INSERT INTO UserRoles(userId, roleId) VALUES(@userId, @roleId)";
-
-                cmd = new SqlCommand(mainQuery, connection);
-
-                cmd.Parameters.AddWithValue("userId", user.Id);
-                cmd.Parameters.AddWithValue("roleId", roleId);
-
-                cmd.ExecuteScalar();
-            }
-
-            return Task.CompletedTask;
-        }
-
         public User Get(int id)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select * from users where id = @id and isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("id", id);
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return GetFromReader(reader);
+                }
+
+                return null;
+            }
         }
 
         public IList<User> GetAll()
         {
-            throw new NotImplementedException();
-        }        
-
-        public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
+            using (var con = new SqlConnection(_connectionString))
             {
-                connection.Open();
+                string query = "select * from users where isDeleted = 0 order by name";
 
-                string query = "SELECT r.* FROM Roles r INNER JOIN UserRoles ur ON ur.roleId = r.Id WHERE ur.userId = @userId";
+                con.Open();
 
-                var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("userId", user.Id);
-
-                var reader = cmd.ExecuteReader();
-
-                IList<Role> roles = new List<Role>();
-
-                while (reader.Read())
-                {
-                    Role role = new Role();
-
-                    role.Id = reader.GetInt32(reader.GetOrdinal("Id"));
-                    role.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    role.NormalizedRoleName = reader.GetString(reader.GetOrdinal("NormalizedRoleName"));
-
-                    roles.Add(role);
-                }
-
-                IList<string> roleNames = roles.Select(x => x.Name).ToList();
-
-                return Task.FromResult(roleNames);
-            }
-        }       
-
-        public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT u.* FROM Users u INNER JOIN UserRoles ur ON ur.UserId = u.Id INNER JOIN Roles r ON r.Id = ur.RoleId WHERE r.NormalizedRoleName = @normalizedName";
-
-                var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("normalizedRoleName", roleName.ToUpper());
+                var cmd = new SqlCommand(query, con);
 
                 var reader = cmd.ExecuteReader();
 
@@ -223,74 +129,14 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 while (reader.Read())
                 {
-                    var user = GetFromReader(reader).Result;
+                    var user = GetFromReader(reader);
 
                     users.Add(user);
                 }
 
-                return Task.FromResult(users.ToList() as IList<User>);
+                return users;
             }
-        }        
-
-        public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT Id FROM Roles WHERE NormalizedRoleName = @normalizedRoleName";
-
-                var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("normalizedRoleName", roleName.ToUpper());
-
-                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                if (roleId == default(int))
-                    return Task.FromResult(false);
-
-                string mainQuery = "SELECT COUNT(*) FROM UserRoles WHERE userId = @userId AND roleId = @roleId";
-
-                cmd = new SqlCommand(mainQuery, connection);
-
-                cmd.Parameters.AddWithValue("userId", user.Id);
-                cmd.Parameters.AddWithValue("roleId", roleId);
-
-                int result = Convert.ToInt32(cmd.ExecuteScalar());
-
-                return Task.FromResult(result > 0);
-            }
-        }
-
-        public Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT Id FROM Roles WHERE NormalizedRoleName = @normalizedRoleName";
-
-                var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("normalizedRoleName", roleName.ToUpper());
-
-                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                if (roleId != null)
-                {
-                    string mainQuery = "update UserRoles set IsDeleted = 1 WHERE userId = @userId AND roleId = @roleId";
-
-                    cmd = new SqlCommand(mainQuery, connection);
-
-                    cmd.Parameters.AddWithValue("userId", user.Id);
-                    cmd.Parameters.AddWithValue("roleId", roleId);
-                }
-
-                return Task.CompletedTask;
-            }
-        }        
+        }                                  
 
         #region private methods
         private void AddParameters(SqlCommand cmd, User user)
@@ -302,9 +148,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
             cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("IsDeleted", user.IsDeleted);
-        }
+        }       
 
-        private Task<User> GetFromReader(SqlDataReader reader)
+        private User GetFromReader(SqlDataReader reader)
         {
             User user = new User
             {
@@ -318,7 +164,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
             };
 
-            return Task.FromResult(user);
+            return user;
         }
         #endregion
     }

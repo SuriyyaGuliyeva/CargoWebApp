@@ -162,7 +162,7 @@ namespace Cargo.AdminPanel.Controllers
 
             Message = "Successfully Uploaded New Image!";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));            
         }
 
         [HttpPost]

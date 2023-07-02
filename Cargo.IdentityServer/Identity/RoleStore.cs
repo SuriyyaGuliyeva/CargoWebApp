@@ -1,6 +1,7 @@
 ﻿using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace Cargo.Core.Identity
     public class RoleStore : IRoleStore<Role>
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public RoleStore(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -16,36 +18,26 @@ namespace Cargo.Core.Identity
 
         public Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
         {
-            var id = _unitOfWork.RoleRepository.Add(role);
-
             cancellationToken.ThrowIfCancellationRequested();
+
+            var id = _unitOfWork.RoleRepository.Add(role);           
 
             if (id > 0)
                 return Task.FromResult(IdentityResult.Success);
 
-            var identityError = new IdentityError
-            {
-                Description = "Can not add role"
-            };
-
-            return Task.FromResult(IdentityResult.Failed(identityError));
+            return AddErrorMessage("Can not add role");
         }
         
         public Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
         {
-            var success = _unitOfWork.RoleRepository.Delete(role.Id);
-
             cancellationToken.ThrowIfCancellationRequested();
+
+            var success = _unitOfWork.RoleRepository.Delete(role.Id);           
 
             if (success)
                 return Task.FromResult(IdentityResult.Success);
 
-            var identityError = new IdentityError
-            {
-                Description = "Can not delete role"
-            };
-
-            return Task.FromResult(IdentityResult.Failed(identityError));
+            return AddErrorMessage("Can not delete role");
         }
 
         public void Dispose()
@@ -54,12 +46,26 @@ namespace Cargo.Core.Identity
 
         public Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
-            return _unitOfWork.RoleRepository.FindByIdAsync(roleId, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var role = _unitOfWork.RoleRepository.Get(Convert.ToInt32(roleId));
+
+            if (role != null)
+                return Task.FromResult(role);
+
+            return null;
         }
 
         public Task<Role> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
-            return _unitOfWork.RoleRepository.FindByNameAsync(normalizedRoleName, cancellationToken);         
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var role = _unitOfWork.RoleRepository.FindByName(normalizedRoleName);
+
+            if (role != null)
+                return Task.FromResult(role);
+
+            return null;
         }
 
         public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
@@ -105,14 +111,25 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            _unitOfWork.RoleRepository.Update(role);
+            var success = _unitOfWork.RoleRepository.Update(role);
 
-            return Task.FromResult(IdentityResult.Success);
-        }
+            if (success)
+                return Task.FromResult(IdentityResult.Success);
 
-        public Task UpdateAsync(Role role)
+            return AddErrorMessage("Can not update role");
+        }      
+        
+
+        #region private method
+        private Task<IdentityResult> AddErrorMessage(string message)
         {
-            throw new System.NotImplementedException();
+            var identityError = new IdentityError
+            {
+                Description = message
+            };
+
+            return Task.FromResult(IdentityResult.Failed(identityError));
         }
+        #endregion
     }
 }

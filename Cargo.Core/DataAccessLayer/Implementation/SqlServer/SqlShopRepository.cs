@@ -13,7 +13,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         public SqlShopRepository(string connectionString)
         {
             _connectionString = connectionString;
-        }        
+        }
 
         public int Add(Shop shop)
         {
@@ -91,10 +91,33 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 con.Open();
 
                 var cmd = new SqlCommand(query, con);
-              
+
                 cmd.Parameters.AddWithValue("Id", shop.Id);
 
-                AddParameters(cmd, shop);                
+                AddParameters(cmd, shop);
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                    return false;
+
+                return true;
+            }
+        }
+
+        public bool UploadNewImage(Shop shop)
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "update shops set photo = @photo where id = @Id and IsDeleted = 0";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+
+                cmd.Parameters.AddWithValue("Id", shop.Id);
+
+                AddParameters(cmd, shop);
 
                 int result = cmd.ExecuteNonQuery();
 
