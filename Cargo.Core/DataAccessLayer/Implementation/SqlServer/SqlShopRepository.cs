@@ -105,29 +105,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public bool UploadNewImage(Shop shop)
-        {
-            using (var con = new SqlConnection(_connectionString))
-            {
-                string query = "update shops set photo = @photo where id = @Id and IsDeleted = 0";
-
-                con.Open();
-
-                var cmd = new SqlCommand(query, con);
-
-                cmd.Parameters.AddWithValue("Id", shop.Id);
-
-                AddParameters(cmd, shop);
-
-                int result = cmd.ExecuteNonQuery();
-
-                if (result == 0)
-                    return false;
-
-                return true;
-            }
-        }
-
         public Shop GetByCategoryId(string name, int categoryId, int countryId)
         {
             using (var connection = new SqlConnection(_connectionString))

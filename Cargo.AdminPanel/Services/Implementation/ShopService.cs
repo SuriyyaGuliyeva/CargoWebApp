@@ -171,7 +171,7 @@ namespace Cargo.AdminPanel.Services.Implementation
 
                 shop.Photo = photo;
 
-                _unitOfWork.ShopRepository.UploadNewImage(shop);
+                _unitOfWork.ShopRepository.Update(shop);
             }
         }
 
