@@ -21,7 +21,7 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            _unitOfWork.UserRoleRepository.AddToRole(user, roleName);
+           // _unitOfWork.UserRoleRepository.AddToRole(user, roleName);
 
             return Task.CompletedTask;
         }
@@ -96,7 +96,7 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            IList<string> roleNames = _unitOfWork.UserRoleRepository.GetRoles(user);
+            IList<string> roleNames = _unitOfWork.UserRoleRepository.GetRoles(user.Id);
 
             return Task.FromResult(roleNames);
         }
@@ -147,7 +147,7 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            _unitOfWork.UserRoleRepository.RemoveFromRole(user, roleName);
+            _unitOfWork.UserRoleRepository.RemoveFromRole(user.Id, roleName);
 
             return Task.CompletedTask;
         }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
-    public interface IUserRoleRepository
+    public interface IUserRoleRepository : IGenericRepository<UserRole>
     {
-        void AddToRole(User user, string roleName);
-        IList<string> GetRoles(User user);
+        int AddToRole(UserRole userRole);
+        IList<string> GetRoles(int userId);
         IList<User> GetUsersInRole(string roleName);
         bool IsInRole(User user, string roleName);
-        void RemoveFromRole(User user, string roleName);
+        void RemoveFromRole(int userId, string roleName);
     }
 }

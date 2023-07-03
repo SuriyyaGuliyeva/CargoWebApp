@@ -2,6 +2,7 @@
 using Cargo.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
@@ -86,7 +87,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update shops set name = @name, link = @link, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @Id and IsDeleted = 0";
+                string query = "update shops set name = @name, link = @link, photo = @photo, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @Id and IsDeleted = 0";
 
                 con.Open();
 
@@ -183,8 +184,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
             shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
             shop.Name = reader.GetString(reader.GetOrdinal("Name"));
-            shop.Link = reader.GetString(reader.GetOrdinal("Link"));
-            shop.Photo = reader.GetString(reader.GetOrdinal("Photo"));
+            shop.Link = reader.GetString(reader.GetOrdinal("Link"));         
+            shop.Photo = reader.GetValue("Photo").ToString();            
             shop.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
             shop.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
 

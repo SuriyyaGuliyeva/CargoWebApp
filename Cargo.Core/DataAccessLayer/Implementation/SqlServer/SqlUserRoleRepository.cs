@@ -15,46 +15,23 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             _connectionString = connectionString;
         }
-        public void AddToRole(User user, string roleName)
+        public int AddToRole(UserRole userRole)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
+                string query = "insert into UserRoles (UserId, RoleId, IsDeleted) output inserted.Id values (@UserId, @RoleId, @IsDeleted)";
+
                 connection.Open();
-
-                var normalizedRoleName = roleName.ToUpper();
-
-                string query = "SELECT Id FROM roles WHERE NormalizedRoleName = @normalizedRoleName";
 
                 var cmd = new SqlCommand(query, connection);
 
-                cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
+                AddParameters(cmd, userRole);
 
-                int? roleId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                if (roleId == null)
-                {
-                    query = "INSERT INTO roles (Name, NormalizedName) output inserted.Id VALUES (@roleName, @normalizedRoleName)";
-
-                    cmd = new SqlCommand(query, connection);
-
-                    cmd.Parameters.AddWithValue("roleName", roleName);
-                    cmd.Parameters.AddWithValue("normalizedRoleName", normalizedRoleName);
-
-                    roleId = Convert.ToInt32(cmd.ExecuteScalar());
-                }
-
-                string mainQuery = "IF NOT EXISTS(SELECT 1 FROM UserRoles] WHERE userId = @userId AND roleId = @roleId) INSERT INTO UserRoles(userId, roleId) VALUES(@userId, @roleId)";
-
-                cmd = new SqlCommand(mainQuery, connection);
-
-                cmd.Parameters.AddWithValue("userId", user.Id);
-                cmd.Parameters.AddWithValue("roleId", roleId);
-
-                cmd.ExecuteScalar();
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }            
         }
 
-        public IList<string> GetRoles(User user)
+        public IList<string> GetRoles(int userId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -63,7 +40,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 string query = "SELECT r.* FROM Roles r INNER JOIN UserRoles ur ON ur.roleId = r.Id WHERE ur.userId = @userId";
 
                 var cmd = new SqlCommand(query, connection);
-                cmd.Parameters.AddWithValue("userId", user.Id);
+                cmd.Parameters.AddWithValue("userId", userId);
 
                 var reader = cmd.ExecuteReader();
 
@@ -71,7 +48,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 while (reader.Read())
                 {
-                    var role = GetFromReader(reader);
+                    var role = GetFromReaderForRole(reader);
 
                     roles.Add(role);
                 }
@@ -88,7 +65,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             {
                 connection.Open();
 
-                string query = "SELECT u.* FROM Users u INNER JOIN UserRoles ur ON ur.UserId = u.Id INNER JOIN Roles r ON r.Id = ur.RoleId WHERE r.NormalizedRoleName = @normalizedName";
+                string query = "SELECT u.* FROM Users u INNER JOIN UserRoles ur ON ur.UserId = u.Id INNER JOIN Roles r ON r.Id = ur.RoleId WHERE r.NormalizedRoleName = @normalizedRoleName";
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("normalizedRoleName", roleName.ToUpper());
@@ -104,7 +81,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                     users.Add(user);
                 }
 
-                return users.ToList() as IList<User>;
+                return users.ToList();
             }
         }
 
@@ -137,7 +114,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public void RemoveFromRole(User user, string roleName)
+        public void RemoveFromRole(int userId, string roleName)
         {            
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -156,21 +133,128 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                     cmd = new SqlCommand(mainQuery, connection);
 
-                    cmd.Parameters.AddWithValue("userId", user.Id);
+                    cmd.Parameters.AddWithValue("userId", userId);
                     cmd.Parameters.AddWithValue("roleId", roleId);
                 }
             }
+        }        
+
+        public int Add(UserRole userRole)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "insert into UserRoles (UserId, RoleId, IsDeleted) output inserted.Id values (@UserId, @RoleId, @IsDeleted)";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+
+                AddParameters(cmd, userRole);
+
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
         }
+
+        public bool Update(UserRole userRole)
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "update UserRoles set userId = @userId, roleId = @roleId where id = @Id and IsDeleted = 0";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+
+                cmd.Parameters.AddWithValue("Id", userRole.Id);
+
+                AddParameters(cmd, userRole);
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                    return false;
+
+                return true;
+            }
+        }
+
+        public bool Delete(int id)
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "update UserRoles set isDeleted = 1 where id = @id";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("id", id);
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                    return false;
+
+                return true;
+            }
+        }
+
+        public IList<UserRole> GetAll()
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "select * from UserRoles where isDeleted = 0";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+
+                var reader = cmd.ExecuteReader();
+
+                IList<UserRole> userRoles = new List<UserRole>();
+
+                while (reader.Read())
+                {
+                    var userRole = GetFromReader(reader);
+
+                    userRoles.Add(userRole);
+                }
+
+                return userRoles;
+            }
+        }
+
+        public UserRole Get(int id)
+        {
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "select * from UserRoles where id = @id and isDeleted = 0";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("id", id);
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return GetFromReader(reader);
+                }
+
+                return null;
+            }
+        }
+
 
         #region private methods
         // for Role Entity     
-        private Role GetFromReader(SqlDataReader reader)
+        private Role GetFromReaderForRole(SqlDataReader reader)
         {
             Role role = new Role
             {
                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                 Name = reader.GetString(reader.GetOrdinal("Name")),
-                NormalizedRoleName = reader.GetString(reader.GetOrdinal("NormalizedRoleName")),               
+                NormalizedRoleName = reader.GetString(reader.GetOrdinal("NormalizedRoleName")),
                 IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
             };
 
@@ -193,6 +277,27 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             };
 
             return user;
+        }
+
+        // For UserRole
+        private void AddParameters(SqlCommand cmd, UserRole userRole)
+        {
+            cmd.Parameters.AddWithValue("Name", userRole.UserId);
+            cmd.Parameters.AddWithValue("CreationDateTime", userRole.RoleId);
+            cmd.Parameters.AddWithValue("IsDeleted", userRole.IsDeleted);
+        }
+
+        private UserRole GetFromReader(SqlDataReader reader)
+        {
+            UserRole userRole = new UserRole
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                RoleId = reader.GetInt32(reader.GetOrdinal("RoleId")),
+                IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
+            };
+
+            return userRole;
         }
         #endregion
     }
