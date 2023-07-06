@@ -5,7 +5,7 @@ namespace CargoApi.Services.Abstract
 {
     public interface IAccountService
     {
-        Task<LoginResponseModel> Authenticate(LoginRequestModel requestModel);           
+        Task<LoginResponseModel> Login(LoginRequestModel requestModel);           
         Task Register(RegisterRequestModel requestModel);           
     }
 }

@@ -28,7 +28,7 @@ namespace CargoApi.Services.Implementation
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<LoginResponseModel> Authenticate(LoginRequestModel requestModel)
+        public async Task<LoginResponseModel> Login(LoginRequestModel requestModel)
         {
             var user = await _userManager.FindByNameAsync(requestModel.Name);
 

@@ -42,9 +42,7 @@ namespace CargoApi.Extensions
                 x.Password.RequireUppercase = false;
                 x.Password.RequireNonAlphanumeric = false;
                 x.Password.RequiredLength = 5;
-            });
-
-            services.AddTransient<IAccountService, AccountService>();
+            });          
         }
     }
 }

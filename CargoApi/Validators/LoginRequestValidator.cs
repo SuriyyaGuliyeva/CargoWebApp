@@ -8,7 +8,7 @@ namespace CargoApi.Validators
         public LoginRequestValidator()
         {
             RuleFor(x => x.Name).NotNull().NotEmpty().WithMessage("Username should not be empty");
-            RuleFor(x => x.PasswordHash).NotNull().NotEmpty().WithMessage("Username should not be empty");
+            RuleFor(x => x.PasswordHash).NotNull().NotEmpty().WithMessage("Password should not be empty");
         }
     }
 }

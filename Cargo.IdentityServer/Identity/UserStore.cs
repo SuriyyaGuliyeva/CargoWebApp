@@ -21,7 +21,18 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-           // _unitOfWork.UserRoleRepository.AddToRole(user, roleName);
+            // STEP 1. Find the role from RoleRepository by roleName
+            var role = _unitOfWork.RoleRepository.FindByName(roleName.ToUpper());
+
+            // STEP 2. Create UserRole class object and set user and role
+            var userRole = new UserRole
+            {
+                User = user,
+                Role = role
+            };
+
+            // STEP 3. Call the method from UserRoleRepository
+            _unitOfWork.UserRoleRepository.AddToRole(userRole);
 
             return Task.CompletedTask;
         }
@@ -72,10 +83,7 @@ namespace Cargo.Core.Identity
 
             var user = _unitOfWork.UserRepository.FindByName(normalizedUserName);
 
-            if (user != null)
-                return Task.FromResult(user);
-
-            return null;
+            return Task.FromResult(user);
         }
 
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)

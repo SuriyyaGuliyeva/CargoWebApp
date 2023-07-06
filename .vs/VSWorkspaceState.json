@@ -3,7 +3,8 @@
     "",
     "\\Cargo.Core",
     "\\Cargo.Core\\DataAccessLayer",
-    "\\Cargo.Core\\DataAccessLayer\\Abstract",
+    "\\Cargo.Core\\DataAccessLayer\\Implementation",
+    "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer",
     "\\CargoApi",
     "\\CargoApi\\Models",
     "\\CargoApi\\Models\\AccountModels",
@@ -11,6 +12,6 @@
     "\\CargoApi\\Services\\Implementation",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Abstract\\IUnitOfWork.cs",
+  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer\\SqlShopRepository.cs",
   "PreviewInSolutionExplorer": false
 }

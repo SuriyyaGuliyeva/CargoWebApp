@@ -20,7 +20,7 @@ namespace CargoApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestModel requestModel)
         {
-            var response = await _accountService.Authenticate(requestModel);
+            var response = await _accountService.Login(requestModel);
 
             return Ok(response);
         }
@@ -32,7 +32,7 @@ namespace CargoApi.Controllers
             await _accountService.Register(requestModel);
 
             // for Auto Login
-            var loginResponse = await _accountService.Authenticate(
+            var loginResponse = await _accountService.Login(
                 new LoginRequestModel
                 {
                     Name = requestModel.Name,

@@ -3,6 +3,7 @@ using Cargo.Core.Domain.Enums;
 using Cargo.Core.Factories;
 using CargoApi.Extensions;
 using CargoApi.Middlewares;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +30,7 @@ namespace CargoApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                    .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));            
+                    .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
 
             var configuration = new ConfigurationBuilder()
                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
@@ -45,6 +46,7 @@ namespace CargoApi
             });
 
             services.AddIdentityExtension();
+            services.AddServiceExtension();
 
             services.AddSwaggerGen(c =>
             {
