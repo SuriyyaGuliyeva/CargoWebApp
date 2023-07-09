@@ -7,6 +7,7 @@ using CargoApi.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -21,7 +22,7 @@ namespace CargoApi.Services.Implementation
         private readonly SignInManager<User> _signInManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager = null, IUnitOfWork unitOfWork = null)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -30,14 +31,14 @@ namespace CargoApi.Services.Implementation
 
         public async Task<LoginResponseModel> Login(LoginRequestModel requestModel)
         {
-            var user = await _userManager.FindByNameAsync(requestModel.Name);
+            var user = await _userManager.FindByNameAsync(requestModel.Email);
 
             if (user == null)
             {
                 throw new AppException("Username or Password is incorrect");
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, requestModel.PasswordHash, false, false);
+            var result = await _signInManager.PasswordSignInAsync(user, requestModel.Password, false, false);
 
             if (result.Succeeded == false)
             {
@@ -54,18 +55,26 @@ namespace CargoApi.Services.Implementation
         {
             var user = new User
             {
-                Name = requestModel.Name
+                Name = requestModel.Name,
+                Surname = requestModel.Surname,
+                Email = requestModel.Email,
+                PasswordHash = requestModel.Password,
+                PhoneNumber = requestModel.PhoneNumber,
+                NormalizedUserName = requestModel.Email.ToUpper()
             };
 
-            var result = await _userManager.CreateAsync(user, requestModel.PasswordHash);
+            var result = await _userManager.CreateAsync(user, requestModel.Password);
+
+            var roles = _unitOfWork.RoleRepository.GetAll();
+            IEnumerable<string> roleNames = roles.Select(r => r.Name);
+
+            await _userManager.AddToRolesAsync(user, roleNames);            
 
             if (result.Succeeded == false)
             {
                 string message = ExtractErrorMessage(result);
                 throw new AppException(message);
             }
-
-            await _unitOfWork.SaveAsync();
         }
 
         // To generate Token

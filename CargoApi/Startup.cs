@@ -29,8 +29,11 @@ namespace CargoApi
         // This method gets called by the runtime. Use this method to add services to the container.    
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                    .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining(typeof(Startup)));
+            services.AddControllers();
+
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<Startup>();                    
 
             var configuration = new ConfigurationBuilder()
                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)

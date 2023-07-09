@@ -27,7 +27,9 @@ namespace Cargo.Core.Identity
             // STEP 2. Create UserRole class object and set user and role
             var userRole = new UserRole
             {
+                UserId = user.Id,
                 User = user,
+                RoleId = role.Id,
                 Role = role
             };
 
@@ -42,6 +44,7 @@ namespace Cargo.Core.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             var id = _unitOfWork.UserRepository.Add(user);
+            user.Id = id;
 
             if (id > 0)
                 return Task.FromResult(IdentityResult.Success);
@@ -120,7 +123,7 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult(user.Name);
+            return Task.FromResult(user.Email);
         }
 
         public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
@@ -182,7 +185,7 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            user.Name = userName;
+            user.Email = userName;
 
             return Task.CompletedTask;
         }

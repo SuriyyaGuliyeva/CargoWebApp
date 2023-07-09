@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {        
         public ICountryRepository CountryRepository { get; }
         public IShopRepository ShopRepository { get; }
@@ -11,6 +11,5 @@ namespace Cargo.Core.DataAccessLayer.Abstract
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
         public IUserRoleRepository UserRoleRepository { get; }
-        Task<int> SaveAsync();
     }
 }

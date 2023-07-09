@@ -11,8 +11,8 @@ namespace Cargo.AdminPanel.Mappers.Implementation
             var model = new SignInModel
             {
                 Id = user.Id,
-                Username = user.Name,
-                PasswordHash = user.PasswordHash
+                Email = user.Email,
+                Password = user.PasswordHash
             };
 
             return model;
@@ -23,9 +23,9 @@ namespace Cargo.AdminPanel.Mappers.Implementation
             var user = new User
             {
                 Id = model.Id,
-                Name = model.Username,
-                NormalizedUserName = model.Username.ToUpper(),
-                PasswordHash = model.PasswordHash
+                Email = model.Email,
+                NormalizedUserName = model.Email.ToUpper(),
+                PasswordHash = model.Password
             };
 
             return user;

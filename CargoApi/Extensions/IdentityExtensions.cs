@@ -1,8 +1,6 @@
 ﻿using Cargo.Core.Constants;
 using Cargo.Core.Domain.Entities;
 using Cargo.Core.Identity;
-using CargoApi.Services.Abstract;
-using CargoApi.Services.Implementation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;

@@ -35,8 +35,8 @@ namespace CargoApi.Controllers
             var loginResponse = await _accountService.Login(
                 new LoginRequestModel
                 {
-                    Name = requestModel.Name,
-                    PasswordHash = requestModel.PasswordHash
+                    Email = requestModel.Email,
+                    Password = requestModel.Password
                 }
             );
 

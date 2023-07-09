@@ -7,8 +7,11 @@ namespace CargoApi.Validators
     {
         public LoginRequestValidator()
         {
-            RuleFor(x => x.Name).NotNull().NotEmpty().WithMessage("Username should not be empty");
-            RuleFor(x => x.PasswordHash).NotNull().NotEmpty().WithMessage("Password should not be empty");
+            RuleFor(x => x.Email)
+                .NotNull().NotEmpty().WithMessage("Email should not be empty")
+                .EmailAddress().WithMessage("A valid email address is required");
+
+            RuleFor(x => x.Password).NotNull().NotEmpty().WithMessage("Password should not be empty");
         }
     }
 }

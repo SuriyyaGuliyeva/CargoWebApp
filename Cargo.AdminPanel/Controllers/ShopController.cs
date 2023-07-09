@@ -11,7 +11,7 @@ using System.IO;
 
 namespace Cargo.AdminPanel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ShopController : Controller
     {
         private readonly IShopService _shopService;

@@ -7,15 +7,14 @@ namespace Cargo.AdminPanel.Models
         public int Id { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [MaxLength(20)]
-        public string Username { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [MinLength(3)]
         [MaxLength(30)]
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
 
         public bool RememberMe { get; set; } = true;
     }

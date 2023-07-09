@@ -19,7 +19,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                string query = "insert into UserRoles (UserId, RoleId, IsDeleted) output inserted.Id values (@UserId, @RoleId, @IsDeleted)";
+                string query = "insert into UserRoles (UserId, RoleId, IsDeleted) output inserted.UserId values (@UserId, @RoleId, @IsDeleted)";                
 
                 connection.Open();
 
@@ -282,8 +282,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         // For UserRole
         private void AddParameters(SqlCommand cmd, UserRole userRole)
         {
-            cmd.Parameters.AddWithValue("Name", userRole.UserId);
-            cmd.Parameters.AddWithValue("CreationDateTime", userRole.RoleId);
+            cmd.Parameters.AddWithValue("UserId", userRole.User.Id);
+            cmd.Parameters.AddWithValue("RoleId", userRole.Role.Id);
             cmd.Parameters.AddWithValue("IsDeleted", userRole.IsDeleted);
         }
 

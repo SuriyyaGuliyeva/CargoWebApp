@@ -40,14 +40,9 @@ namespace Cargo.AdminPanel
                 return DbFactory.Create(Enum.Parse<VendorTypes>(dbNameValue), connectionString);
             });
 
-
-            // IDENTITY - START
-
             services.AddAuthentication();
 
-            services.AddIdentity<User, Role>();           
-
-            // IDENTITY - END
+            services.AddIdentity<User, Role>();
 
             services.ConfigServices();
 

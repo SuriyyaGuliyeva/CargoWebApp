@@ -5,6 +5,8 @@
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer",
+    "\\Cargo.IdentityServer",
+    "\\Cargo.IdentityServer\\Identity",
     "\\CargoApi",
     "\\CargoApi\\Models",
     "\\CargoApi\\Models\\AccountModels",
@@ -12,6 +14,6 @@
     "\\CargoApi\\Services\\Implementation",
     "\\CargoWebApplication"
   ],
-  "SelectedNode": "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer\\SqlShopRepository.cs",
+  "SelectedNode": "\\Cargo.IdentityServer\\Identity\\UserStore.cs",
   "PreviewInSolutionExplorer": false
 }

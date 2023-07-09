@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cargo.AdminPanel.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CountryController : Controller
     {
         private readonly ICountryService _countryService;

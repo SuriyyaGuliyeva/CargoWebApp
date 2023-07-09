@@ -14,7 +14,7 @@ namespace CargoApi.Validators
             RuleFor(x => x.Surname)
                .NotNull().NotEmpty().WithMessage("Surname should not be empty");
 
-            RuleFor(x => x.PasswordHash)
+            RuleFor(x => x.Password)
                 .NotNull().NotEmpty().WithMessage("Password should not be empty")
                 .MinimumLength(5).WithMessage("Minimum length should be 5");
 
@@ -24,8 +24,8 @@ namespace CargoApi.Validators
 
             RuleFor(x => x.PhoneNumber)
                 .NotNull().NotEmpty().WithMessage("Phone number should not be empty")
-                .MinimumLength(10).WithMessage("Phone number must not be less than 10 characters")
-                .Matches(@"^\d{10}$").WithMessage("Phone number not valid");
+                .Length(10).WithMessage("Phone number must be 10 characters")
+                .Matches(@"^[0-9]+$").WithMessage("Phone number is not valid");               
         }
     }
 }

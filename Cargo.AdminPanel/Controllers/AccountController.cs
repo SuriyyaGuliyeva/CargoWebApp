@@ -33,19 +33,19 @@ namespace Cargo.AdminPanel.Controllers
                 return View(model);
             }
 
-            var user = _userManager.FindByNameAsync(model.Username).Result;
+            var user = _userManager.FindByNameAsync(model.Email).Result;
 
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Username or Password is incorrect!");
+                ModelState.AddModelError(string.Empty, "Email or Password is incorrect!");
                 return View(model);
             }
 
-            bool hasCorrectPassword = _userManager.CheckPasswordAsync(user, model.PasswordHash).Result;
+            bool hasCorrectPassword = _userManager.CheckPasswordAsync(user, model.Password).Result;
 
             if (hasCorrectPassword == false)
             {
-                ModelState.AddModelError(string.Empty, "Username or Password is incorrect!");
+                ModelState.AddModelError(string.Empty, "Email or Password is incorrect!");
                 return View(model);
             }
 
@@ -61,6 +61,12 @@ namespace Cargo.AdminPanel.Controllers
                 .GetAwaiter().GetResult();
 
             return Redirect("/");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
