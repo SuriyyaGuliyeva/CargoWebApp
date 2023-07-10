@@ -20,13 +20,15 @@ namespace CargoApi.Services.Implementation
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IUnitOfWork unitOfWork)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IUnitOfWork unitOfWork, RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _unitOfWork = unitOfWork;
+            _roleManager = roleManager;
         }
 
         public async Task<LoginResponseModel> Login(LoginRequestModel requestModel)
@@ -65,16 +67,26 @@ namespace CargoApi.Services.Implementation
 
             var result = await _userManager.CreateAsync(user, requestModel.Password);
 
-            var roles = _unitOfWork.RoleRepository.GetAll();
-            IEnumerable<string> roleNames = roles.Select(r => r.Name);
-
-            await _userManager.AddToRolesAsync(user, roleNames);            
-
             if (result.Succeeded == false)
             {
                 string message = ExtractErrorMessage(result);
                 throw new AppException(message);
             }
+
+            // 1 - creata role
+            var role = new Role
+            {
+                Name = "Guest",
+                NormalizedRoleName = "GUEST"
+            };
+
+            await _roleManager.CreateAsync(role);
+
+            // 2 - get roleNames
+            var roles = _unitOfWork.RoleRepository.GetAll();
+            IEnumerable<string> roleNames = roles.Select(r => r.Name);
+
+            await _userManager.AddToRolesAsync(user, roleNames);                        
         }
 
         // To generate Token

@@ -151,7 +151,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             User user = new User
             {
-                //.GetValue("Photo").ToString()
                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                 Name = reader.GetString(reader.GetOrdinal("Name")),
                 NormalizedUserName = reader.GetString(reader.GetOrdinal("NormalizedUserName")),

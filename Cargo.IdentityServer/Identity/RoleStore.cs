@@ -20,19 +20,20 @@ namespace Cargo.Core.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var id = _unitOfWork.RoleRepository.Add(role);           
+            var id = _unitOfWork.RoleRepository.Add(role);
+            role.Id = id;
 
             if (id > 0)
                 return Task.FromResult(IdentityResult.Success);
 
             return AddErrorMessage("Can not add role");
         }
-        
+
         public Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var success = _unitOfWork.RoleRepository.Delete(role.Id);           
+            var success = _unitOfWork.RoleRepository.Delete(role.Id);
 
             if (success)
                 return Task.FromResult(IdentityResult.Success);
@@ -62,10 +63,7 @@ namespace Cargo.Core.Identity
 
             var role = _unitOfWork.RoleRepository.FindByName(normalizedRoleName);
 
-            if (role != null)
-                return Task.FromResult(role);
-
-            return null;
+            return Task.FromResult(role);
         }
 
         public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
@@ -117,8 +115,8 @@ namespace Cargo.Core.Identity
                 return Task.FromResult(IdentityResult.Success);
 
             return AddErrorMessage("Can not update role");
-        }      
-        
+        }
+
 
         #region private method
         private Task<IdentityResult> AddErrorMessage(string message)
