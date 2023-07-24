@@ -50,6 +50,7 @@ namespace CargoApi
 
             services.AddIdentityExtension();
             services.AddServiceExtension();
+            services.AddMapperExtension();
 
             services.AddSwaggerGen(c =>
             {

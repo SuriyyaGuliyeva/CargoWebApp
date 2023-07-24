@@ -9,6 +9,7 @@ namespace CargoApi.Extensions
         public static void AddServiceExtension(this IServiceCollection services)
         {
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IOrderService, OrderService>();
         }
     }
 }

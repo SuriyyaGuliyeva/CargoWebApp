@@ -11,5 +11,6 @@ namespace Cargo.Core.DataAccessLayer.Abstract
         public IUserRepository UserRepository { get; }
         public IRoleRepository RoleRepository { get; }
         public IUserRoleRepository UserRoleRepository { get; }
+        public IOrderRepository OrderRepository { get; }
     }
 }

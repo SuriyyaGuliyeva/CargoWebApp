@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace CargoApi.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Customer")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Customer")]
     public class HomeController : BaseController
     {
         private static readonly string[] Summaries = new[]

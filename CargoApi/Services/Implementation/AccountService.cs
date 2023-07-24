@@ -73,20 +73,7 @@ namespace CargoApi.Services.Implementation
                 throw new AppException(message);
             }
 
-            // 1 - creata role
-            var role = new Role
-            {
-                Name = "Guest",
-                NormalizedRoleName = "GUEST"
-            };
-
-            await _roleManager.CreateAsync(role);
-
-            // 2 - get roleNames
-            var roles = _unitOfWork.RoleRepository.GetAll();
-            IEnumerable<string> roleNames = roles.Select(r => r.Name);
-
-            await _userManager.AddToRolesAsync(user, roleNames);                        
+            await _userManager.AddToRoleAsync(user, "Customer");                        
         }
 
         // To generate Token
