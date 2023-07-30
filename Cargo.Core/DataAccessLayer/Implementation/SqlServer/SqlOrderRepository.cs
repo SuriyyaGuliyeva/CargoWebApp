@@ -2,7 +2,6 @@
 using Cargo.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
@@ -20,9 +19,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = @"insert into orders (Link, Count, Price, CargoPrice, Size, Color, Note, TotalCount, TotalAmount, Status, UserId, CreationDateTime, IsDeleted)
+                string query = @"insert into orders (Link, Count, Price, CargoPrice, Size, Color, Note, TotalCount, TotalAmount, Status, UserId, CreationDateTime)
                                  output inserted.Id
-                                 values (@Link, @Count, @Price, @CargoPrice, @Size, @Color, @Note, @TotalCount, @TotalAmount, @Status, @UserId, @CreationDateTime, @IsDeleted)";
+                                 values (@Link, @Count, @Price, @CargoPrice, @Size, @Color, @Note, @TotalCount, @TotalAmount, @Status, @UserId, @CreationDateTime)";
 
                 con.Open();
 
@@ -38,7 +37,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update Orders set IsDeleted = 1 where id = @id";
+                string query = "update Orders set status = 5 where id = @id";
 
                 con.Open();
 
@@ -55,7 +54,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "select o.*, u.Name, u.Email from orders o inner join users u on o.userId = u.Id where o.Id = @id and o.IsDeleted = 0";
+                string query = "select o.*, u.Name, u.Email from orders o inner join users u on o.userId = u.Id where o.Id = @id";
 
                 con.Open();
 
@@ -77,7 +76,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "select o.*, u.Name, u.Email from orders as o join Users as u on o.UserId = u.Id and o.IsDeleted = 0";
+                string query = "select o.*, u.Name, u.Email from orders as o join Users as u on o.UserId = u.Id";
 
                 con.Open();
 
@@ -103,9 +102,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             using (var con = new SqlConnection(_connectionString))
             {
                 string query = @"update orders set link = @link, count = @count, price = @price, cargoprice = @cargoprice,
-                                 size = @size, color = @color, note = @note, totalcount = @totalcount, totalamount = @totalamount,
-                                 userId = @userId
-                                 where id = @Id and IsDeleted = 0";
+                                 size = @size, color = @color, note = @note, totalcount = @totalcount, totalamount = @totalamount
+                                 where id = @Id";
 
                 con.Open();
 
@@ -137,7 +135,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             cmd.Parameters.AddWithValue("Status", order.Status);
             cmd.Parameters.AddWithValue("UserId", order.UserId);
             cmd.Parameters.AddWithValue("CreationDateTime", order.CreationDateTime);
-            cmd.Parameters.AddWithValue("IsDeleted", order.IsDeleted);
         }
 
         private Order GetFromReader(SqlDataReader reader)
@@ -156,7 +153,6 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             order.TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount"));
             order.Status = reader.GetInt32(reader.GetOrdinal("Status"));
             order.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
-            order.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
 
             order.UserId = reader.GetInt32(reader.GetOrdinal("UserId"));
             order.User = new User()

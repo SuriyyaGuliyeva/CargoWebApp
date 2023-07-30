@@ -18,6 +18,5 @@ namespace Cargo.Core.Domain.Entities
         public DateTime CreationDateTime { get; set; } = DateTime.UtcNow;
         public int UserId { get; set; }
         public User User { get; set; }
-        public bool IsDeleted { get; set; } = false;
     }
 }

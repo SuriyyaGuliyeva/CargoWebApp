@@ -1,6 +1,5 @@
 ﻿using CargoApi.Models.OrderModels;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CargoApi.Services.Abstract
 {
