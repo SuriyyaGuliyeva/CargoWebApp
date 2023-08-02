@@ -1,5 +1,4 @@
 ﻿using Cargo.Core.Constants;
-using Cargo.Core.DataAccessLayer.Abstract;
 using Cargo.Core.Domain.Entities;
 using CargoApi.Exceptions;
 using CargoApi.Models.AccountModels;
@@ -7,7 +6,6 @@ using CargoApi.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -20,15 +18,11 @@ namespace CargoApi.Services.Implementation
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<Role> _roleManager;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IUnitOfWork unitOfWork, RoleManager<Role> roleManager)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _unitOfWork = unitOfWork;
-            _roleManager = roleManager;
         }
 
         public async Task<LoginResponseModel> Login(LoginRequestModel requestModel)

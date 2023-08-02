@@ -8,5 +8,9 @@ namespace Cargo.AdminPanel.Mappers.Abstract
         SignInModel Map(User user);
 
         User Map(SignInModel model);
+
+        RegisterModel MapToUser(User user);
+
+        User MapToRegisterModel(RegisterModel model);
     }
 }

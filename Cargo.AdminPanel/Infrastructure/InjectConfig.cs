@@ -15,6 +15,7 @@ namespace Cargo.AdminPanel.Infrastructure
         {
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<IShopService, ShopService>();
+            services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<ICountryMapper, CountryMapper>();
 
@@ -30,6 +31,15 @@ namespace Cargo.AdminPanel.Infrastructure
 
             services.AddTransient<IUserStore<User>, UserStore>();
             services.AddTransient<IRoleStore<Role>, RoleStore>();
+
+            services.Configure<IdentityOptions>(x =>
+            {
+                x.Password.RequireDigit = false;
+                x.Password.RequireLowercase = false;
+                x.Password.RequireUppercase = false;
+                x.Password.RequireNonAlphanumeric = false;
+                x.Password.RequiredLength = 5;
+            });
         }
     }
 }

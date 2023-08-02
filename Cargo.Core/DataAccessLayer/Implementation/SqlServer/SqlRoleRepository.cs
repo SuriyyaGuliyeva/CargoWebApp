@@ -125,10 +125,13 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 string query = "update roles set Name = @Name, NormalizedRoleName = @NormalizedRoleName where id = @Id";
 
                 var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("Id", role.Id);
 
                 AddParameters(cmd, role);
 
-                return cmd.ExecuteNonQuery() > 0;
+                var affectedRows = cmd.ExecuteNonQuery();
+
+                return affectedRows > 0;
             }
         }
 

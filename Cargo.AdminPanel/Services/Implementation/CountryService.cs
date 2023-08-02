@@ -64,15 +64,6 @@ namespace Cargo.AdminPanel.Services.Implementation
             return viewModel.Countries;
         }
 
-        //public CountryModel GetByName(string name)
-        //{
-        //    var country = _unitOfWork.CountryRepository.GetAll().FirstOrDefault(x=> x.Name == name);
-
-        //    var model = _mapper.Map(country);
-
-        //    return model;
-        //}
-
         public void Update(AddCountryViewModel viewModel)
         {
             var model = viewModel.Country;

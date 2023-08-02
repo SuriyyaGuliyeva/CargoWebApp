@@ -95,12 +95,9 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 cmd.Parameters.AddWithValue("id", country.Id);
                 AddParameters(cmd, country);
 
-                int result = cmd.ExecuteNonQuery();
+                var affectedRows = cmd.ExecuteNonQuery();
 
-                if (result == 0)
-                    return false;
-
-                return true;
+                return affectedRows > 0;               
             }
         }
 

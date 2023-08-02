@@ -12,26 +12,19 @@
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Haqqımızda</a>
+                    <a class="nav-link text-dark" asp-controller="Shop" asp-action="Index">Shops</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Index">Mağazalar</a>
+                    <a class="nav-link text-dark" asp-controller="Country" asp-action="Index">Countries</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Xidmətlər</a>
-                </li>                     
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Country" asp-action="Index">Ölkələr</a>
-                </li>     
-                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Gizlilik şərtləri</a>
-                </li>
-                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Daşınma şərtləri</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Əlaqə</a>
-                </li>
+
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Role" asp-action="Index">Role Management</a>
+                    </li>
+                }
             </ul>
         </div>
 
@@ -40,13 +33,13 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="SignOut">Çıxış</a>
+                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="SignOut">Sign out</a>
                     </li>
                 }
                 else
                 {
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="SignIn">Daxil ol</a>
+                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="SignIn">Log in</a>
                     </li>
                 }
             </ul>

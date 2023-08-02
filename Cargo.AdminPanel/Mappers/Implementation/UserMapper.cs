@@ -30,5 +30,37 @@ namespace Cargo.AdminPanel.Mappers.Implementation
 
             return user;
         }
+
+        public User MapToRegisterModel(RegisterModel model)
+        {
+            var user = new User
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Surname = model.Surname,
+                Email = model.Email,
+                NormalizedUserName = model.Email.ToUpper(),
+                PasswordHash = model.Password,
+                PhoneNumber = model.PhoneNumber
+            };
+
+            return user;
+        }
+
+        public RegisterModel MapToUser(User user)
+        {
+            var model = new RegisterModel
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,                
+                Email = user.Email,
+                Password = user.PasswordHash,
+                ConfirmPassword = user.PasswordHash,
+                PhoneNumber = user.PhoneNumber               
+            };
+
+            return model;
+        }
     }
 }

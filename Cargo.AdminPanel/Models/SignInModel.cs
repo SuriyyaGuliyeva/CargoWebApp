@@ -12,8 +12,7 @@ namespace Cargo.AdminPanel.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [MinLength(3)]
-        [MaxLength(30)]
+        [MinLength(5)]
         public string Password { get; set; }
 
         public bool RememberMe { get; set; } = true;

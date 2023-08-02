@@ -1,0 +1,31 @@
+﻿@model RoleModel
+
+<form asp-controller="Role" asp-action="Add" class="form-group">
+    <h2 class="text-center text-primary"><i>Add New Role</i></h2>
+
+    <div class="form-group">
+        <label asp-for="@Model.Name" class="mr-sm-2">Name:</label>
+        <input asp-for="@Model.Name" class="form-control mb-2 mr-sm-2" />
+
+        <span asp-validation-for="@Model.Name" class="text-danger font-weight-bold"></span>
+    </div>
+
+    @{
+        if (Model != null && Model.Id > 0)
+        {
+            <input type="hidden" value="@Model.Id" name="Country.Id" />
+        }
+
+        if (ViewBag.IsExistName != null)
+        {
+            <p class="font-weight-bold text-danger">@ViewBag.IsExistName</p>
+        }
+    }
+
+    <a asp-action="Index" class="btn btn-dark">Back</a>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

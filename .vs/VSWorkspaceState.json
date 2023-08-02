@@ -5,9 +5,6 @@
     "\\Cargo.Core\\DataAccessLayer",
     "\\Cargo.Core\\DataAccessLayer\\Implementation",
     "\\Cargo.Core\\DataAccessLayer\\Implementation\\SqlServer",
-    "\\Cargo.Core\\Domain\\Entities",
-    "\\Cargo.IdentityServer\\Identity",
-    "\\CargoApi\\Models\\OrderModels",
     "\\CargoWebApplication"
   ],
   "SelectedNode": "\\CargoWebApplication.sln",

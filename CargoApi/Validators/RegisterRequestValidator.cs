@@ -1,6 +1,5 @@
 ﻿using CargoApi.Models.AccountModels;
 using FluentValidation;
-using System.Text.RegularExpressions;
 
 namespace CargoApi.Validators
 {
