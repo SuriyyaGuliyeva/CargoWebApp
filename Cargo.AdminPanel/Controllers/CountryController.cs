@@ -97,5 +97,13 @@ namespace Cargo.AdminPanel.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public int GetTotalCount()
+        {
+            var countryCount = _countryService.GetTotalCount();
+            ViewBag.CountryCount = countryCount;
+
+            return countryCount;
+        }
     }
 }

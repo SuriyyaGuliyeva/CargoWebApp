@@ -1,26 +1,33 @@
-﻿<!DOCTYPE html>
+﻿<!DCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AdminPanelCargoWebApp</title>
+    <title>CargoApp AdminPanel</title>
+
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />  
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
 </head>
 <body>
-    <header>
-        <partial name="_MenuBar"/>
-    </header>
+    <partial name="_SideBarMenu" />
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <section class="home-section">
+        <partial name="_HeaderMenu" />
 
-    <footer class="border-top footer text-muted">
-        <partial name="_FooterMenu"/>
-    </footer>
+        <div class="home-content">
+            <partial name="_TotalCountBoxes" />
+
+            <div class="sales-boxes">
+                <div class="recent-sales box">
+                    <main role="main" class="pb-3">
+                            @RenderBody()
+                    </main>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

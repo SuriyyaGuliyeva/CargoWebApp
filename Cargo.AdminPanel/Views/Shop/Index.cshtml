@@ -9,9 +9,9 @@
 }
 
 <div class="dataContainer mb-3 mt-3">
-    <h2 class="text-center text-primary"><i>List of Shops</i></h2>
+    <h2 class="text-center text-color-blue">Shops</h2>
 
-    <a asp-action="Add" class="btn btn-primary mb-3">Add Shop</a>
+    <a asp-action="Add" class="btn btn-color-blue mb-3">Add Shop</a>
 
     @if (ViewBag.Message != null)
     {
@@ -66,7 +66,7 @@
                                 Upload New Image
                             </a>
 
-                            <a onclick="showImageModal(@shop.Id)" href="#" data-id="@shop.Id" data-target="#ShowImage" data-toggle="modal" class="btn btn-primary text-white">
+                            <a onclick="showImageModal(@shop.Id)" href="#" data-id="@shop.Id" data-target="#ShowImage" data-toggle="modal" class="btn btn-color-blue text-white">
                                 Show Image
                             </a>
 

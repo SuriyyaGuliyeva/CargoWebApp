@@ -1,0 +1,47 @@
+﻿<div class="sidebar">
+    <div class="logo-details">
+        <a class="logo_name" asp-controller="Home" asp-action="Index">
+            <i class='bx bxs-spa'></i>
+            <span>CargoApp</span>
+        </a>
+    </div>
+
+    <ul class="nav-links" id="sideBarList">
+        <li>
+            <a asp-controller="Home" asp-action="Index" class="list-item active">
+                <i class='bx bx-grid-alt'></i>
+                <span class="links_name">Dashboard</span>
+            </a>
+        </li>
+          <li>
+            <a asp-controller="Country" asp-action="Index" class="list-item">
+                <i class='bx bxs-business'></i>
+                <span class="links_name">Countries</span>
+            </a>
+        </li>
+        <li>
+            <a asp-controller="Shop" asp-action="Index" class="list-item">
+                <i class='bx bx-store'></i>
+                <span class="links_name">Shops</span>
+            </a>
+        </li>
+      
+
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a asp-controller="Role" asp-action="Index" class="list-item">
+                    <i class='bx bxs-lock'></i>
+                    <span class="links_name">Role Management</span>
+                </a>
+            </li>
+        }
+
+        <li class="log_out">
+            <a asp-controller="Account" asp-action="SignOut" class="list-item">
+                <i class='bx bx-log-out'></i>
+                <span class="links_name">Sign Out</span>
+            </a>
+        </li>
+    </ul>
+</div>
