@@ -83,12 +83,5 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             return true;
         }
-
-        public int GetTotalCount()
-        {
-            var count = _unitOfWork.CountryRepository.GetTotalCount();
-
-            return count;
-        }
     }
 }

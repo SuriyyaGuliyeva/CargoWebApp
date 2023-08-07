@@ -7,7 +7,7 @@
 
 <form asp-controller="Account" asp-action="SignIn" asp-route-returnUrl="@ViewBag.ReturnUrl">
     <div>
-        <h2 class="text-center text-primary"><i>Log In</i></h2>
+        <h2 class="text-center text-color-blue">Sign In</h2>
 
         <div class="form-group">
             <label for="Username">Email</label>
@@ -24,10 +24,10 @@
             <label asp-for="RememberMe" class="form-check-label">Remember Me</label>
         </div>
 
-        <div class="text-danger font-weight-bold" asp-validation-summary="All"></div>
+        <div class="text-danger font-weight-bold ml-3" asp-validation-summary="All"></div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Log In</button>
+    <button type="submit" class="btn btn-color-blue">Sign In</button>
 
     <p class="mt-1">
         If you don't have an account please

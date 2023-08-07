@@ -15,14 +15,44 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             _connectionString = connectionString;
         }
 
-        public int Add(Category t)
+        public int Add(Category category)
         {
-            throw new NotImplementedException();
+            int insertedId = 0;
+
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "insert into categories (name, creationDateTime, isDeleted) values(@name, @creationDateTime, @isDeleted); SELECT SCOPE_IDENTITY();";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+
+                AddParameters(cmd, category);
+
+                insertedId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            return insertedId;
         }
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "update categories set isDeleted = 1 where id = @id";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("id", id);
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                    return false;
+
+                return true;
+            }
         }
 
         public Category Get(int id)
@@ -84,9 +114,66 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             }
         }
 
-        public bool Update(Category t)
+        public bool Update(Category category)
         {
-            throw new NotImplementedException();
+            using (var con = new SqlConnection(_connectionString))
+            {
+                string query = "update categories set name = @name, creationDateTime = @creationDateTime where id = @id";
+
+                con.Open();
+
+                var cmd = new SqlCommand(query, con);
+
+                cmd.Parameters.AddWithValue("id", category.Id);
+                AddParameters(cmd, category);
+
+                var affectedRows = cmd.ExecuteNonQuery();
+
+                return affectedRows > 0;
+            }
         }
+
+        public Category GetByName(string name)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select * from categories where name = @name and isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("name", name);
+
+                var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return GetFromReader(reader);
+                }
+
+                return null;
+            }
+        }
+
+        #region private methods
+        private void AddParameters(SqlCommand cmd, Category category)
+        {
+            cmd.Parameters.AddWithValue("Name", category.Name);
+            cmd.Parameters.AddWithValue("CreationDateTime", category.CreationDateTime);
+            cmd.Parameters.AddWithValue("IsDeleted", category.IsDeleted);
+        }
+
+        private Category GetFromReader(SqlDataReader reader)
+        {
+            Category category = new Category();
+
+            category.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+            category.Name = reader.GetString(reader.GetOrdinal("Name"));
+            category.CreationDateTime = reader.GetDateTime(reader.GetOrdinal("CreationDateTime"));
+            category.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
+
+            return category;
+        }
+        #endregion
     }
 }

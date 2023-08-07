@@ -1,8 +1,8 @@
 ﻿<div class="sidebar">
     <div class="logo-details">
         <a class="logo_name" asp-controller="Home" asp-action="Index">
-            <i class='bx bxs-spa'></i>
-            <span>CargoApp</span>
+            <img src="~/images/cargo_logo.png" alt="Cargo App Logo" width="50" height="50" />
+            <span>argoApp</span>
         </a>
     </div>
 
@@ -13,7 +13,13 @@
                 <span class="links_name">Dashboard</span>
             </a>
         </li>
-          <li>
+        <li style="display: none;">
+            <a asp-controller="Country" asp-action="Index" class="list-item">
+                <i class='bx bxs-business'></i>
+                <span class="links_name">Countries</span>
+            </a>
+        </li>
+        <li>
             <a asp-controller="Country" asp-action="Index" class="list-item">
                 <i class='bx bxs-business'></i>
                 <span class="links_name">Countries</span>
@@ -25,23 +31,40 @@
                 <span class="links_name">Shops</span>
             </a>
         </li>
-      
+        <li>
+            <a asp-controller="Category" asp-action="Index" class="list-item">
+                <i class='bx bxs-category-alt'></i>
+                <span class="links_name">Categories</span>
+            </a>
+        </li>
 
-        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        @if (User.Identity.IsAuthenticated)
         {
-            <li class="nav-item">
-                <a asp-controller="Role" asp-action="Index" class="list-item">
-                    <i class='bx bxs-lock'></i>
-                    <span class="links_name">Role Management</span>
+            if (User.IsInRole("Admin"))
+            {
+                <li class="nav-item">
+                    <a asp-controller="Role" asp-action="Index" class="list-item">
+                        <i class='bx bxs-lock'></i>
+                        <span class="links_name">Role Management</span>
+                    </a>
+                </li>
+            }
+
+            <li class="log_btn">
+                <a asp-controller="Account" asp-action="SignOut" class="list-item">
+                    <i class='bx bx-log-out'></i>
+                    <span class="links_name">Sign Out</span>
                 </a>
             </li>
         }
-
-        <li class="log_out">
-            <a asp-controller="Account" asp-action="SignOut" class="list-item">
-                <i class='bx bx-log-out'></i>
-                <span class="links_name">Sign Out</span>
-            </a>
-        </li>
+        else
+        {
+            <li class="log_btn">
+                <a asp-controller="Account" asp-action="SignIn" class="list-item">
+                    <i class='bx bx-log-in'></i>
+                    <span class="links_name">Sign In</span>
+                </a>
+            </li>
+        }
     </ul>
 </div>

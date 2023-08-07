@@ -7,7 +7,7 @@
 
 <form asp-controller="Account" asp-action="Register" asp-route-returnUrl = "@ViewBag.ReturnUrl">
     <div>
-        <h2 class="text-center text-primary"><i>Register</i></h2>
+        <h2 class="text-center text-color-blue">Register</h2>
 
         <div class="form-group">
             <label for="Name">Name</label>
@@ -39,10 +39,10 @@
             <input asp-for="PhoneNumber" type="text" class="form-control" placeholder="Enter phone number">
         </div>
 
-        <div class="text-danger font-weight-bold" asp-validation-summary="All"></div>
+        <div class="text-danger font-weight-bold ml-3" asp-validation-summary="All"></div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-color-blue">Register</button>
 </form>
 
 @section Scripts {

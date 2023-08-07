@@ -1,5 +1,4 @@
 ﻿using Cargo.AdminPanel.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace Cargo.AdminPanel.ViewModels
 {

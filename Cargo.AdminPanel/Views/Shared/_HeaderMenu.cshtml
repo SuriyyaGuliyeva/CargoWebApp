@@ -5,6 +5,10 @@
     </div>
     <div class="profile-details">
         <img src="~/images/avatar.png" alt="CargoApp User Avatar">
-        <span class="admin_name">Test Quliyeva</span>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <span class="admin_name">@User.Identity.Name</span>
+        }
     </div>
 </nav>

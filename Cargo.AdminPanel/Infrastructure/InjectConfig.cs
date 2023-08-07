@@ -15,6 +15,7 @@ namespace Cargo.AdminPanel.Infrastructure
         {
             services.AddTransient<ICountryService, CountryService>();
             services.AddTransient<IShopService, ShopService>();
+            services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<ICountryMapper, CountryMapper>();

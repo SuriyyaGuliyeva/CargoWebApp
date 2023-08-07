@@ -143,24 +143,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             return insertedId;
         }
 
-        public int GetTotalCount()
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                string query = "select count(*) from countries where IsDeleted = 0";
-
-                connection.Open();
-
-                var cmd = new SqlCommand(query, connection);
-
-                int result = Convert.ToInt32(cmd.ExecuteScalar());
-
-                return result;
-            }
-        }
-
         #region private methods
-
         private void AddParameters(SqlCommand cmd, Country country)
         {
             cmd.Parameters.AddWithValue("Name", country.Name);
