@@ -1,5 +1,6 @@
 ﻿using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
+using Cargo.Core.Constants;
 using Cargo.Core.Domain.Entities;
 
 namespace Cargo.AdminPanel.Mappers.Implementation
@@ -25,6 +26,7 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Id = shop.Id,
                 Name = shop.Name,
                 Link = shop.Link,
+                CreationDateTime = shop.CreationDateTime.ToString(SystemConstants.DateTimeParseFormat),
                 SelectedCountry = _countryMapper.Map(shop.Country),
                 SelectedCategory = _categoryMapper.Map(shop.Category),
                 CoverPhotoUrl = shop.Photo,

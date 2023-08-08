@@ -133,7 +133,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 return affectedRows > 0;
             }
-        }
+        }      
 
 
         #region private methods

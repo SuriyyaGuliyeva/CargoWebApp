@@ -12,11 +12,17 @@ namespace Cargo.AdminPanel.Controllers
     {
         private readonly RoleManager<Role> _roleManager;
         private readonly IRoleService _roleService;
+        private readonly ICountryService _countryService;
+        private readonly ICategoryService _categoryService;
+        private readonly IShopService _shopService;
 
-        public RoleController(RoleManager<Role> roleManager, IRoleService roleService)
+        public RoleController(RoleManager<Role> roleManager, IRoleService roleService, ICountryService countryService, ICategoryService categoryService, IShopService shopService)
         {
             _roleManager = roleManager;
             _roleService = roleService;
+            _countryService = countryService;
+            _categoryService = categoryService;
+            _shopService = shopService;
         }
 
         [TempData]
@@ -25,6 +31,15 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
             var list = _roleService.GetAll();
 
             ViewBag.Message = Message;
@@ -35,6 +50,15 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int roleId)
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
             var model = _roleService.Get(roleId);
 
             return View(model);
@@ -62,6 +86,15 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
             return View();
         }
 

@@ -1,13 +1,8 @@
 ﻿using Cargo.Core.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
-    public interface ICategoryRepository : IGenericRepository<Category>
+    public interface ICategoryRepository : IGenericRepository<Category>, ITotalCountRepository
     {
         Category GetByName(string name);
     }

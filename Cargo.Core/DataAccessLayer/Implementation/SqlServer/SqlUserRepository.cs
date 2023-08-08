@@ -133,7 +133,23 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
                 return users;
             }
-        }                                  
+        }
+
+        public int GetTotalCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select count(*) from users where isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return result;
+            }
+        }
 
         #region private methods
         private void AddParameters(SqlCommand cmd, User user)

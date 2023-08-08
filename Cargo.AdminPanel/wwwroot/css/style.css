@@ -2,11 +2,11 @@
     vertical-align: middle;
 }
 
-.shop-model-table td a,
-.shop-model-table td a:hover {
-    color: #000;
-    text-decoration: none;
-}
+    .shop-model-table td a,
+    .shop-model-table td a:hover {
+        color: #000;
+        text-decoration: none;
+    }
 
 .btn-color-blue {
     background-color: #2697FF;
@@ -21,6 +21,15 @@
 
 .text-color-blue {
     color: #2697FF;
+}
+
+.welcome-text span {
+    font-size: 60px;
+    vertical-align: middle;
+}
+
+.welcome-text p {
+    font-size: 20px;
 }
 
 /* Admin Panel Header and Menu Bar CSS */
@@ -75,9 +84,9 @@
                 bottom: -5px;
             }
 
-            .sidebar .nav-links {
-                margin-top: 10px;
-            }
+    .sidebar .nav-links {
+        margin-top: 10px;
+    }
 
         .sidebar .nav-links li {
             position: relative;
@@ -451,7 +460,7 @@ nav .profile-details i {
 
     .sidebar.active ~ .home-section {
         /* width: calc(100% - 220px); */
-       /* overflow: hidden;*/
+        /* overflow: hidden;*/
         left: 220px;
     }
 

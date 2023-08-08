@@ -12,5 +12,6 @@ namespace Cargo.AdminPanel.Services.Abstract
         IList<CountryModel> GetAll();
         AddCountryViewModel Get(int id);
         bool IsExists(CountryModel model);
+        int GetTotalCountryCount();
     }
 }

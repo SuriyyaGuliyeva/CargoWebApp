@@ -86,7 +86,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update countries set name = @name, creationDateTime = @creationDateTime where id = @id";
+                string query = "update countries set name = @name where id = @id";
 
                 con.Open();
 
@@ -143,6 +143,22 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             return insertedId;
         }
 
+        public int GetTotalCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select count(*) from countries where isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return result;
+            }
+        }
+
         #region private methods
         private void AddParameters(SqlCommand cmd, Country country)
         {
@@ -161,7 +177,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             country.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
 
             return country;
-        }
+        }       
         #endregion
     }
 }

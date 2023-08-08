@@ -2,7 +2,7 @@
 
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
-    public interface ICountryRepository : IGenericRepository<Country>
+    public interface ICountryRepository : IGenericRepository<Country>, ITotalCountRepository
     {
         Country GetByName(string name);
     }

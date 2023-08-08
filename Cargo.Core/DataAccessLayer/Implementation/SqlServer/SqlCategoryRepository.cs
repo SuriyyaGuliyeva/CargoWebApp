@@ -118,7 +118,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update categories set name = @name, creationDateTime = @creationDateTime where id = @id";
+                string query = "update categories set name = @name where id = @id";
 
                 con.Open();
 
@@ -152,6 +152,22 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 }
 
                 return null;
+            }
+        }
+
+        public int GetTotalCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select count(*) from categories where isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return result;
             }
         }
 

@@ -87,7 +87,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "update shops set name = @name, link = @link, photo = @photo, creationDateTime = @creationDateTime, countryId = @countryId, categoryId = @categoryId where id = @Id and IsDeleted = 0";
+                string query = "update shops set name = @name, link = @link, photo = @photo, countryId = @countryId, categoryId = @categoryId where id = @Id and IsDeleted = 0";
 
                 con.Open();
 
@@ -162,6 +162,22 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 }
 
                 return shops;
+            }
+        }
+
+        public int GetTotalCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string query = "select count(*) from shops where isDeleted = 0";
+
+                connection.Open();
+
+                var cmd = new SqlCommand(query, connection);
+
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return result;
             }
         }
 

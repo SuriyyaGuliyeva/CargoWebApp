@@ -15,12 +15,16 @@ namespace Cargo.AdminPanel.Controllers
     public class ShopController : Controller
     {
         private readonly IShopService _shopService;
+        private readonly ICountryService _countryService;
+        private readonly ICategoryService _categoryService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ShopController(IShopService shopService, IUnitOfWork unitOfWork)
+        public ShopController(IShopService shopService, IUnitOfWork unitOfWork, ICountryService countryService, ICategoryService categoryService)
         {
             _shopService = shopService;
             _unitOfWork = unitOfWork;
+            _countryService = countryService;
+            _categoryService = categoryService;
         }
 
         [TempData]
@@ -29,9 +33,18 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
             var viewModel = new ShopViewModel();
 
-            viewModel.Shops = _shopService.GetAll();
+            viewModel.Shops = _shopService.GetAll();           
 
             ViewBag.Message = Message;
 
@@ -41,6 +54,15 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
             var countries = _unitOfWork.CountryRepository.GetAll();
             var categories = _unitOfWork.CategoryRepository.GetAll();
 
@@ -89,6 +111,15 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int shopId)
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
             var model = _shopService.GetUpdateModel(shopId);
 
             var viewModel = new UpdateShopViewModel()
@@ -140,6 +171,15 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult UploadNewImage(int shopId)
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
             var model = _shopService.GetUploadImageModel(shopId);
 
             var viewModel = new UploadImageShopViewModel()

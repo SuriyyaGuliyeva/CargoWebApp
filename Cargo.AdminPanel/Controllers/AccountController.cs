@@ -1,5 +1,6 @@
 ﻿using Cargo.AdminPanel.Mappers.Abstract;
 using Cargo.AdminPanel.Models;
+using Cargo.AdminPanel.Services.Abstract;
 using Cargo.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,18 +13,33 @@ namespace Cargo.AdminPanel.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ICountryService _countryService;
+        private readonly ICategoryService _categoryService;
+        private readonly IShopService _shopService;
         private readonly IUserMapper _userMapper;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserMapper userMapper)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserMapper userMapper, ICountryService countryService, ICategoryService categoryService, IShopService shopService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userMapper = userMapper;
+            _countryService = countryService;
+            _categoryService = categoryService;
+            _shopService = shopService;
         }
 
         [HttpGet]
         public IActionResult Register(string returnUrl)
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;          
+
             ViewBag.ReturnUrl = returnUrl;
 
             return View();
@@ -62,6 +78,15 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult SignIn(string returnUrl)
         {
+            int totalCountryCount = _countryService.GetTotalCountryCount();
+            ViewBag.TotalCountryCount = totalCountryCount;
+
+            int totalShopCount = _shopService.GetTotalShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
+            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
             ViewBag.ReturnUrl = returnUrl;
 
             return View();

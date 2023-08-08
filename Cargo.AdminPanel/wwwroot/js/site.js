@@ -19,10 +19,9 @@ var btnContainer = document.getElementById("sideBarList");
 var btns = btnContainer.getElementsByClassName("list-item");
 var current = document.getElementsByClassName("active");
 
-for (var i = 0; i <= btns.length; i++) {    
-    if (currentLocation.startsWith(btns[i].href) || btns[i].href === currentLocation) {
+for (var i = 0; i <= btns.length; i++) {
+    if (btns[i].href === currentLocation || currentLocation.startsWith(btns[i].href)) {
         current[0].className = current[0].className.replace("active", "");
-
         btns[i].className = "active";
     }
 }
