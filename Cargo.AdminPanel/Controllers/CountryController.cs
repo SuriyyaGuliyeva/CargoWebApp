@@ -12,12 +12,14 @@ namespace Cargo.AdminPanel.Controllers
         private readonly ICountryService _countryService;
         private readonly ICategoryService _categoryService;
         private readonly IShopService _shopService;
+        private readonly IUserService _userService;
 
-        public CountryController(ICountryService countryService, ICategoryService categoryService, IShopService shopService)
+        public CountryController(ICountryService countryService, ICategoryService categoryService, IShopService shopService, IUserService userService)
         {
             _countryService = countryService;
             _categoryService = categoryService;
             _shopService = shopService;
+            _userService = userService;
         }
 
         [TempData]
@@ -37,6 +39,9 @@ namespace Cargo.AdminPanel.Controllers
             int totalShopCount = _shopService.GetTotalShopCount();
             ViewBag.TotalShopCount = totalShopCount;
 
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
+
             viewModel.Countries = _countryService.GetAll();            
          
             ViewBag.Message = Message;
@@ -55,6 +60,9 @@ namespace Cargo.AdminPanel.Controllers
 
             int totalShopCount = _shopService.GetTotalShopCount();                       
             ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             var viewModel = _countryService.Get(countryId);
          
@@ -103,6 +111,9 @@ namespace Cargo.AdminPanel.Controllers
 
             int totalShopCount = _shopService.GetTotalShopCount();
             ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             return View();
         }

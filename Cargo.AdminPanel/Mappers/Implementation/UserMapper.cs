@@ -62,5 +62,40 @@ namespace Cargo.AdminPanel.Mappers.Implementation
 
             return model;
         }
+
+        public UserModel MapUser(User user)
+        {
+            if (user == null)
+                return null;
+
+            var model = new UserModel
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return model;
+        }
+
+        public User MapUserModel(UserModel model)
+        {
+            if (model == null)
+                return null;
+
+            var user = new User
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Surname = model.Surname,
+                Email = model.Email,
+                NormalizedUserName = model.Email.ToUpper(),
+                PhoneNumber = model.PhoneNumber
+            };
+
+            return user;
+        }
     }
 }

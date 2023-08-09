@@ -54,7 +54,7 @@ namespace CargoApi.Services.Implementation
                 Name = requestModel.Name,
                 Surname = requestModel.Surname,
                 Email = requestModel.Email,
-                PasswordHash = requestModel.Password,
+                PasswordHash = requestModel.Password,                
                 PhoneNumber = requestModel.PhoneNumber,
                 NormalizedUserName = requestModel.Email.ToUpper()
             };

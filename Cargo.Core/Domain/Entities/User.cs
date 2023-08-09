@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Cargo.Core.Domain.Entities
+﻿namespace Cargo.Core.Domain.Entities
 {
     public class User
     {

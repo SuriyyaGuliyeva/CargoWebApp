@@ -40,8 +40,10 @@ namespace Cargo.AdminPanel.Services.Implementation
 
             var model = _mapper.Map(country);
 
-            var viewModel = new AddCountryViewModel();
-            viewModel.Country = model;
+            var viewModel = new AddCountryViewModel
+            {
+                Country = model
+            };
 
             return viewModel;
         }
@@ -50,9 +52,10 @@ namespace Cargo.AdminPanel.Services.Implementation
         {
             var countries = _unitOfWork.CountryRepository.GetAll();
 
-            var viewModel = new CountryViewModel();
-
-            viewModel.Countries = new List<CountryModel>();
+            var viewModel = new CountryViewModel
+            {
+                Countries = new List<CountryModel>()
+            };
 
             foreach (var country in countries)
             {

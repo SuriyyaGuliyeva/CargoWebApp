@@ -12,5 +12,9 @@ namespace Cargo.AdminPanel.Mappers.Abstract
         RegisterModel MapToUser(User user);
 
         User MapToRegisterModel(RegisterModel model);
+
+        UserModel MapUser(User user);
+
+        User MapUserModel(UserModel model);
     }
 }

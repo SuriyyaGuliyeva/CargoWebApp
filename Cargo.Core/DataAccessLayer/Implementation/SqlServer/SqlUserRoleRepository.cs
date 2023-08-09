@@ -37,7 +37,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             {
                 connection.Open();
 
-                string query = "SELECT r.* FROM Roles r INNER JOIN UserRoles ur ON ur.roleId = r.Id WHERE ur.userId = @userId";
+                string query = "SELECT r.* FROM Roles r INNER JOIN UserRoles ur ON ur.roleId = r.Id WHERE r.IsDeleted = 0 and ur.userId = @userId";
 
                 var cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("userId", userId);

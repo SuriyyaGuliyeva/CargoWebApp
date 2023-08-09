@@ -65,7 +65,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 return affectedRows > 0;
             }
         }
-        
+
         public User FindByName(string normalizedUserName)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -114,7 +114,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
         {
             using (var con = new SqlConnection(_connectionString))
             {
-                string query = "select * from users where isDeleted = 0 order by name";
+                string query = @"select * from users where isDeleted = 0 order by Name ASC";
 
                 con.Open();
 
@@ -161,11 +161,11 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
             cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("IsDeleted", user.IsDeleted);
-        }       
+        }
 
         private User GetFromReader(SqlDataReader reader)
         {
-            User user = new User
+            User user = new()
             {
                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                 Name = reader.GetString(reader.GetOrdinal("Name")),
@@ -174,7 +174,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 Email = reader.GetString(reader.GetOrdinal("Email")),
                 PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
                 PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
-                IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
+                IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted")),                
             };
 
             return user;

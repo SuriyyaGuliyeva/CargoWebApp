@@ -17,6 +17,7 @@ namespace Cargo.AdminPanel.Infrastructure
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddTransient<ICountryMapper, CountryMapper>();
 
@@ -28,7 +29,7 @@ namespace Cargo.AdminPanel.Infrastructure
 
             services.AddTransient<IUserMapper, UserMapper>();
 
-            services.AddTransient<IRoleMapper, RoleMapper>();        
+            services.AddTransient<IRoleMapper, RoleMapper>();       
 
             services.AddTransient<IUserStore<User>, UserStore>();
             services.AddTransient<IRoleStore<Role>, RoleStore>();

@@ -17,14 +17,16 @@ namespace Cargo.AdminPanel.Controllers
         private readonly IShopService _shopService;
         private readonly ICountryService _countryService;
         private readonly ICategoryService _categoryService;
+        private readonly IUserService _userService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ShopController(IShopService shopService, IUnitOfWork unitOfWork, ICountryService countryService, ICategoryService categoryService)
+        public ShopController(IShopService shopService, IUnitOfWork unitOfWork, ICountryService countryService, ICategoryService categoryService, IUserService userService)
         {
             _shopService = shopService;
             _unitOfWork = unitOfWork;
             _countryService = countryService;
             _categoryService = categoryService;
+            _userService = userService;
         }
 
         [TempData]
@@ -41,6 +43,9 @@ namespace Cargo.AdminPanel.Controllers
 
             int totalShopCount = _shopService.GetTotalShopCount();
             ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             var viewModel = new ShopViewModel();
 
@@ -62,6 +67,9 @@ namespace Cargo.AdminPanel.Controllers
 
             int totalShopCount = _shopService.GetTotalShopCount();
             ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             var countries = _unitOfWork.CountryRepository.GetAll();
             var categories = _unitOfWork.CategoryRepository.GetAll();
@@ -119,6 +127,9 @@ namespace Cargo.AdminPanel.Controllers
 
             int totalShopCount = _shopService.GetTotalShopCount();
             ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             var model = _shopService.GetUpdateModel(shopId);
 
@@ -179,6 +190,9 @@ namespace Cargo.AdminPanel.Controllers
 
             int totalShopCount = _shopService.GetTotalShopCount();
             ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             var model = _shopService.GetUploadImageModel(shopId);
 

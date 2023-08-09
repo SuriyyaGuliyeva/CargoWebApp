@@ -196,7 +196,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
 
         private Shop GetFromReader(SqlDataReader reader)
         {
-            Shop shop = new Shop();
+            Shop shop = new();
 
             shop.Id = reader.GetInt32(reader.GetOrdinal("Id"));
             shop.Name = reader.GetString(reader.GetOrdinal("Name"));

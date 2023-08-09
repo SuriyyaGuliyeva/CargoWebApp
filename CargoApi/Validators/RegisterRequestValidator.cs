@@ -17,6 +17,11 @@ namespace CargoApi.Validators
                 .NotNull().NotEmpty().WithMessage("Password should not be empty")
                 .MinimumLength(5).WithMessage("Minimum length should be 5");
 
+            RuleFor(x => x.ConfirmPassword)
+                .NotNull().NotEmpty().WithMessage("Password should not be empty")
+                .MinimumLength(5).WithMessage("Minimum length should be 5")
+                .Equal(x => x.Password).WithMessage("Password doesn't match");
+
             RuleFor(x => x.Email)
                 .NotNull().NotEmpty().WithMessage("Email should not be empty")
                 .EmailAddress().WithMessage("A valid email address is required");

@@ -16,9 +16,10 @@ namespace Cargo.AdminPanel.Controllers
         private readonly ICountryService _countryService;
         private readonly ICategoryService _categoryService;
         private readonly IShopService _shopService;
+        private readonly IUserService _userService;
         private readonly IUserMapper _userMapper;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserMapper userMapper, ICountryService countryService, ICategoryService categoryService, IShopService shopService)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserMapper userMapper, ICountryService countryService, ICategoryService categoryService, IShopService shopService, IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -26,6 +27,7 @@ namespace Cargo.AdminPanel.Controllers
             _countryService = countryService;
             _categoryService = categoryService;
             _shopService = shopService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -38,7 +40,10 @@ namespace Cargo.AdminPanel.Controllers
             ViewBag.TotalShopCount = totalShopCount;
 
             int totalCategoryCount = _categoryService.GetTotalCategoryCount();
-            ViewBag.TotalCategoryCount = totalCategoryCount;          
+            ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             ViewBag.ReturnUrl = returnUrl;
 
@@ -86,6 +91,9 @@ namespace Cargo.AdminPanel.Controllers
 
             int totalCategoryCount = _categoryService.GetTotalCategoryCount();
             ViewBag.TotalCategoryCount = totalCategoryCount;
+
+            int totalUserCount = _userService.GetTotalUserCount();
+            ViewBag.TotalUserCount = totalUserCount;
 
             ViewBag.ReturnUrl = returnUrl;
 
