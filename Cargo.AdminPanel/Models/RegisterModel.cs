@@ -30,5 +30,14 @@ namespace Cargo.AdminPanel.Models
         [StringLength(10, ErrorMessage = "Phone number must be 10 characters")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "Phone number is not valid")] 
         public string PhoneNumber { get; set; }
+
+        [Required]
+        [StringLength(7, ErrorMessage = "Pin Code must be 7 characters")]
+        public string PinCode { get; set; }
+
+
+        [Required]        
+        [MaxLength(100, ErrorMessage = "Max Length must be 100 characters")]
+        public string Address { get; set; }
     }
 }

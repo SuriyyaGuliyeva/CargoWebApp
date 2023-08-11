@@ -20,7 +20,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             {
                 connection.Open();
 
-                string query = "insert into users (Name, NormalizedUserName, Surname, Email, PasswordHash, PhoneNumber, IsDeleted) output inserted.Id values (@Name, @NormalizedUserName, @Surname, @Email, @PasswordHash, @PhoneNumber, @IsDeleted)";
+                string query = "insert into users (Name, NormalizedUserName, Surname, Email, PasswordHash, PhoneNumber, PinCode, Address, IsDeleted) output inserted.Id values (@Name, @NormalizedUserName, @Surname, @Email, @PasswordHash, @PhoneNumber, @PinCode, @Address, @IsDeleted)";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -52,7 +52,7 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             {
                 connection.Open();
 
-                string query = "update users set Name = @Name, NormalizedUserName = @NormalizedUserName, Surname = @Surname, Email = @Email, PasswordHash = @PasswordHash, PhoneNumber = @PhoneNumber where id = @Id";
+                string query = "update users set Name = @Name, NormalizedUserName = @NormalizedUserName, Surname = @Surname, Email = @Email, PasswordHash = @PasswordHash, PhoneNumber = @PhoneNumber, Address = @Address where id = @Id";
 
                 var cmd = new SqlCommand(query, connection);
 
@@ -160,6 +160,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
             cmd.Parameters.AddWithValue("Email", user.Email ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("PasswordHash", user.PasswordHash);
             cmd.Parameters.AddWithValue("PhoneNumber", user.PhoneNumber ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("PinCode", user.PinCode);
+            cmd.Parameters.AddWithValue("Address", user.Address);
             cmd.Parameters.AddWithValue("IsDeleted", user.IsDeleted);
         }
 
@@ -174,6 +176,8 @@ namespace Cargo.Core.DataAccessLayer.Implementation.SqlServer
                 Email = reader.GetString(reader.GetOrdinal("Email")),
                 PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
                 PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                PinCode = reader.GetString(reader.GetOrdinal("PinCode")),
+                Address = reader.GetString(reader.GetOrdinal("Address")),
                 IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted")),                
             };
 

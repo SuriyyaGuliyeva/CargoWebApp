@@ -8,5 +8,7 @@
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public string PhoneNumber { get; set; }
+        public string PinCode { get; set; }
+        public string Address { get; set; }
     }
 }

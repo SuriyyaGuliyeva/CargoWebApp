@@ -10,6 +10,8 @@ namespace CargoApi.Extensions
         {
             services.AddTransient<IOrderMapper, OrderMapper>();
             services.AddTransient<IUpdateOrderMapper, UpdateOrderMapper>();
+
+            services.AddTransient<IRegisterRequestMapper, RegisterRequestMapper>();
         }
     }
 }

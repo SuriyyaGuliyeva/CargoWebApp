@@ -12,7 +12,7 @@ namespace Cargo.AdminPanel.Mappers.Implementation
             {
                 Id = user.Id,
                 Email = user.Email,
-                Password = user.PasswordHash
+                Password = user.PasswordHash                
             };
 
             return model;
@@ -41,7 +41,9 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Email = model.Email,
                 NormalizedUserName = model.Email.ToUpper(),
                 PasswordHash = model.Password,
-                PhoneNumber = model.PhoneNumber
+                PhoneNumber = model.PhoneNumber,
+                PinCode = model.PinCode,
+                Address = model.Address
             };
 
             return user;
@@ -57,7 +59,9 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Email = user.Email,
                 Password = user.PasswordHash,
                 ConfirmPassword = user.PasswordHash,
-                PhoneNumber = user.PhoneNumber               
+                PhoneNumber = user.PhoneNumber,
+                PinCode = user.PinCode,
+                Address = user.Address
             };
 
             return model;
@@ -74,7 +78,9 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Name = user.Name,
                 Surname = user.Surname,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                PinCode = user.PinCode,
+                Address = user.Address
             };
 
             return model;
@@ -92,7 +98,9 @@ namespace Cargo.AdminPanel.Mappers.Implementation
                 Surname = model.Surname,
                 Email = model.Email,
                 NormalizedUserName = model.Email.ToUpper(),
-                PhoneNumber = model.PhoneNumber
+                PhoneNumber = model.PhoneNumber,
+                PinCode = model.PinCode,
+                Address = model.Address
             };
 
             return user;

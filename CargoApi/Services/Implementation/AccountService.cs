@@ -1,6 +1,7 @@
 ﻿using Cargo.Core.Constants;
 using Cargo.Core.Domain.Entities;
 using CargoApi.Exceptions;
+using CargoApi.Mappers.Abstract;
 using CargoApi.Models.AccountModels;
 using CargoApi.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
@@ -18,11 +19,13 @@ namespace CargoApi.Services.Implementation
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IRegisterRequestMapper _mapper;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IRegisterRequestMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _mapper = mapper;
         }
 
         public async Task<LoginResponseModel> Login(LoginRequestModel requestModel)
@@ -49,15 +52,17 @@ namespace CargoApi.Services.Implementation
 
         public async Task Register(RegisterRequestModel requestModel)
         {
-            var user = new User
-            {
-                Name = requestModel.Name,
-                Surname = requestModel.Surname,
-                Email = requestModel.Email,
-                PasswordHash = requestModel.Password,                
-                PhoneNumber = requestModel.PhoneNumber,
-                NormalizedUserName = requestModel.Email.ToUpper()
-            };
+            //var user = new User
+            //{
+            //    Name = requestModel.Name,
+            //    Surname = requestModel.Surname,
+            //    Email = requestModel.Email,
+            //    PasswordHash = requestModel.Password,                
+            //    PhoneNumber = requestModel.PhoneNumber,
+            //    NormalizedUserName = requestModel.Email.ToUpper()
+            //};
+
+            var user = _mapper.Map(requestModel);
 
             var result = await _userManager.CreateAsync(user, requestModel.Password);
 
@@ -82,6 +87,7 @@ namespace CargoApi.Services.Implementation
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Surname, user.Surname),
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.StreetAddress, user.Address),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber.ToString())
             };
 
