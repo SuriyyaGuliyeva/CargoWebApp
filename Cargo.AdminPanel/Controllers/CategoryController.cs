@@ -10,16 +10,12 @@ namespace Cargo.AdminPanel.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-        private readonly ICountryService _countryService;
-        private readonly IShopService _shopService;
-        private readonly IUserService _userService;
+        private readonly ITotalCountService _totalCountService;
 
-        public CategoryController(ICategoryService categoryService, ICountryService countryService, IShopService shopService, IUserService userService)
+        public CategoryController(ICategoryService categoryService, ITotalCountService totalCountService)
         {
-            _categoryService = categoryService;
-            _countryService = countryService;
-            _shopService = shopService;
-            _userService = userService;
+            _categoryService = categoryService;            
+            _totalCountService = totalCountService;
         }
 
         [TempData]
@@ -28,16 +24,16 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            int totalCountryCount = _countryService.GetTotalCountryCount();
+            int totalCountryCount = _totalCountService.GetCountryCount();
             ViewBag.TotalCountryCount = totalCountryCount;
 
-            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            int totalCategoryCount = _totalCountService.GetCategoryCount();
             ViewBag.TotalCategoryCount = totalCategoryCount;
 
-            int totalShopCount = _shopService.GetTotalShopCount();
+            int totalShopCount = _totalCountService.GetShopCount();
             ViewBag.TotalShopCount = totalShopCount;
 
-            int totalUserCount = _userService.GetTotalUserCount();
+            int totalUserCount = _totalCountService.GetUserCount();
             ViewBag.TotalUserCount = totalUserCount;
 
             var viewModel = new CategoryViewModel();
@@ -52,16 +48,16 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Update(int categoryId)
         {
-            int totalCountryCount = _countryService.GetTotalCountryCount();
+            int totalCountryCount = _totalCountService.GetCountryCount();
             ViewBag.TotalCountryCount = totalCountryCount;
 
-            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            int totalCategoryCount = _totalCountService.GetCategoryCount();
             ViewBag.TotalCategoryCount = totalCategoryCount;
 
-            int totalShopCount = _shopService.GetTotalShopCount();
+            int totalShopCount = _totalCountService.GetShopCount();
             ViewBag.TotalShopCount = totalShopCount;
 
-            int totalUserCount = _userService.GetTotalUserCount();
+            int totalUserCount = _totalCountService.GetUserCount();
             ViewBag.TotalUserCount = totalUserCount;
 
             var viewModel = _categoryService.Get(categoryId);         
@@ -103,16 +99,16 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            int totalCountryCount = _countryService.GetTotalCountryCount();
+            int totalCountryCount = _totalCountService.GetCountryCount();
             ViewBag.TotalCountryCount = totalCountryCount;
 
-            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            int totalCategoryCount = _totalCountService.GetCategoryCount();
             ViewBag.TotalCategoryCount = totalCategoryCount;
 
-            int totalShopCount = _shopService.GetTotalShopCount();
+            int totalShopCount = _totalCountService.GetShopCount();
             ViewBag.TotalShopCount = totalShopCount;
 
-            int totalUserCount = _userService.GetTotalUserCount();
+            int totalUserCount = _totalCountService.GetUserCount();
             ViewBag.TotalUserCount = totalUserCount;
 
             return View();

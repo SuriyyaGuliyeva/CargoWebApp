@@ -12,6 +12,5 @@ namespace Cargo.AdminPanel.Services.Abstract
         IList<CategoryModel> GetAll();
         AddCategoryViewModel Get(int id);
         bool IsExists(CategoryModel model);
-        int GetTotalCategoryCount();
     }
 }

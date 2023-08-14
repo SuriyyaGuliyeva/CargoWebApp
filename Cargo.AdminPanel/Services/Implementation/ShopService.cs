@@ -182,9 +182,9 @@ namespace Cargo.AdminPanel.Services.Implementation
             return shopName != null;
         }
 
-        public int GetTotalShopCount()
-        {
-            return _unitOfWork.ShopRepository.GetTotalCount();
-        }
+        //public int GetTotalShopCount()
+        //{
+        //    return _unitOfWork.ShopRepository.GetTotalCount();
+        //}
     }
 }

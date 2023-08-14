@@ -84,9 +84,9 @@ namespace Cargo.AdminPanel.Services.Implementation
             return true;
         }
 
-        public int GetTotalCategoryCount()
-        {
-            return _unitOfWork.CategoryRepository.GetTotalCount();
-        }
+        //public int GetTotalCategoryCount()
+        //{
+        //    return _unitOfWork.CategoryRepository.GetTotalCount();
+        //}
     }
 }

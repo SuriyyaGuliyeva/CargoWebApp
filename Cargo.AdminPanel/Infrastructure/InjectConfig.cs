@@ -18,6 +18,7 @@ namespace Cargo.AdminPanel.Infrastructure
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ITotalCountService, TotalCountService>();
 
             services.AddTransient<ICountryMapper, CountryMapper>();
 

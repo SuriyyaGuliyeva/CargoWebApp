@@ -7,6 +7,7 @@ using CargoApi.Services.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -20,12 +21,14 @@ namespace CargoApi.Services.Implementation
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IRegisterRequestMapper _mapper;
+        private readonly IProfileDetailsResponseMapper _profileDetailsMapper;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IRegisterRequestMapper mapper)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, IRegisterRequestMapper mapper, IProfileDetailsResponseMapper profileDetailsMapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
+            _profileDetailsMapper = profileDetailsMapper;
         }
 
         public async Task<LoginResponseModel> Login(LoginRequestModel requestModel)
@@ -52,16 +55,6 @@ namespace CargoApi.Services.Implementation
 
         public async Task Register(RegisterRequestModel requestModel)
         {
-            //var user = new User
-            //{
-            //    Name = requestModel.Name,
-            //    Surname = requestModel.Surname,
-            //    Email = requestModel.Email,
-            //    PasswordHash = requestModel.Password,                
-            //    PhoneNumber = requestModel.PhoneNumber,
-            //    NormalizedUserName = requestModel.Email.ToUpper()
-            //};
-
             var user = _mapper.Map(requestModel);
 
             var result = await _userManager.CreateAsync(user, requestModel.Password);
@@ -72,9 +65,30 @@ namespace CargoApi.Services.Implementation
                 throw new AppException(message);
             }
 
-            await _userManager.AddToRoleAsync(user, "Customer");                        
+            await _userManager.AddToRoleAsync(user, "Customer");
         }
 
+        public async Task<ProfileDetailsResponseModel> ProfileDetails()
+        {
+            var signedInUser = _signInManager.Context.User;
+
+            if (signedInUser?.Identity?.IsAuthenticated == true && signedInUser.Identity is ClaimsIdentity claimsIdentity)
+            {
+                string email = claimsIdentity.FindFirst(ClaimTypes.Email)?.Value.ToUpper();
+
+                var user = await _userManager.FindByNameAsync(email);
+
+                var model = _profileDetailsMapper.Map(user);               
+
+                return model;
+            }
+            else
+            {
+                throw new AppException("User is not signed in");
+            }                           
+        }
+
+        #region private methods
         // To generate Token
         private string GenerateToken(User user)
         {
@@ -104,6 +118,6 @@ namespace CargoApi.Services.Implementation
         {
             return string.Join('\n', result.Errors.Select(x => x.Description));
         }
-
+        #endregion             
     }
 }

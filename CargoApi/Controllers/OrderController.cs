@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CargoApi.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Customer")]
     public class OrderController : BaseController
     {
         private readonly IOrderService _orderService;

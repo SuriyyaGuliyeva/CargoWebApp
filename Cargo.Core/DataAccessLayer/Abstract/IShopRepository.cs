@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace Cargo.Core.DataAccessLayer.Abstract
 {
-    public interface IShopRepository : IGenericRepository<Shop>, ITotalCountRepository
+    public interface IShopRepository : IGenericRepository<Shop>
     {
         Shop GetByCategoryId(string name, int categoryId, int countryId);
+        int GetTotalCount();
     }
 }

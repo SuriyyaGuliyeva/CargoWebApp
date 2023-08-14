@@ -49,9 +49,9 @@ namespace Cargo.AdminPanel.Services.Implementation
             return listOfUserModel;
         }
 
-        public int GetTotalUserCount()
-        {
-            return _unitOfWork.UserRepository.GetTotalCount();
-        }
+        //public int GetTotalUserCount()
+        //{
+        //    return _unitOfWork.UserRepository.GetTotalCount();
+        //}
     }
 }

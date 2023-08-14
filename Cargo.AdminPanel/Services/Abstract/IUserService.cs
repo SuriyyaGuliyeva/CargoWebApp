@@ -7,6 +7,5 @@ namespace Cargo.AdminPanel.Services.Abstract
     {
         IList<UserModel> GetAll();
         UserModel Get(int id);
-        int GetTotalUserCount();
     }
 }

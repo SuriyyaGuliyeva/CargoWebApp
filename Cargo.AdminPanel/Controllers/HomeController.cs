@@ -9,32 +9,26 @@ namespace Cargo.AdminPanel.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ICountryService _countryService;
-        private readonly ICategoryService _categoryService;
-        private readonly IShopService _shopService;
-        private readonly IUserService _userService;
+        private readonly ITotalCountService _totalCountService;
 
-        public HomeController(ILogger<HomeController> logger, ICountryService countryService, ICategoryService categoryService, IShopService shopService, IUserService userService)
+        public HomeController(ILogger<HomeController> logger, ITotalCountService totalCountService)
         {
-            _logger = logger;
-            _countryService = countryService;
-            _categoryService = categoryService;
-            _shopService = shopService;
-            _userService = userService;
+            _logger = logger;           
+            _totalCountService = totalCountService;
         }
 
         public IActionResult Index()
         {
-            int totalCountryCount = _countryService.GetTotalCountryCount();
+            int totalCountryCount = _totalCountService.GetCountryCount();
             ViewBag.TotalCountryCount = totalCountryCount;
 
-            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            int totalCategoryCount = _totalCountService.GetCategoryCount();
             ViewBag.TotalCategoryCount = totalCategoryCount;
 
-            int totalShopCount = _shopService.GetTotalShopCount();
+            int totalShopCount = _totalCountService.GetShopCount();
             ViewBag.TotalShopCount = totalShopCount;
 
-            int totalUserCount = _userService.GetTotalUserCount();
+            int totalUserCount = _totalCountService.GetUserCount();
             ViewBag.TotalUserCount = totalUserCount;
 
             return View();

@@ -1,5 +1,6 @@
 ﻿using CargoApi.Models.AccountModels;
 using CargoApi.Services.Abstract;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,15 @@ namespace CargoApi.Controllers
             );
 
             return StatusCode(StatusCodes.Status201Created, loginResponse);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ProfileDetails()
+        {
+            var responseModel = await _accountService.ProfileDetails();
+
+            return StatusCode(StatusCodes.Status200OK, responseModel);
         }
     }
 }

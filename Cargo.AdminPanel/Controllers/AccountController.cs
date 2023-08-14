@@ -13,36 +13,34 @@ namespace Cargo.AdminPanel.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ICountryService _countryService;
-        private readonly ICategoryService _categoryService;
-        private readonly IShopService _shopService;
-        private readonly IUserService _userService;
+        private readonly ITotalCountService _totalCountService;
+        //private readonly ICountryService _countryService;
+        //private readonly ICategoryService _categoryService;
+        //private readonly IShopService _shopService;
+        //private readonly IUserService _userService;
         private readonly IUserMapper _userMapper;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserMapper userMapper, ICountryService countryService, ICategoryService categoryService, IShopService shopService, IUserService userService)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserMapper userMapper, ITotalCountService totalCountService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _userMapper = userMapper;
-            _countryService = countryService;
-            _categoryService = categoryService;
-            _shopService = shopService;
-            _userService = userService;
+            _userMapper = userMapper;         
+            _totalCountService = totalCountService;
         }
 
         [HttpGet]
         public IActionResult Register(string returnUrl)
         {
-            int totalCountryCount = _countryService.GetTotalCountryCount();
+            int totalCountryCount = _totalCountService.GetCountryCount();
             ViewBag.TotalCountryCount = totalCountryCount;
 
-            int totalShopCount = _shopService.GetTotalShopCount();
-            ViewBag.TotalShopCount = totalShopCount;
-
-            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            int totalCategoryCount = _totalCountService.GetCategoryCount();
             ViewBag.TotalCategoryCount = totalCategoryCount;
 
-            int totalUserCount = _userService.GetTotalUserCount();
+            int totalShopCount = _totalCountService.GetShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _totalCountService.GetUserCount();
             ViewBag.TotalUserCount = totalUserCount;
 
             ViewBag.ReturnUrl = returnUrl;
@@ -83,16 +81,16 @@ namespace Cargo.AdminPanel.Controllers
         [HttpGet]
         public IActionResult SignIn(string returnUrl)
         {
-            int totalCountryCount = _countryService.GetTotalCountryCount();
+            int totalCountryCount = _totalCountService.GetCountryCount();
             ViewBag.TotalCountryCount = totalCountryCount;
 
-            int totalShopCount = _shopService.GetTotalShopCount();
-            ViewBag.TotalShopCount = totalShopCount;
-
-            int totalCategoryCount = _categoryService.GetTotalCategoryCount();
+            int totalCategoryCount = _totalCountService.GetCategoryCount();
             ViewBag.TotalCategoryCount = totalCategoryCount;
 
-            int totalUserCount = _userService.GetTotalUserCount();
+            int totalShopCount = _totalCountService.GetShopCount();
+            ViewBag.TotalShopCount = totalShopCount;
+
+            int totalUserCount = _totalCountService.GetUserCount();
             ViewBag.TotalUserCount = totalUserCount;
 
             ViewBag.ReturnUrl = returnUrl;
